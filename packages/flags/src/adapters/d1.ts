@@ -7,9 +7,30 @@ import type {
   Tier,
 } from '../types.js';
 
-// Cloudflare D1 types are provided by @cloudflare/workers-types (peer).
-// Import as type-only to keep runtime deps zero.
-import type { D1Database } from '@cloudflare/workers-types';
+// Minimal D1 type surface — matches the subset of `@cloudflare/workers-types`
+// D1Database this adapter uses. Declared locally so packages/flags stays
+// self-contained for TypeScript (no peer-dep resolution required when
+// consumers type-check us transitively). Pattern matches sqlite.ts and
+// postgres.ts, which define their client shapes inline the same way.
+// Consumers pass their real D1Database in and it structurally conforms.
+interface D1Result<T = unknown> {
+  results: T[];
+  meta?: Record<string, unknown>;
+  success?: boolean;
+}
+interface D1RunMeta {
+  meta?: { changes?: number };
+}
+interface D1PreparedStatement {
+  bind(...values: unknown[]): D1PreparedStatement;
+  first<T = unknown>(): Promise<T | null>;
+  all<T = unknown>(): Promise<D1Result<T>>;
+  run(): Promise<D1RunMeta>;
+}
+interface D1Database {
+  prepare(sql: string): D1PreparedStatement;
+  batch(statements: D1PreparedStatement[]): Promise<unknown[]>;
+}
 
 let seq = 0;
 function newId(): string {

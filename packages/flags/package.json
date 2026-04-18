@@ -43,12 +43,10 @@
     "test:level0": "python3 tests/level0_security.py"
   },
   "peerDependencies": {
-    "@cloudflare/workers-types": "*",
     "better-sqlite3": "*",
     "pg": "*"
   },
   "peerDependenciesMeta": {
-    "@cloudflare/workers-types": { "optional": true },
     "better-sqlite3": { "optional": true },
     "pg": { "optional": true }
   },

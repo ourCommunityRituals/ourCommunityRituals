@@ -12,9 +12,12 @@
  * guarantees the SQL contract the adapter ships.
  */
 import Database from 'better-sqlite3';
-import type { D1Database } from '@cloudflare/workers-types';
 import { D1Adapter } from '../src/adapters/d1.js';
 import { runAdapterSpec } from './adapter-spec.js';
+
+// D1Adapter declares its minimal D1Database shape internally; we satisfy
+// it structurally via cast rather than importing workers-types.
+type D1DatabaseShape = ConstructorParameters<typeof D1Adapter>[0];
 
 // Minimal D1 API surface over better-sqlite3.
 // Implements only the subset D1Adapter uses: prepare → bind → first/all/run, batch.
@@ -70,6 +73,6 @@ CREATE TABLE IF NOT EXISTS feature_flags (
 runAdapterSpec('d1', () => {
   const sqlite = new Database(':memory:');
   sqlite.exec(SCHEMA);
-  const fake = new FakeD1Database(sqlite) as unknown as D1Database;
+  const fake = new FakeD1Database(sqlite) as unknown as D1DatabaseShape;
   return new D1Adapter(fake);
 });
