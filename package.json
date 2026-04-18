@@ -1,0 +1,20 @@
+{
+  "name": "ourcommunityrituals-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Workspace root for OCR shared packages (packages/*). Sibling app repos (OSE, OW, OA, OSM, OSG, OSP, OSR, OCR-docs) are independent git repos and NOT part of this workspace.",
+  "type": "module",
+  "scripts": {
+    "flags:build": "pnpm --filter @ocr/flags build",
+    "flags:test": "pnpm --filter @ocr/flags test",
+    "flags:level0": "pnpm --filter @ocr/flags test:level0",
+    "flags:generate": "pnpm --filter @ocr/flags generate",
+    "flags:check:generated": "pnpm --filter @ocr/flags check:generated",
+    "flags:lint": "pnpm --filter @ocr/flags lint"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}

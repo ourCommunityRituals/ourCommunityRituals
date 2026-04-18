@@ -1,0 +1,49 @@
+# ourCommunityRituals root-repo .gitignore
+#
+# This repo exists to host the SHARED workspace (pnpm-workspace.yaml) and
+# reusable packages (packages/*) that bind OCR Brain contracts to runtime
+# code. Each OCR app lives in its OWN git repo as a sibling directory —
+# those repos are NOT tracked here. They are discovered by humans/tools
+# via sibling-directory convention, not by being part of this repo.
+
+# ─── Sibling OCR app repos (each is its own git repo) ─────────────────
+OCR-docs/
+ourAirwaves/
+ourSharedEvents/
+ourSharedGames/
+ourSharedMagnets/
+ourSharedPulse/
+ourSharedRecords/
+ourWKRP/
+
+# ─── Self-hosted GitHub Actions runner ────────────────────────────────
+actions-runner/
+
+# ─── Build + tooling artifacts ────────────────────────────────────────
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+.next/
+**/.next/
+coverage/
+**/coverage/
+.vitest/
+**/.vitest/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# ─── Editor / OS ──────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.log
+
+# ─── Env / secrets ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example

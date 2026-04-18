@@ -1,0 +1,202 @@
+# ourCommunityRituals root workspace CI.
+#
+# Runs on the self-hosted runner alongside OSE/OW/OCR-docs (same physical
+# machine, same `self-hosted` label). This workspace hosts shared packages
+# (packages/*) that bind Brain contracts to runtime code. Sibling app repos
+# are gitignored here and have their own independent CI.
+#
+# Pipeline order honors the priority hierarchy (Quality > Security > Maintenance
+# > Performance > Functionality) via Level-0 security gate first, then drift
+# checks, then tests, then vision invariants.
+#
+# Trigger matrix:
+#   | Event          | Gate | Invariants | Brain parity | Drift |
+#   |----------------|------|------------|--------------|-------|
+#   | PR → main      |  ✅  |     ✅     |      ✅      |  ✅   |
+#   | Push to main   |  ✅  |     ✅     |      ✅      |  ✅   |
+#   | Nightly        |  ✅  |     ✅     |      ✅      |  ✅   |
+#   | Dispatch       |  ✅  |     ✅     |      ✅      |  ✅   |
+
+name: OCR Workspace CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - '.npmrc'
+      - '.nvmrc'
+      - '.github/workflows/ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - '.npmrc'
+      - '.nvmrc'
+      - '.github/workflows/ci.yml'
+  schedule:
+    - cron: '17 3 * * *'  # Nightly 3:17 AM UTC — catches Brain drift between pushes
+  workflow_dispatch:
+    inputs:
+      force_install:
+        description: 'Force pnpm install (bust stamp)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ocr-workspace-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  gate:
+    name: 'Gate — L0 security + drift + tests'
+    runs-on: self-hosted
+    timeout-minutes: 15
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v6
+        with:
+          clean: false
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Resolve pnpm store
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: |
+          if [ "${{ inputs.force_install }}" = "true" ]; then
+            pnpm install --frozen-lockfile=false
+          else
+            pnpm install --frozen-lockfile
+          fi
+
+      # ── Level 0: SECURITY (gate — blocks everything else on fail) ─────
+      - name: 'L0 Security — @ocr/flags'
+        run: pnpm flags:level0
+
+      # ── Quality: generated-artifact drift (YAML → typed constants) ────
+      - name: 'Drift — generated flag-keys + presets match Brain YAML'
+        run: pnpm flags:check:generated
+
+      # ── Quality: TypeScript typecheck ─────────────────────────────────
+      - name: 'Quality — TypeScript'
+        working-directory: packages/flags
+        run: pnpm exec tsc -p tsconfig.json --noEmit
+
+      # ── Quality: unit + adapter-spec + invariants ─────────────────────
+      - name: 'Quality — vitest (adapter-spec × N adapters + invariants)'
+        run: pnpm flags:test
+
+  invariants:
+    name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
+    runs-on: self-hosted
+    needs: [gate]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          clean: false
+          fetch-depth: 1
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: 'Run invariants suite only'
+        working-directory: packages/flags
+        run: pnpm exec vitest run tests/invariants.test.ts
+
+  brain-parity:
+    # Validates that the @ocr/flags contract (Brain YAML) still parses and
+    # conforms to Brain's own pyramid levels 0-2. Requires OCR-docs to be
+    # available as a sibling checkout (self-hosted runner has it; GitHub-
+    # hosted runners would need a separate checkout step). Gracefully skips
+    # if the sibling repo isn't present.
+    name: 'Brain parity — flags-contract.yaml ↔ OCR-docs pyramid'
+    runs-on: self-hosted
+    needs: [gate]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          clean: false
+          fetch-depth: 1
+
+      - name: Check for sibling OCR-docs checkout
+        id: brain
+        run: |
+          SIBLING="$GITHUB_WORKSPACE/../OCR-docs"
+          if [ -d "$SIBLING/ocr-docs-brain" ]; then
+            echo "PRESENT=true"  >> "$GITHUB_OUTPUT"
+            echo "BRAIN_DIR=$SIBLING/ocr-docs-brain" >> "$GITHUB_OUTPUT"
+          else
+            echo "PRESENT=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 'Run Brain pyramid L0-L2 (skip gracefully if absent)'
+        if: steps.brain.outputs.PRESENT == 'true'
+        working-directory: ${{ steps.brain.outputs.BRAIN_DIR }}
+        run: py tests/run_all.py --level 2
+
+      - name: 'Flag Brain parity skipped (OCR-docs not adjacent)'
+        if: steps.brain.outputs.PRESENT != 'true'
+        run: |
+          echo "OCR-docs sibling repo not found at \$GITHUB_WORKSPACE/../OCR-docs"
+          echo "On the self-hosted runner this should always be present."
+          echo "If this skip fires on self-hosted, investigate workspace layout."
+
+  shared-gate-drift:
+    # security_gate.py is vendored from OCR-docs/shared/ into every consumer
+    # (tests/_shared/). This job verifies the vendored copy in packages/flags
+    # matches the canonical. Drift = must run `py shared/sync_to_repos.py`
+    # from OCR-docs before merging.
+    name: 'Shared security_gate.py drift check'
+    runs-on: self-hosted
+    needs: [gate]
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          clean: false
+          fetch-depth: 1
+
+      - name: Check drift vs adjacent OCR-docs canonical
+        run: |
+          SIBLING="$GITHUB_WORKSPACE/../OCR-docs"
+          if [ ! -f "$SIBLING/shared/check_drift.py" ]; then
+            echo "OCR-docs sibling not present — skipping drift check."
+            exit 0
+          fi
+          cd "$SIBLING" && py shared/check_drift.py

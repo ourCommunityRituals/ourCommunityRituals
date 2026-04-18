@@ -1,0 +1,13 @@
+# OCR monorepo-adjacent workspace.
+#
+# This root exists to host SHARED packages (packages/*) that bind Brain
+# contracts to runtime code. Sibling app repos (ourSharedEvents, ourWKRP,
+# etc.) remain standalone — they are NOT members of this workspace and keep
+# their own lockfiles and CI. An app repo consumes a shared package via the
+# normal npm install path (file:, workspace:, or a published version), not
+# by virtue of living in this tree.
+#
+# Rule: only reusable, Brain-contract-bound packages live under packages/.
+# App-specific code does not.
+packages:
+  - 'packages/*'
