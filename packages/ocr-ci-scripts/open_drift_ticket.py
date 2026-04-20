@@ -30,7 +30,7 @@ LINEAR_API = 'https://api.linear.app/graphql'
 # once that field is added. Hardcoded here for now.
 TEAM_ROUTING = {
     'ose': 'OSE',
-    'oureventring': 'OSE',
+    'oureventring': 'OER',
     'osm': 'OSE',
     'wkrp': 'OCR',
     'oaw': 'OCR',
