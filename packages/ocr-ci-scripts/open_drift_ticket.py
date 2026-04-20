@@ -31,13 +31,17 @@ LINEAR_API = 'https://api.linear.app/graphql'
 TEAM_ROUTING = {
     'ose': 'OSE',
     'oureventring': 'OER',
+    'OER': 'OER',
     'osm': 'OSE',
     'wkrp': 'OCR',
+    'ow': 'OCR',
+    'oa': 'OCR',
     'oaw': 'OCR',
     'osg': 'OCR',
     'osr': 'OCR',
     'osp': 'OCR',
     'brain': 'OCR-doc',
+    'ocr': 'OCR',
     'unknown': 'OCR',
 }
 
