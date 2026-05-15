@@ -273,6 +273,37 @@ def main():
     print(f'Running conformance checks for {args.product_id} against brain @ {brain_dir}...')
     print()
 
+    # Stub-repo early-exit: products with no application code yet (per
+    # registry flag `code_present: false`) cannot satisfy code-presence
+    # checks. The propagator still updates docs/standards into them, but
+    # the conformance check would always fail — creating CI noise that
+    # buries real drift signal in other repos. Honor the registry flag,
+    # report a single PASS check explaining the skip, exit 0.
+    #
+    # When the stub repo onboards real code, flip `code_present: true`
+    # (or remove the line) in `OCR-docs/ocr-docs-brain/product-registry.yaml`
+    # and conformance kicks in automatically.
+    if product.get('code_present') is False:
+        skip_reason = (
+            f'{args.product_id} marked code_present=false in registry — '
+            f'stub repo, no application code to validate. Flip the flag '
+            f'when code lands.'
+        )
+        print(f'  [SKIP] code-presence checks  {skip_reason}')
+        report = {
+            'product_id': args.product_id,
+            'brain_path': str(brain_dir),
+            'repo_path': str(repo),
+            'summary': {'passed': 0, 'failed': 0, 'skipped': 1, 'total': 1},
+            'passes': [{'check': 'stub_repo_exempt', 'detail': skip_reason}],
+            'failures': [],
+            'skipped': True,
+            'reason': skip_reason,
+        }
+        Path(args.report_path).write_text(json.dumps(report, indent=2))
+        print(f'Report: {args.report_path}')
+        sys.exit(0)
+
     checks = [
         check_regulatory_pools_present(repo, product),
         check_required_tags_used(repo, product),
