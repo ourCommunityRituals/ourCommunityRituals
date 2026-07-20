@@ -75,7 +75,9 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          # pnpm version is pinned via package.json `packageManager`
+          # (pnpm@9.15.0). Also setting `version:` here triggers
+          # ERR_PNPM_BAD_PM_VERSION and fails the whole job.
           run_install: false
 
       - name: Resolve pnpm store
@@ -130,7 +132,7 @@ jobs:
           node-version-file: '.nvmrc'
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          # Version from package.json `packageManager`; see gate job above.
           run_install: false
       - name: Install
         run: pnpm install --frozen-lockfile
