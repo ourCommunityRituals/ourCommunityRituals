@@ -47,3 +47,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# ─── Runner fleet — local config contains PAT ─────────────────────────
+packages/runner-fleet/fleet.config.json
+fleet-dashboard.html
