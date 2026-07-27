@@ -10,7 +10,15 @@
     "flags:level0": "pnpm --filter @ocr/flags test:level0",
     "flags:generate": "pnpm --filter @ocr/flags generate",
     "flags:check:generated": "pnpm --filter @ocr/flags check:generated",
-    "flags:lint": "pnpm --filter @ocr/flags lint"
+    "flags:lint": "pnpm --filter @ocr/flags lint",
+    "runner-fleet:build": "pnpm --filter @ocr/runner-fleet build",
+    "runner-fleet:test": "pnpm --filter @ocr/runner-fleet test",
+    "runner-fleet:typecheck": "pnpm --filter @ocr/runner-fleet typecheck",
+    "runner-fleet:status": "pnpm --filter @ocr/runner-fleet exec node --import tsx/esm src/cli.ts status",
+    "runner-fleet:watch": "pnpm --filter @ocr/runner-fleet exec node --import tsx/esm src/cli.ts watch",
+    "runner-fleet:dashboard": "pnpm --filter @ocr/runner-fleet exec node --import tsx/esm src/cli.ts dashboard",
+    "runner-fleet:bounce": "pnpm --filter @ocr/runner-fleet exec node --import tsx/esm src/cli.ts bounce",
+    "runner-fleet:register": "pnpm --filter @ocr/runner-fleet exec node --import tsx/esm src/cli.ts register"
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {

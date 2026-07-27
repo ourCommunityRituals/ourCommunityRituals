@@ -1,0 +1,16 @@
+{
+  "githubToken": "ghp_YOUR_PAT_HERE",
+  "repoOwner": "yourorg",
+  "repoName": "yourrepo",
+  "runners": [
+    {
+      "name": "RUNNER-NAME",
+      "path": "C:/path/to/actions-runner-2",
+      "taskName": "GitHubActionsRunner-2",
+      "comment_linux": "use serviceName instead of taskName on Linux"
+    }
+  ],
+  "watchdogIntervalMs": 60000,
+  "tokenRefreshLeadMs": 900000,
+  "maxRestartAttempts": 2
+}
