@@ -64,6 +64,9 @@ export const primitives = {
   '--ocr-red-700':   '#B03030',  // danger light mode (5.2:1 on light-050)
   '--ocr-red-600':   '#C03838',  // danger hover light
 
+  // Surface hover steps
+  '--ocr-navy-800':   '#223350',  // surface-hover dark (between navy-900 and navy-700)
+
   // Light-mode foreground variants — darker to clear 4.5:1 on #F4F7FC
   '--ocr-blue-700':   '#0057D6',  // accent light mode (4.7:1 on light-050)
   '--ocr-blue-600l':  '#2E6FDF',  // accent hover light
@@ -84,8 +87,10 @@ export const semanticDark = {
   '--accent-hover':  'var(--ocr-blue-500)',
   '--live':          'var(--ocr-teal-400)',   // on-air / active — teal, not green
   '--live-hover':    'var(--ocr-teal-300)',
-  '--danger':        'var(--ocr-red-500)',    // destructive actions only
-  '--danger-hover':  'var(--ocr-red-400)',
+  '--surface-hover':  'var(--ocr-navy-800)',
+  '--danger':         'var(--ocr-red-500)',    // destructive actions only
+  '--danger-hover':   'var(--ocr-red-400)',
+  '--error':          'var(--ocr-red-500)',    // alias — form validation / error banners
 } as const;
 
 // ── Tier 2: Light mode override ───────────────────────────────────────────────
@@ -100,8 +105,10 @@ export const semanticLight = {
   '--accent-hover':  'var(--ocr-blue-600l)',
   '--live':          'var(--ocr-teal-700)',    // 4.9:1 — full AA
   '--live-hover':    'var(--ocr-teal-600)',
-  '--danger':        'var(--ocr-red-700)',     // 5.2:1 — full AA
-  '--danger-hover':  'var(--ocr-red-600)',
+  '--surface-hover':  'var(--ocr-light-200)',
+  '--danger':         'var(--ocr-red-700)',     // 5.2:1 — full AA
+  '--danger-hover':   'var(--ocr-red-600)',
+  '--error':          'var(--ocr-red-700)',     // alias — form validation / error banners
 } as const;
 
 // ── Shared structural tokens (not colour, not theme-sensitive) ────────────────

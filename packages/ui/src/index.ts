@@ -1,4 +1,8 @@
-export { tokens, rootBlock, type TokenName } from './tokens';
+export {
+  tokens, primitives, semanticDark, semanticLight, structural,
+  rootBlock, lightModeBlock,
+  type TokenName, type PrimitiveName,
+} from './tokens';
 export { componentStyles } from './styles';
 export { ocrStylesheet, serveCss, styleTag } from './css';
 export { esc, escUrl } from './esc';
