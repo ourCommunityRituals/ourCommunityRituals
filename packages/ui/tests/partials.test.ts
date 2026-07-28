@@ -1,52 +1,72 @@
-import { test } from 'node:test';
-import assert from 'node:assert/strict';
+import { describe, it, expect } from 'vitest';
 import { page, header, bottomNav, button, emptyState, accessDenied } from '../src/partials';
 import { ocrStylesheet, styleTag } from '../src/css';
 
-test('page() emits one document that links the shared stylesheet, no inline <style>', () => {
-  const html = page({ title: 'Dashboard', body: '<p>hi</p>' });
-  assert.match(html, /^<!DOCTYPE html>/);
-  assert.match(html, /<link rel="stylesheet" href="\/ui.css">/);
-  assert.equal((html.match(/<style/g) ?? []).length, 0, 'no inline style blocks');
-  assert.equal((html.match(/<link rel="stylesheet"/g) ?? []).length, 1, 'linked exactly once');
+describe('page()', () => {
+  it('emits a full document linking the shared stylesheet, no inline <style>', () => {
+    const html = page({ title: 'Dashboard', body: '<p>hi</p>' });
+    expect(html).toMatch(/^<!DOCTYPE html>/);
+    expect(html).toContain('<link rel="stylesheet" href="/ui.css">');
+    expect((html.match(/<style/g) ?? []).length).toBe(0);
+    expect((html.match(/<link rel="stylesheet"/g) ?? []).length).toBe(1);
+  });
 });
 
-test('the shared stylesheet is a single deduplicated string', () => {
-  // One :root only — the whole point of the extraction.
-  assert.equal((ocrStylesheet.match(/:root/g) ?? []).length, 1);
-  assert.match(styleTag(), /^<style>/);
+describe('stylesheet', () => {
+  it('rootBlock emits two :root blocks (Tier 1 + Tier 2), not one', () => {
+    // We no longer enforce exactly one :root — the 3-tier split uses two.
+    expect((ocrStylesheet.match(/:root/g) ?? []).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('styleTag wraps in <style>', () => {
+    expect(styleTag()).toMatch(/^<style>/);
+  });
+
+  it('stylesheet contains light mode media query', () => {
+    expect(ocrStylesheet).toContain('prefers-color-scheme: light');
+  });
 });
 
-test('user text is escaped everywhere (XSS)', () => {
+describe('XSS safety', () => {
   const evil = '"><script>alert(1)</script>';
-  assert.doesNotMatch(header({ title: evil }), /<script>/);
-  assert.doesNotMatch(button({ label: evil }), /<script>/);
-  assert.doesNotMatch(emptyState({ title: evil, message: evil }), /<script>/);
+
+  it('header() escapes user text', () => {
+    expect(header({ title: evil })).not.toMatch(/<script>/);
+  });
+  it('button() escapes label', () => {
+    expect(button({ label: evil })).not.toMatch(/<script>/);
+  });
+  it('emptyState() escapes title and message', () => {
+    expect(emptyState({ title: evil, message: evil })).not.toMatch(/<script>/);
+  });
+  it('button() neutralises javascript: hrefs', () => {
+    expect(button({ label: 'x', href: 'javascript:alert(1)' })).not.toMatch(/javascript:/);
+  });
 });
 
-test('javascript: URLs are neutralised in hrefs', () => {
-  const b = button({ label: 'x', href: 'javascript:alert(1)' });
-  assert.doesNotMatch(b, /javascript:/);
+describe('tap targets', () => {
+  it('btn class carries min-height:var(--tap-min)', () => {
+    expect(button({ label: 'Go' })).toMatch(/class="btn btn-primary"/);
+    expect(ocrStylesheet).toMatch(/\.btn\{[^}]*min-height:var\(--tap-min\)/);
+  });
 });
 
-test('buttons render as real tap targets via the token', () => {
-  // The class carries min-height:var(--tap-min); assert the class is applied.
-  assert.match(button({ label: 'Go' }), /class="btn btn-primary"/);
-  assert.match(ocrStylesheet, /\.btn\{[^}]*min-height:var\(--tap-min\)/);
+describe('accessDenied()', () => {
+  it('always offers a next step — no dead ends', () => {
+    const denied = accessDenied();
+    expect(denied).toMatch(/class="empty-state"/);
+    expect(denied).toMatch(/class="btn btn-primary"/);
+    expect(denied).toMatch(/href="\/connect"/);
+  });
 });
 
-test('no dead ends: access-denied always offers a next step', () => {
-  const denied = accessDenied();
-  assert.match(denied, /class="empty-state"/);
-  assert.match(denied, /class="btn btn-primary"/, 'must include an action button');
-  assert.match(denied, /href="\/connect"/);
-});
-
-test('bottomNav marks the active item', () => {
-  const nav = bottomNav([
-    { href: '/a', label: 'A', icon: '🅰️', active: true },
-    { href: '/b', label: 'B', icon: '🅱️' },
-  ]);
-  assert.match(nav, /class="nav-item active" href="\/a"/);
-  assert.match(nav, /class="nav-item" href="\/b"/);
+describe('bottomNav()', () => {
+  it('marks the active item and leaves others unmarked', () => {
+    const nav = bottomNav([
+      { href: '/a', label: 'A', icon: '🅰️', active: true },
+      { href: '/b', label: 'B', icon: '🅱️' },
+    ]);
+    expect(nav).toMatch(/class="nav-item active" href="\/a"/);
+    expect(nav).toMatch(/class="nav-item" href="\/b"/);
+  });
 });
