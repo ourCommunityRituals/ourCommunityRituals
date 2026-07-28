@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { page, header, bottomNav, button, emptyState, accessDenied } from '../src/partials';
+import { page, header, bottomNav, button, emptyState, accessDenied, formInput, textarea, formSelect, checkbox, radioGroup, formGroup } from '../src/partials';
 import { ocrStylesheet, styleTag } from '../src/css';
 
 describe('page()', () => {
@@ -95,5 +95,121 @@ describe('bottomNav()', () => {
     ]);
     expect(nav).toMatch(/class="nav-item active" href="\/a"/);
     expect(nav).toMatch(/class="nav-item" href="\/b"/);
+  });
+});
+
+describe('formInput()', () => {
+  it('renders label + input with correct id/name', () => {
+    const html = formInput({ id: 'email', label: 'Email', type: 'email' });
+    expect(html).toContain('<label for="email">Email</label>');
+    expect(html).toContain('id="email"');
+    expect(html).toContain('name="email"');
+    expect(html).toContain('type="email"');
+  });
+
+  it('adds required mark and attribute when required', () => {
+    const html = formInput({ id: 'name', label: 'Name', required: true });
+    expect(html).toContain('class="required-mark"');
+    expect(html).toContain('required');
+  });
+
+  it('wires aria-invalid and aria-describedby on error', () => {
+    const html = formInput({ id: 'email', label: 'Email', error: 'Invalid format' });
+    expect(html).toContain('aria-invalid="true"');
+    expect(html).toContain('aria-describedby="email-error"');
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('Invalid format');
+  });
+
+  it('adds input-error class on error', () => {
+    const html = formInput({ id: 'f', label: 'F', error: 'Oops' });
+    expect(html).toContain('class="input input-error"');
+  });
+
+  it('escapes XSS in label, placeholder, and error', () => {
+    const evil = '"><script>alert(1)</script>';
+    const html = formInput({ id: 'x', label: evil, placeholder: evil, error: evil });
+    expect(html).not.toMatch(/<script>/);
+  });
+});
+
+describe('textarea()', () => {
+  it('renders label + textarea', () => {
+    const html = textarea({ id: 'bio', label: 'Bio', rows: 5 });
+    expect(html).toContain('<label for="bio">Bio</label>');
+    expect(html).toContain('<textarea id="bio"');
+    expect(html).toContain('rows="5"');
+  });
+
+  it('escapes XSS in value', () => {
+    const html = textarea({ id: 'x', label: 'X', value: '<script>alert(1)</script>' });
+    expect(html).not.toMatch(/<script>/);
+  });
+});
+
+describe('formSelect()', () => {
+  it('renders label + select with options', () => {
+    const html = formSelect({ id: 'tier', label: 'Tier', options: [
+      { value: 'free', label: 'Free' },
+      { value: 'pro', label: 'Pro', selected: true },
+    ]});
+    expect(html).toContain('<label for="tier">Tier</label>');
+    expect(html).toContain('<option value="free">Free</option>');
+    expect(html).toContain('<option value="pro" selected>Pro</option>');
+  });
+});
+
+describe('checkbox()', () => {
+  it('renders an accessible checkbox with label', () => {
+    const html = checkbox({ id: 'agree', label: 'I agree', checked: true });
+    expect(html).toContain('type="checkbox"');
+    expect(html).toContain('id="agree"');
+    expect(html).toContain('checked');
+    expect(html).toContain('I agree');
+  });
+});
+
+describe('radioGroup()', () => {
+  it('renders a fieldset with radios and legend', () => {
+    const html = radioGroup({
+      name: 'size',
+      legend: 'Event size',
+      options: [
+        { value: 'small', label: 'Small' },
+        { value: 'large', label: 'Large', checked: true },
+      ],
+    });
+    expect(html).toContain('<fieldset');
+    expect(html).toContain('<legend>Event size</legend>');
+    expect(html).toContain('type="radio"');
+    expect(html).toContain('value="large"');
+    expect(html).toContain('checked');
+  });
+
+  it('shows error with role=alert', () => {
+    const html = radioGroup({ name: 'x', legend: 'X', options: [{ value: 'a', label: 'A' }], error: 'Required' });
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('Required');
+  });
+});
+
+describe('formGroup()', () => {
+  it('wraps fields in a fieldset with legend', () => {
+    const html = formGroup({ legend: 'Contact', fields: '<p>fields</p>' });
+    expect(html).toContain('<fieldset class="form-group">');
+    expect(html).toContain('<legend>Contact</legend>');
+    expect(html).toContain('<p>fields</p>');
+  });
+});
+
+describe('stylesheet — form field classes', () => {
+  it('contains .form-field layout class', () => {
+    expect(ocrStylesheet).toContain('.form-field');
+  });
+  it('contains .form-error class', () => {
+    expect(ocrStylesheet).toContain('.form-error');
+  });
+  it('contains .input-error class', () => {
+    expect(ocrStylesheet).toContain('.input-error');
   });
 });

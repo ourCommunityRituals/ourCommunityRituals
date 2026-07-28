@@ -104,6 +104,171 @@ export interface PageOpts {
   nav?: NavItem[];
 }
 
+// ─── Form partials ────────────────────────────────────────────────────────────
+
+export interface FormInputOpts {
+  id: string;
+  label: string;
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date';
+  placeholder?: string;
+  value?: string;
+  required?: boolean;
+  disabled?: boolean;
+  hint?: string;
+  error?: string;
+}
+
+/** Label + input + optional hint/error — fully accessible with aria wiring. */
+export function formInput(o: FormInputOpts): string {
+  const type = o.type ?? 'text';
+  const hintId = `${o.id}-hint`;
+  const errorId = `${o.id}-error`;
+  const describedBy = o.error ? errorId : o.hint ? hintId : null;
+  const aria = [
+    describedBy ? `aria-describedby="${describedBy}"` : '',
+    o.error ? 'aria-invalid="true"' : '',
+  ].filter(Boolean).join(' ');
+  const requiredMark = o.required ? `<span aria-hidden="true" class="required-mark">*</span>` : '';
+  const inputCls = `input${o.error ? ' input-error' : ''}`;
+  const hintHtml = o.hint && !o.error
+    ? `<div id="${hintId}" class="form-hint">${esc(o.hint)}</div>`
+    : '';
+  const errorHtml = o.error
+    ? `<div id="${errorId}" class="form-error" role="alert">${esc(o.error)}</div>`
+    : '';
+  return `<div class="form-field">
+  <label for="${o.id}">${esc(o.label)}${requiredMark}</label>
+  <input id="${o.id}" name="${o.id}" type="${type}" class="${inputCls}"${o.value !== undefined ? ` value="${esc(o.value)}"` : ''}${o.placeholder ? ` placeholder="${esc(o.placeholder)}"` : ''}${o.required ? ' required' : ''}${o.disabled ? ' disabled' : ''}${aria ? ' ' + aria : ''} />
+  ${hintHtml}${errorHtml}
+</div>`;
+}
+
+export interface TextareaOpts {
+  id: string;
+  label: string;
+  placeholder?: string;
+  value?: string;
+  rows?: number;
+  required?: boolean;
+  disabled?: boolean;
+  hint?: string;
+  error?: string;
+}
+
+/** Label + textarea + optional hint/error. */
+export function textarea(o: TextareaOpts): string {
+  const hintId = `${o.id}-hint`;
+  const errorId = `${o.id}-error`;
+  const describedBy = o.error ? errorId : o.hint ? hintId : null;
+  const aria = [
+    describedBy ? `aria-describedby="${describedBy}"` : '',
+    o.error ? 'aria-invalid="true"' : '',
+  ].filter(Boolean).join(' ');
+  const requiredMark = o.required ? `<span aria-hidden="true" class="required-mark">*</span>` : '';
+  const cls = `input${o.error ? ' input-error' : ''}`;
+  const hintHtml = o.hint && !o.error ? `<div id="${hintId}" class="form-hint">${esc(o.hint)}</div>` : '';
+  const errorHtml = o.error ? `<div id="${errorId}" class="form-error" role="alert">${esc(o.error)}</div>` : '';
+  return `<div class="form-field">
+  <label for="${o.id}">${esc(o.label)}${requiredMark}</label>
+  <textarea id="${o.id}" name="${o.id}" class="${cls}" rows="${o.rows ?? 4}"${o.placeholder ? ` placeholder="${esc(o.placeholder)}"` : ''}${o.required ? ' required' : ''}${o.disabled ? ' disabled' : ''}${aria ? ' ' + aria : ''}>${esc(o.value ?? '')}</textarea>
+  ${hintHtml}${errorHtml}
+</div>`;
+}
+
+export interface FormSelectOpts {
+  id: string;
+  label: string;
+  options: Array<{ value: string; label: string; selected?: boolean }>;
+  required?: boolean;
+  disabled?: boolean;
+  hint?: string;
+  error?: string;
+}
+
+/** Label + select + optional hint/error. */
+export function formSelect(o: FormSelectOpts): string {
+  const hintId = `${o.id}-hint`;
+  const errorId = `${o.id}-error`;
+  const describedBy = o.error ? errorId : o.hint ? hintId : null;
+  const aria = [
+    describedBy ? `aria-describedby="${describedBy}"` : '',
+    o.error ? 'aria-invalid="true"' : '',
+  ].filter(Boolean).join(' ');
+  const requiredMark = o.required ? `<span aria-hidden="true" class="required-mark">*</span>` : '';
+  const cls = `sort-select${o.error ? ' input-error' : ''}`;
+  const opts = o.options
+    .map((opt) => `<option value="${esc(opt.value)}"${opt.selected ? ' selected' : ''}>${esc(opt.label)}</option>`)
+    .join('');
+  const hintHtml = o.hint && !o.error ? `<div id="${hintId}" class="form-hint">${esc(o.hint)}</div>` : '';
+  const errorHtml = o.error ? `<div id="${errorId}" class="form-error" role="alert">${esc(o.error)}</div>` : '';
+  return `<div class="form-field">
+  <label for="${o.id}">${esc(o.label)}${requiredMark}</label>
+  <select id="${o.id}" name="${o.id}" class="${cls}"${o.required ? ' required' : ''}${o.disabled ? ' disabled' : ''}${aria ? ' ' + aria : ''}>${opts}</select>
+  ${hintHtml}${errorHtml}
+</div>`;
+}
+
+export interface CheckboxOpts {
+  id: string;
+  label: string;
+  name?: string;
+  value?: string;
+  checked?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+}
+
+/** Single accessible checkbox with label. */
+export function checkbox(o: CheckboxOpts): string {
+  return `<label class="checkbox-label">
+  <input type="checkbox" id="${o.id}" name="${o.name ?? o.id}" value="${esc(o.value ?? 'on')}"${o.checked ? ' checked' : ''}${o.required ? ' required' : ''}${o.disabled ? ' disabled' : ''} />
+  ${esc(o.label)}
+</label>`;
+}
+
+export interface RadioGroupOpts {
+  name: string;
+  legend: string;
+  options: Array<{ value: string; label: string; checked?: boolean; disabled?: boolean }>;
+  required?: boolean;
+  error?: string;
+}
+
+/** Accessible radio group inside a fieldset. */
+export function radioGroup(o: RadioGroupOpts): string {
+  const radios = o.options
+    .map(
+      (opt) =>
+        `<label class="radio-option"><input type="radio" name="${o.name}" value="${esc(opt.value)}"${opt.checked ? ' checked' : ''}${o.required ? ' required' : ''}${opt.disabled ? ' disabled' : ''} />${esc(opt.label)}</label>`
+    )
+    .join('\n  ');
+  const errorHtml = o.error
+    ? `<div class="radio-group-error" role="alert">${esc(o.error)}</div>`
+    : '';
+  return `<fieldset class="form-group">
+  <legend>${esc(o.legend)}</legend>
+  ${radios}
+  ${errorHtml}
+</fieldset>`;
+}
+
+export interface FormGroupOpts {
+  legend: string;
+  fields: string;
+  required?: boolean;
+}
+
+/** Fieldset wrapper for grouping related fields. */
+export function formGroup(o: FormGroupOpts): string {
+  const requiredMark = o.required ? `<span aria-hidden="true" class="required-mark">*</span>` : '';
+  return `<fieldset class="form-group">
+  <legend>${esc(o.legend)}${requiredMark}</legend>
+  ${o.fields}
+</fieldset>`;
+}
+
+// ─── Page shell ───────────────────────────────────────────────────────────────
+
 /** Full HTML document shell wiring in the shared stylesheet exactly once. */
 export function page(o: PageOpts): string {
   const nav = o.nav ? bottomNav(o.nav) : '';
