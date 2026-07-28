@@ -1,4 +1,4 @@
-import { rootBlock, lightModeBlock } from './tokens';
+import { rootBlock, lightModeBlock, forceDarkBlock } from './tokens';
 import { componentStyles } from './styles';
 
 /**
@@ -12,9 +12,11 @@ import { componentStyles } from './styles';
  */
 export const ocrStylesheet = [
   rootBlock(),
-  lightModeBlock(),
+  lightModeBlock(),                        // @media (prefers-color-scheme: light)
+  lightModeBlock('[data-theme="light"]'),  // explicit forced light  — Claude Design preview
+  forceDarkBlock(),                        // [data-theme="dark"]    — explicit forced dark
   '',
-  componentStyles,
+  componentStyles,                         // components + :focus-visible + prefers-reduced-motion
   '',
 ].join('\n');
 

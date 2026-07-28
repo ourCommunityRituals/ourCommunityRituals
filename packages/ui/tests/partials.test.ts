@@ -22,8 +22,35 @@ describe('stylesheet', () => {
     expect(styleTag()).toMatch(/^<style>/);
   });
 
-  it('stylesheet contains light mode media query', () => {
+  it('stylesheet contains light mode media query (automatic, system preference)', () => {
     expect(ocrStylesheet).toContain('prefers-color-scheme: light');
+  });
+
+  it('stylesheet contains [data-theme="light"] forced override (Claude Design + manual toggle)', () => {
+    expect(ocrStylesheet).toContain('[data-theme="light"]');
+  });
+
+  it('stylesheet contains [data-theme="dark"] forced override (lock dark regardless of system)', () => {
+    expect(ocrStylesheet).toContain('[data-theme="dark"]');
+  });
+
+  it('stylesheet contains prefers-reduced-motion block (WCAG 2.3.3)', () => {
+    expect(ocrStylesheet).toContain('prefers-reduced-motion');
+  });
+
+  it('stylesheet contains :focus-visible rules on interactive components (WCAG 2.4.11)', () => {
+    expect(ocrStylesheet).toContain(':focus-visible');
+    expect(ocrStylesheet).toMatch(/\.btn:focus-visible/);
+    expect(ocrStylesheet).toMatch(/\.nav-item:focus-visible/);
+    expect(ocrStylesheet).toMatch(/\.input:focus-visible/);
+  });
+
+  it('[data-theme="light"] block re-maps all semantic tokens to light values', () => {
+    expect(ocrStylesheet).toMatch(/\[data-theme="light"\][\s\S]*?--bg[\s\S]*?--accent/);
+  });
+
+  it('[data-theme="dark"] block re-maps all semantic tokens to dark values', () => {
+    expect(ocrStylesheet).toMatch(/\[data-theme="dark"\][\s\S]*?--bg[\s\S]*?--accent/);
   });
 });
 

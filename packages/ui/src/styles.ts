@@ -273,4 +273,23 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .sponsor-slot{margin-top:32px;padding:16px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-muted)}
 .sponsor-slot .sponsor-name{color:var(--text);font-weight:500}
 @media(min-width:768px){.display-card{max-width:480px}.qr-frame{padding:32px}.qr-frame canvas,.qr-frame img,.qr-placeholder{width:260px;height:260px}}
+
+/* Accessibility: keyboard focus rings (WCAG 2.4.11 — Focus Appearance, Level AA in 2.2)
+   :focus-visible targets keyboard/programmatic focus only, not mouse clicks.
+   Outline colour references --accent which clears 3:1 against all surfaces in both themes. */
+.btn:focus-visible,.attr-btn:focus-visible,.filter-chip:focus-visible,.genre-filter-btn:focus-visible,.view-btn:focus-visible,.btn-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nav-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.card:focus-visible,.track-card:focus-visible,.genre-link:focus-visible,.list-item:focus-visible,.grid-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.input:focus-visible,.search-bar:focus-visible,.sort-select:focus-visible{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.toggle input:focus-visible+.toggle-track{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Accessibility: reduced motion (WCAG 2.3.3 — Animation from Interactions, Level AAA)
+   Removes infinite animations for users with vestibular or cognitive sensitivities.
+   Short functional transitions (hover feedback) are also removed to respect the preference fully. */
+@media(prefers-reduced-motion:reduce){
+  .live-indicator.on,.live-badge{animation:none}
+  .spinner{animation:none;border-top-color:var(--accent);opacity:.7}
+  .search-bar.loading{animation:none;background-image:none}
+  .btn,.card,.track-card,.filter-chip,.grid-card,.genre-popup,.genre-link,.list-item,.nav-item,.bar-fill,.progress-bar,.toggle-track,.toggle-track::after{transition:none}
+}
 `.trim();

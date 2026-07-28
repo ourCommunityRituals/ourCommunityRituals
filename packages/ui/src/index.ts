@@ -1,6 +1,6 @@
 export {
   tokens, primitives, semanticDark, semanticLight, structural,
-  rootBlock, lightModeBlock,
+  rootBlock, lightModeBlock, forceDarkBlock,
   type TokenName, type PrimitiveName,
 } from './tokens';
 export { componentStyles } from './styles';

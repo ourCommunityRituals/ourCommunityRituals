@@ -162,3 +162,14 @@ export function lightModeBlock(selector = '@media (prefers-color-scheme: light)'
   }
   return `${selector} {\n${lines}\n}`;
 }
+
+/**
+ * Dark-mode forced override block.
+ * Use data-theme="dark" on <html> to lock dark mode regardless of system preference.
+ * Explicit forcing is required by Claude Design for component previews and for
+ * users whose OS reports light mode but who prefer the dark interface.
+ */
+export function forceDarkBlock(selector = '[data-theme="dark"]'): string {
+  const lines = Object.entries(semanticDark).map(([k, v]) => `  ${k}: ${v};`).join('\n');
+  return `${selector} {\n${lines}\n}`;
+}
