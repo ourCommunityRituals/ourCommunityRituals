@@ -34,3 +34,4 @@ export {
   type PageOpts,
 } from './partials';
 export { checkTemplate, checkAll, type DriftFinding } from './contract';
+export { ocrTailwindPreset } from './tailwind';
