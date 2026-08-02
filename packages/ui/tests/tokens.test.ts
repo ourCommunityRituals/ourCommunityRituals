@@ -8,8 +8,8 @@ const P = primitives;
 describe('token structure', () => {
   it('all required semantic names are present in the dark map', () => {
     const required = [
-      '--bg', '--surface', '--border', '--text', '--text-muted',
-      '--accent', '--accent-hover', '--live', '--danger',
+      '--bg', '--surface', '--surface-hover', '--border', '--text', '--text-muted',
+      '--accent', '--accent-hover', '--live', '--danger', '--error',
     ];
     for (const t of required) expect(t in semanticDark, `missing ${t}`).toBe(true);
   });
@@ -38,6 +38,15 @@ describe('palette identity (CARTO, Ember-free)', () => {
   it('live token is teal — not red or green (colorblind-safe)', () => {
     expect(P['--ocr-teal-400']).toBe('#00C4B4');
     expect(P['--ocr-teal-700']).toBe('#00796B');
+  });
+
+  it('error aliases danger — same primitive, different semantic name', () => {
+    expect(semanticDark['--error']).toBe(semanticDark['--danger']);
+    expect(semanticLight['--error']).toBe(semanticLight['--danger']);
+  });
+
+  it('surface-hover is between surface and border (navy-800)', () => {
+    expect(P['--ocr-navy-800']).toBe('#223350');
   });
 
   it('danger is red and distinct from live (no red+green semantic pair)', () => {
