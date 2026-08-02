@@ -1,6 +1,7 @@
 export {
   tokens, primitives, semanticDark, semanticLight, structural,
   rootBlock, lightModeBlock, forceDarkBlock,
+  uecDisplay, uecScan, uecBlock,
   type TokenName, type PrimitiveName,
 } from './tokens';
 export { componentStyles } from './styles';

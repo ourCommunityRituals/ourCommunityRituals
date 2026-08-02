@@ -173,3 +173,65 @@ export function forceDarkBlock(selector = '[data-theme="dark"]'): string {
   const lines = Object.entries(semanticDark).map(([k, v]) => `  ${k}: ${v};`).join('\n');
   return `${selector} {\n${lines}\n}`;
 }
+
+// ── UEC v1.1: Universal Event Code category colors ────────────────────────────
+//
+// Theme-invariant: hue carries semantic meaning (green = access, coral = energy,
+// etc.) — the colors must not flip between light and dark mode.
+//
+// Two palettes per code:
+//   display_hex — warm brand variant for UI surfaces, marketing, poster chrome
+//   scan_hex    — WCAG AA validated on white, used as QR module fill color
+//
+// Source of truth for hex values: src/lib/uec/uec-codes.ts in the OSE Worker.
+// Changes here must stay in sync with that file.
+
+/** UEC display palette — for UI surfaces, poster chrome, SharedReport badges. */
+export const uecDisplay = {
+  '--uec-enter':    '#2D6A4F',   // Green    — Go · Access · Safe Passage
+  '--uec-live':     '#E07A5F',   // Coral    — Exciting · Warm · Now
+  '--uec-sponsor':  '#1D3557',   // Blue     — Trust · Commerce · Partnership
+  '--uec-archive':  '#6C3483',   // Purple   — Memory · History · Record
+  '--uec-help':     '#D4668E',   // Pink     — Care · Assistance · Accessibility
+  '--uec-feedback': '#C4930A',   // Amber    — Voice · Opinion · Response
+  '--uec-utility':  '#4A4A4A',   // Charcoal — General · Info · Infrastructure
+  // Extension codes (08-11)
+  '--uec-alert':    '#B8960A',   // Yellow-Amber — high-visibility alert
+  '--uec-staff':    '#A00020',   // Deep Red     — staff-only surface
+  '--uec-checkin':  '#006B6B',   // Teal         — check-in variant
+  '--uec-shop':     '#1A4A48',   // Dark Teal    — commerce placement
+} as const;
+
+/** UEC scan palette — WCAG AA on white, intended for QR module fill color. */
+export const uecScan = {
+  '--uec-enter-scan':    '#1A6B2F',
+  '--uec-live-scan':     '#C04048',
+  '--uec-sponsor-scan':  '#1A3A8A',
+  '--uec-archive-scan':  '#5E1A9A',
+  '--uec-help-scan':     '#B01468',
+  '--uec-feedback-scan': '#8A5A00',
+  '--uec-utility-scan':  '#2A2A3A',
+  // Extensions: scan_hex === display_hex for these codes
+  '--uec-alert-scan':    '#B8960A',
+  '--uec-staff-scan':    '#A00020',
+  '--uec-checkin-scan':  '#006B6B',
+  '--uec-shop-scan':     '#1A4A48',
+} as const;
+
+/**
+ * Static :root block for all UEC custom properties.
+ * Include once in the global stylesheet (ocrStylesheet() already calls this).
+ *
+ * Colors are theme-invariant — do NOT wrap in prefers-color-scheme.
+ */
+export function uecBlock(): string {
+  const lines = (obj: Record<string, string>) =>
+    Object.entries(obj).map(([k, v]) => `  ${k}: ${v};`).join('\n');
+  return [
+    '/* UEC v1.1 — Universal Event Code category colors (theme-invariant) */',
+    ':root {',
+    lines(uecDisplay),
+    lines(uecScan),
+    '}',
+  ].join('\n');
+}

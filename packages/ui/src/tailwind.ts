@@ -56,6 +56,18 @@ export const ocrTailwindPreset: Record<string, unknown> = {
         danger:         'var(--danger)',
         'danger-hover': 'var(--danger-hover)',
         error:          'var(--error)',
+        // UEC v1.1 — Universal Event Code category colors (display palette)
+        'uec-enter':    'var(--uec-enter)',
+        'uec-live':     'var(--uec-live)',
+        'uec-sponsor':  'var(--uec-sponsor)',
+        'uec-archive':  'var(--uec-archive)',
+        'uec-help':     'var(--uec-help)',
+        'uec-feedback': 'var(--uec-feedback)',
+        'uec-utility':  'var(--uec-utility)',
+        'uec-alert':    'var(--uec-alert)',
+        'uec-staff':    'var(--uec-staff)',
+        'uec-checkin':  'var(--uec-checkin)',
+        'uec-shop':     'var(--uec-shop)',
       },
       borderRadius: {
         DEFAULT: 'var(--radius)',
