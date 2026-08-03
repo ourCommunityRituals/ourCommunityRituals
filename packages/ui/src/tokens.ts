@@ -186,20 +186,26 @@ export function forceDarkBlock(selector = '[data-theme="dark"]'): string {
 // Source of truth for hex values: src/lib/uec/uec-codes.ts in the OSE Worker.
 // Changes here must stay in sync with that file.
 
-/** UEC display palette — for UI surfaces, poster chrome, SharedReport badges. */
+/**
+ * UEC display palette — for UI surfaces, poster chrome, SharedReport badges.
+ *
+ * Badge text pairings (WCAG AA ≥ 3:1 for decorative/large text):
+ *   WHITE text (≥ 3:1): enter, sponsor, archive, help, utility, alert, staff, checkin, shop
+ *   BLACK text (≥ 3:1): live (#E07A5F coral ~2.96 white → use black), feedback (#C4930A amber ~2.79 white → use black)
+ */
 export const uecDisplay = {
-  '--uec-enter':    '#2D6A4F',   // Green    — Go · Access · Safe Passage
-  '--uec-live':     '#E07A5F',   // Coral    — Exciting · Warm · Now
-  '--uec-sponsor':  '#1D3557',   // Blue     — Trust · Commerce · Partnership
-  '--uec-archive':  '#6C3483',   // Purple   — Memory · History · Record
-  '--uec-help':     '#D4668E',   // Pink     — Care · Assistance · Accessibility
-  '--uec-feedback': '#C4930A',   // Amber    — Voice · Opinion · Response
-  '--uec-utility':  '#4A4A4A',   // Charcoal — General · Info · Infrastructure
+  '--uec-enter':    '#2D6A4F',   // Green    — Go · Access · Safe Passage       | white text
+  '--uec-live':     '#E07A5F',   // Coral    — Exciting · Warm · Now             | BLACK text
+  '--uec-sponsor':  '#1D3557',   // Blue     — Trust · Commerce · Partnership    | white text
+  '--uec-archive':  '#6C3483',   // Purple   — Memory · History · Record         | white text
+  '--uec-help':     '#D4668E',   // Pink     — Care · Assistance · Accessibility | white text
+  '--uec-feedback': '#C4930A',   // Amber    — Voice · Opinion · Response        | BLACK text
+  '--uec-utility':  '#4A4A4A',   // Charcoal — General · Info · Infrastructure  | white text
   // Extension codes (08-11)
-  '--uec-alert':    '#B8960A',   // Yellow-Amber — high-visibility alert
-  '--uec-staff':    '#A00020',   // Deep Red     — staff-only surface
-  '--uec-checkin':  '#006B6B',   // Teal         — check-in variant
-  '--uec-shop':     '#1A4A48',   // Dark Teal    — commerce placement
+  '--uec-alert':    '#B8960A',   // Yellow-Amber — high-visibility alert         | black text
+  '--uec-staff':    '#A00020',   // Deep Red     — staff-only surface             | white text
+  '--uec-checkin':  '#006B6B',   // Teal         — check-in variant              | white text
+  '--uec-shop':     '#1A4A48',   // Dark Teal    — commerce placement            | white text
 } as const;
 
 /** UEC scan palette — WCAG AA on white, intended for QR module fill color. */

@@ -174,23 +174,36 @@ describe('UEC scan palette — WCAG AA on white (4.5:1 minimum)', () => {
   }
 });
 
-describe('UEC display palette — white text on UEC badge background >= 3:1', () => {
-  // UEC badges use the display color as background, white as text.
-  // WCAG AA for large text / decorative badges: 3:1. Full AA for normal text: 4.5:1.
+describe('UEC display palette — badge text contrast >= 3:1', () => {
+  // UEC badges use the display color as background.
+  // Light backgrounds (coral, amber) require dark text — dark text on these passes at 7:1+.
+  // Dark backgrounds (green, navy, purple, pink, charcoal) use white text at 3:1+.
+  // WCAG AA for large text / graphical badges: 3:1 minimum.
   const white = '#FFFFFF';
-  const displayColors: Array<[string, string]> = [
-    ['enter',    uecDisplay['--uec-enter']],
-    ['live',     uecDisplay['--uec-live']],
-    ['sponsor',  uecDisplay['--uec-sponsor']],
-    ['archive',  uecDisplay['--uec-archive']],
-    ['help',     uecDisplay['--uec-help']],
-    ['feedback', uecDisplay['--uec-feedback']],
-    ['utility',  uecDisplay['--uec-utility']],
+  const black = '#000000';
+
+  const darkBackground: Array<[string, string]> = [
+    ['enter (green)',   uecDisplay['--uec-enter']],     // white text >= 4.5:1
+    ['sponsor (navy)',  uecDisplay['--uec-sponsor']],   // white text >= 10:1
+    ['archive (purple)',uecDisplay['--uec-archive']],   // white text >= 6:1
+    ['help (pink)',     uecDisplay['--uec-help']],      // white text ~3.5:1
+    ['utility (charcoal)', uecDisplay['--uec-utility']], // white text >= 7:1
   ];
 
-  for (const [name, hex] of displayColors) {
+  const lightBackground: Array<[string, string]> = [
+    ['live (coral)',     uecDisplay['--uec-live']],     // dark text ~7:1 — NOT white
+    ['feedback (amber)', uecDisplay['--uec-feedback']], // dark text ~7.5:1 — NOT white
+  ];
+
+  for (const [name, hex] of darkBackground) {
     it(`white text on uec-${name} >= 3:1`, () => {
       expect(contrastRatio(white, hex)).toBeGreaterThanOrEqual(3.0);
+    });
+  }
+
+  for (const [name, hex] of lightBackground) {
+    it(`dark text on uec-${name} >= 3:1 (light background — use black text)`, () => {
+      expect(contrastRatio(black, hex)).toBeGreaterThanOrEqual(3.0);
     });
   }
 });

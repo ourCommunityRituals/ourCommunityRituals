@@ -36,3 +36,17 @@ export {
 } from './partials';
 export { checkTemplate, checkAll, type DriftFinding } from './contract';
 export { ocrTailwindPreset } from './tailwind';
+
+// React component layer — Phase 3 bridge (OSE-538)
+export {
+  Button, Card, Loading, EmptyState, AccessDenied,
+  Header, BottomNav, FormInput, Textarea, FormSelect,
+  Checkbox, RadioGroup, FormGroup,
+} from './react/index';
+export type {
+  ButtonProps, CardProps, LoadingProps,
+  EmptyStateProps, AccessDeniedProps,
+  HeaderProps, BottomNavProps,
+  FormInputProps, TextareaProps, FormSelectProps, SelectOption,
+  CheckboxProps, RadioGroupProps, RadioOption, FormGroupProps,
+} from './react/index';
