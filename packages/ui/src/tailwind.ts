@@ -16,10 +16,18 @@
  *     content: ['./src/**\/*.{ts,tsx}'],
  *   }
  *
- * The React app must also load the @ocr/ui stylesheet so the custom
- * properties are declared:
+ * The React app must also inject the @ocr/ui stylesheet so the CSS custom
+ * properties are declared in the document. Two patterns:
  *
- *   import '@ocr/ui/css'   // or link /ui.css from the Worker
+ *   // Vite: import the string and inject it in index.html via a plugin,
+ *   // or use a global CSS file that links /ui.css from the Worker:
+ *   //   <link rel="stylesheet" href="/ui.css">   ← preferred for Phase 3
+ *
+ *   // Programmatic (non-Worker contexts only):
+ *   import { ocrStylesheet } from '@ocr/ui/css'
+ *   // then inject: document.head.insertAdjacentHTML('beforeend', `<style>${ocrStylesheet}</style>`)
+ *
+ *   // Do NOT call serveCss() from React — it is a Cloudflare Worker API.
  *
  * Generated utility class examples:
  *   bg-bg          → background-color: var(--bg)
@@ -57,17 +65,29 @@ export const ocrTailwindPreset: Record<string, unknown> = {
         'danger-hover': 'var(--danger-hover)',
         error:          'var(--error)',
         // UEC v1.1 — Universal Event Code category colors (display palette)
-        'uec-enter':    'var(--uec-enter)',
-        'uec-live':     'var(--uec-live)',
-        'uec-sponsor':  'var(--uec-sponsor)',
-        'uec-archive':  'var(--uec-archive)',
-        'uec-help':     'var(--uec-help)',
-        'uec-feedback': 'var(--uec-feedback)',
-        'uec-utility':  'var(--uec-utility)',
-        'uec-alert':    'var(--uec-alert)',
-        'uec-staff':    'var(--uec-staff)',
-        'uec-checkin':  'var(--uec-checkin)',
-        'uec-shop':     'var(--uec-shop)',
+        'uec-enter':         'var(--uec-enter)',
+        'uec-live':          'var(--uec-live)',
+        'uec-sponsor':       'var(--uec-sponsor)',
+        'uec-archive':       'var(--uec-archive)',
+        'uec-help':          'var(--uec-help)',
+        'uec-feedback':      'var(--uec-feedback)',
+        'uec-utility':       'var(--uec-utility)',
+        'uec-alert':         'var(--uec-alert)',
+        'uec-staff':         'var(--uec-staff)',
+        'uec-checkin':       'var(--uec-checkin)',
+        'uec-shop':          'var(--uec-shop)',
+        // UEC v1.1 — scan palette (WCAG AA on white, QR module fill)
+        'uec-enter-scan':    'var(--uec-enter-scan)',
+        'uec-live-scan':     'var(--uec-live-scan)',
+        'uec-sponsor-scan':  'var(--uec-sponsor-scan)',
+        'uec-archive-scan':  'var(--uec-archive-scan)',
+        'uec-help-scan':     'var(--uec-help-scan)',
+        'uec-feedback-scan': 'var(--uec-feedback-scan)',
+        'uec-utility-scan':  'var(--uec-utility-scan)',
+        'uec-alert-scan':    'var(--uec-alert-scan)',
+        'uec-staff-scan':    'var(--uec-staff-scan)',
+        'uec-checkin-scan':  'var(--uec-checkin-scan)',
+        'uec-shop-scan':     'var(--uec-shop-scan)',
       },
       borderRadius: {
         DEFAULT: 'var(--radius)',
@@ -82,6 +102,9 @@ export const ocrTailwindPreset: Record<string, unknown> = {
       },
       minWidth: {
         tap: 'var(--tap-min)',
+      },
+      spacing: {
+        tap: 'var(--tap-min)',   // 48px — WCAG touch target
       },
     },
   },

@@ -1,4 +1,4 @@
-import { rootBlock, lightModeBlock, forceDarkBlock } from './tokens';
+import { rootBlock, lightModeBlock, forceDarkBlock, uecBlock } from './tokens';
 import { componentStyles } from './styles';
 
 /**
@@ -15,6 +15,7 @@ export const ocrStylesheet = [
   lightModeBlock(),                        // @media (prefers-color-scheme: light)
   lightModeBlock('[data-theme="light"]'),  // explicit forced light  — Claude Design preview
   forceDarkBlock(),                        // [data-theme="dark"]    — explicit forced dark
+  uecBlock(),                              // UEC v1.1 — theme-invariant event category colors
   '',
   componentStyles,                         // components + :focus-visible + prefers-reduced-motion
   '',
@@ -25,6 +26,9 @@ export const ocrStylesheet = [
  * Cloudflare Worker. Templates then use <link rel="stylesheet" href="/ui.css">
  * instead of an inline <style> block. Long cache: the content is versioned
  * by the package, so bump the package to bust it.
+ *
+ * @workerOnly — uses the Web `Response` API. Do NOT call from React/Node builds.
+ * React apps: import `ocrStylesheet` and inject via Vite's `?inline` or a <style> tag.
  */
 export function serveCss(): Response {
   return new Response(ocrStylesheet, {
