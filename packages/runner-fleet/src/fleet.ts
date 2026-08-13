@@ -25,9 +25,9 @@ export class Fleet {
     });
   }
 
-  /** Start background watchdog + token pre-warm. */
+  /** Start background watchdog + token pre-warm (one token per configured scope). */
   async start(): Promise<void> {
-    await this.tokens.prefetch();
+    await this.tokens.prefetch(this.cfg.runners.map((r) => r.scope ?? 'repo'));
     this.watchdog.start();
   }
 

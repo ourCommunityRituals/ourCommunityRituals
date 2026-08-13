@@ -55,9 +55,15 @@ export class Watchdog {
   }
 
   async tick(): Promise<void> {
-    let liveRunners: GitHubRunnerRecord[];
+    // List runners across every scope present in the config (org + repo), then
+    // merge — an org-level runner (BLOODRAVEN-2) is invisible to the repo
+    // endpoint, so a repo-only listing would report it perpetually offline.
+    const scopes = new Set(this.cfg.runners.map((r) => r.scope ?? 'repo'));
+    const liveRunners: GitHubRunnerRecord[] = [];
     try {
-      liveRunners = await this.gh.listRunners();
+      for (const scope of scopes) {
+        liveRunners.push(...(await this.gh.listRunners(scope)));
+      }
     } catch {
       // Network drop — skip cycle silently; don't escalate recovery
       return;
@@ -129,17 +135,24 @@ export class Watchdog {
       }
     }
 
-    // Escalate: full re-registration with a fresh token
+    // Escalate: full re-registration with a fresh token. Scope-aware — an org
+    // runner registers against the ORG url with an org token; a repo runner
+    // against the repo url with a repo token. Labels come from config.
+    const scope = cfg.scope ?? 'repo';
     this.emit({ type: 're_register_attempted', runner: cfg.name });
     try {
-      const regToken = await this.tokens.refresh();
+      const regToken = await this.tokens.refresh(scope);
+      const registrationUrl =
+        scope === 'org'
+          ? `https://github.com/${this.cfg.repoOwner}`
+          : `https://github.com/${this.cfg.repoOwner}/${this.cfg.repoName}`;
       await registerRunner(
         {
           runnerPath: cfg.path,
-          repoUrl: `https://github.com/${this.cfg.repoOwner}/${this.cfg.repoName}`,
+          repoUrl: registrationUrl,
           token: regToken.token,
           name: cfg.name,
-          labels: ['self-hosted', 'Windows', 'X64'],
+          labels: cfg.labels ?? ['self-hosted', 'Windows', 'X64'],
         },
         this.os
       );

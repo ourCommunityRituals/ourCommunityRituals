@@ -2,6 +2,14 @@ export type Os = 'windows' | 'linux' | 'darwin';
 export type RunnerStatus = 'online' | 'offline' | 'busy' | 'unknown';
 export type RecoveryAction = 'service_restart' | 're_register';
 
+/**
+ * GitHub registration scope for a runner. `repo` runners live under
+ * /repos/{owner}/{repo}; `org` runners live under /orgs/{owner} and are
+ * INVISIBLE to the repo endpoints (why an org-level runner like BLOODRAVEN-2
+ * cannot be seen or recovered until the fleet queries the org scope).
+ */
+export type RunnerScope = 'org' | 'repo';
+
 export interface RunnerConfig {
   /** Unique name matching the GitHub runner name (e.g. BLOODRAVEN-3) */
   name: string;
@@ -11,6 +19,10 @@ export interface RunnerConfig {
   taskName?: string;
   /** systemd service name — required on Linux */
   serviceName?: string;
+  /** Registration scope. Default 'repo'. Org runners require 'org'. */
+  scope?: RunnerScope;
+  /** Runner labels for re-registration. Default ['self-hosted','Windows','X64']. */
+  labels?: string[];
 }
 
 export interface FleetConfig {
