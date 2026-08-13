@@ -88,7 +88,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          # Non-recursive glob: the repo has a single root lockfile. The '**/'
+          # recursive form triggers a full-tree walk that fails on the
+          # self-hosted BLOODRAVEN-2 host ("hashFiles ... Fail to hash files
+          # under directory"); matching the root file directly avoids it.
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-store-${{ runner.os }}-
 
