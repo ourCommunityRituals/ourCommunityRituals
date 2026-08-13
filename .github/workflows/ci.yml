@@ -80,6 +80,16 @@ jobs:
           # ERR_PNPM_BAD_PM_VERSION and fails the whole job.
           run_install: false
 
+      # The L0 security gate runs `python3 tests/level0_security.py`. The
+      # self-hosted BLOODRAVEN runners have no system Python on PATH (both
+      # .env PATHs resolve `python3` to the Windows Store alias stub), so
+      # provision Python via the action rather than relying on the host —
+      # portable across runners and does not weaken the gate.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Resolve pnpm store
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
