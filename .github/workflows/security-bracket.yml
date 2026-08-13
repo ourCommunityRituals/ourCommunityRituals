@@ -1,0 +1,50 @@
+# Reusable security bracket (flow-brackets: S0 pre / S2 post).
+#
+# Spokes call this once per bracket instead of hand-wiring the semgrep step:
+#
+#   jobs:
+#     s0-security:
+#       uses: ourCommunityRituals/ourCommunityRituals/.github/workflows/security-bracket.yml@v1
+#       with: { phase: pre-execution, output-file: semgrep-results.json }
+#     s2-security:
+#       needs: [<gate>, <deploy>]
+#       if: ${{ always() }}
+#       uses: ourCommunityRituals/ourCommunityRituals/.github/workflows/security-bracket.yml@v1
+#       with: { phase: post-execution, output-file: semgrep-post.json }
+#
+# ROLLOUT (ADR-005): pin to @v1, never @main. VALIDATE on OSE (consumer-zero) —
+# a real green run — BEFORE cutting the @v1 tag, then fan out runner-3-first ->
+# runner-2 -> spokes. The local `./.github/actions/security-scan` reference and
+# cross-repo `uses:` resolution MUST be confirmed by a live run first (the
+# semgrep `python -m` lesson: never trust an untested CI assumption).
+name: security-bracket
+
+on:
+  workflow_call:
+    inputs:
+      phase:
+        description: 'pre-execution (S0) | post-execution (S2)'
+        type: string
+        required: false
+        default: 'pre-execution'
+      output-file:
+        type: string
+        required: false
+        default: 'semgrep-results.json'
+      runs-on:
+        description: 'Runner label. Self-hosted by default.'
+        type: string
+        required: false
+        default: 'self-hosted'
+
+jobs:
+  security-scan:
+    name: 'Semgrep (${{ inputs.phase }})'
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run hardened security scan
+        uses: ./.github/actions/security-scan
+        with:
+          phase: ${{ inputs.phase }}
+          output-file: ${{ inputs.output-file }}

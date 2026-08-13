@@ -1,0 +1,64 @@
+name: 'Security scan (semgrep)'
+description: >-
+  PATH-robust Semgrep SAST for the S0/S2 security brackets. Extracts the proven
+  invocation from OSE PR #325: setup-python + Scripts-on-PATH via cygpath + bare
+  `semgrep` (NOT `python -m semgrep`, which is deprecated >=1.38.0 and exits 2).
+  One hardened source both brackets call, so the two hand-wired S0/S2 copies
+  cannot drift.
+
+inputs:
+  phase:
+    description: 'Label for the scan phase (e.g. pre-execution / post-execution).'
+    required: false
+    default: 'scan'
+  output-file:
+    description: 'Semgrep JSON output filename.'
+    required: false
+    default: 'semgrep-results.json'
+  python-version:
+    description: 'Python version for setup-python.'
+    required: false
+    default: '3.11'
+  configs:
+    description: 'Space-separated semgrep --config values.'
+    required: false
+    default: 'p/nodejs p/owasp-top-ten p/r2c-security-audit'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Semgrep SAST (${{ inputs.phase }})
+      shell: bash
+      env:
+        SCAN_CONFIGS: ${{ inputs.configs }}
+        OUTPUT_FILE: ${{ inputs.output-file }}
+        PHASE: ${{ inputs.phase }}
+      run: |
+        python -m pip install semgrep --quiet
+        # setup-python installs the semgrep console binary into
+        # <pythonLocation>/Scripts and exports pythonLocation. Put that dir on
+        # PATH (APPENDED, so Git Bash stays first — respects invariant #11) via
+        # cygpath, so it resolves even when the runner's canonical Git-Bash-first
+        # .env omits it (the bare-`semgrep` exit-127 on BLOODRAVEN-2). Do NOT use
+        # `python -m semgrep`: deprecated since 1.38.0, exits 2 without scanning.
+        if [ -n "${pythonLocation:-}" ]; then export PATH="$PATH:$(cygpath -u "$pythonLocation")/Scripts"; fi
+        semgrep --version || { echo "::error::semgrep unavailable on runner"; exit 1; }
+        CONFIG_ARGS=""
+        for c in $SCAN_CONFIGS; do CONFIG_ARGS="$CONFIG_ARGS --config=$c"; done
+        semgrep scan \
+          $CONFIG_ARGS \
+          --error \
+          --exclude=node_modules \
+          --exclude=.wrangler \
+          --exclude=coverage \
+          --exclude=dist \
+          --exclude=.claude \
+          --json-output="$OUTPUT_FILE" || SEMGREP_EXIT=$?
+        FINDING_COUNT=$(jq '.results | length' "$OUTPUT_FILE" 2>/dev/null || echo 0)
+        echo "- **Semgrep (${PHASE}):** ${FINDING_COUNT} findings" >> "$GITHUB_STEP_SUMMARY"
+        exit ${SEMGREP_EXIT:-0}
