@@ -80,15 +80,35 @@ jobs:
           # ERR_PNPM_BAD_PM_VERSION and fails the whole job.
           run_install: false
 
+      # The L0 security gate runs `python3 tests/level0_security.py`. The
+      # self-hosted BLOODRAVEN runners have no system Python on PATH (both
+      # .env PATHs resolve `python3` to the Windows Store alias stub), so
+      # provision Python via the action rather than relying on the host —
+      # portable across runners and does not weaken the gate.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Resolve pnpm store
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      # Compute the lockfile hash in-shell instead of via the built-in
+      # hashFiles() expression. hashFiles enumerates the workspace root through
+      # the runner's Node globber, which fails DETERMINISTICALLY on the
+      # self-hosted BLOODRAVEN-2 host ("Fail to hash files under directory")
+      # regardless of the glob pattern. sha256sum over the single root lockfile
+      # is equivalent for cache-keying and sidesteps the broken enumeration.
+      - name: Hash pnpm lockfile
+        id: lockhash
+        run: echo "HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
       - name: Cache pnpm store
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: pnpm-store-${{ runner.os }}-${{ steps.lockhash.outputs.HASH }}
           restore-keys: |
             pnpm-store-${{ runner.os }}-
 
