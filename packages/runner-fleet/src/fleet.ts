@@ -56,6 +56,7 @@ export class Fleet {
           status: 'unknown',
           githubId: null,
           busy: false,
+          busySince: null,
           lastSeenOnlineAt: null,
           restartAttempts: 0,
           lastRecovery: null,

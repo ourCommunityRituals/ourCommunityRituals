@@ -11,9 +11,12 @@ import {
 } from './platform.ts';
 
 const RESTART_SETTLE_MS = 20_000;
+/** Default no-log-hang dwell cap when hangOwner==='fleet' (15 min). */
+const DEFAULT_HANG_DEADLINE_MS = 15 * 60 * 1000;
 
 export type WatchdogEvent =
   | { type: 'runner_offline'; runner: string }
+  | { type: 'job_stuck'; runner: string; busyMs: number }
   | { type: 'restart_attempted'; runner: string }
   | { type: 'restart_succeeded'; runner: string }
   | { type: 'restart_failed'; runner: string; error: RunnerFleetError }
@@ -77,16 +80,42 @@ export class Watchdog {
       const s = this.ensureState(runnerCfg.name);
 
       if (live !== undefined && live.status === 'online') {
-        s.status = live.busy ? 'busy' : 'online';
-        s.busy = live.busy;
         s.githubId = live.id;
         s.lastSeenOnlineAt = new Date();
-        s.restartAttempts = 0;
+        s.busy = live.busy;
+
+        if (!live.busy) {
+          s.status = 'online';
+          s.busySince = null;
+          s.restartAttempts = 0;
+          continue;
+        }
+
+        // Online + BUSY. Track the busy streak. An offline-only watchdog treats
+        // this as healthy forever — which is exactly how a no-log HANG hides.
+        s.status = 'busy';
+        if (s.busySince === null) s.busySince = new Date();
+        const busyMs = Date.now() - s.busySince.getTime();
+        const hangOwner = this.cfg.hangOwner ?? 'janitor';
+        const deadlineMs = this.cfg.hangDeadlineMs ?? DEFAULT_HANG_DEADLINE_MS;
+        // The invariant-#12 janitor owns dwell-cap kills on production runners;
+        // the fleet detector arms ONLY on janitor-incapable hosts to avoid a
+        // split-brain double-bounce. Recovery = restart, which kills the wedged
+        // worker (works for org runners too, unlike an API run-cancel).
+        if (hangOwner === 'fleet' && busyMs > deadlineMs) {
+          allHealthy = false;
+          s.lastErrorCode = ErrorCode.JOB_STUCK;
+          this.emit({ type: 'job_stuck', runner: runnerCfg.name, busyMs });
+          s.busySince = null;
+          s.restartAttempts = 0;
+          await this.recover(s);
+        }
         continue;
       }
 
       allHealthy = false;
       s.status = 'offline';
+      s.busySince = null;
       this.emit({ type: 'runner_offline', runner: runnerCfg.name });
       await this.recover(s);
     }
@@ -97,7 +126,12 @@ export class Watchdog {
   private async recover(s: RunnerState): Promise<void> {
     const cfg = s.config;
     const maxAttempts = this.cfg.maxRestartAttempts ?? 2;
-    const serviceOpts = { taskName: cfg.taskName, serviceName: cfg.serviceName };
+    // Build with only the defined keys so it satisfies exactOptionalPropertyTypes
+    // (passing an explicit `undefined` to an optional prop is a type error).
+    const serviceOpts = {
+      ...(cfg.taskName !== undefined ? { taskName: cfg.taskName } : {}),
+      ...(cfg.serviceName !== undefined ? { serviceName: cfg.serviceName } : {}),
+    };
 
     if (s.restartAttempts < maxAttempts) {
       this.emit({ type: 'restart_attempted', runner: cfg.name });
@@ -187,6 +221,7 @@ export class Watchdog {
         status: 'unknown',
         githubId: null,
         busy: false,
+        busySince: null,
         lastSeenOnlineAt: null,
         restartAttempts: 0,
         lastRecovery: null,
