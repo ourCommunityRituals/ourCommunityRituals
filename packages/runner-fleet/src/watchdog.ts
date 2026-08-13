@@ -131,6 +131,7 @@ export class Watchdog {
     const serviceOpts = {
       ...(cfg.taskName !== undefined ? { taskName: cfg.taskName } : {}),
       ...(cfg.serviceName !== undefined ? { serviceName: cfg.serviceName } : {}),
+      path: cfg.path, // enables the path-scoped terminal kill of a wedged worker
     };
 
     if (s.restartAttempts < maxAttempts) {
