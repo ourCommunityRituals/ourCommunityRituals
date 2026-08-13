@@ -8,8 +8,9 @@
     "noUncheckedIndexedAccess": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "jsx": "react-jsx",
     "declaration": true,
     "noEmit": true
   },
-  "include": ["src", "tests", "scripts"]
+  "include": ["src", "tests"]
 }

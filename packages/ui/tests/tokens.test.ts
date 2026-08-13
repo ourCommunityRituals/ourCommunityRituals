@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { tokens, primitives, semanticDark, semanticLight, structural, rootBlock, lightModeBlock } from '../src/tokens';
+import { tokens, primitives, semanticDark, semanticLight, structural, rootBlock, lightModeBlock, uecDisplay, uecScan, uecBlock } from '../src/tokens';
 import { contrastRatio } from '../src/contrast';
 
 // Resolved hex values for contrast checks — primitives are the source of truth
@@ -120,4 +120,90 @@ describe('rootBlock output', () => {
     expect(block).toContain('[data-theme="light"]');
     expect(block).not.toContain('@media');
   });
+});
+
+describe('uecBlock output', () => {
+  it('emits exactly one :root block', () => {
+    const css = uecBlock();
+    expect((css.match(/:root/g) ?? []).length).toBe(1);
+  });
+
+  it('contains UEC v1.1 comment header', () => {
+    expect(uecBlock()).toContain('UEC v1.1');
+  });
+
+  it('emits all 11 display palette vars', () => {
+    const css = uecBlock();
+    for (const key of Object.keys(uecDisplay)) {
+      expect(css).toContain(key);
+    }
+  });
+
+  it('emits all 11 scan palette vars', () => {
+    const css = uecBlock();
+    for (const key of Object.keys(uecScan)) {
+      expect(css).toContain(key);
+    }
+  });
+
+  it('does NOT wrap in prefers-color-scheme (theme-invariant)', () => {
+    expect(uecBlock()).not.toContain('@media');
+  });
+});
+
+describe('UEC scan palette — WCAG AA on white (4.5:1 minimum)', () => {
+  const white = '#FFFFFF';
+
+  // Scan colors are used as QR module fill on white QR background.
+  // WCAG AA for normal text: 4.5:1. For large text / graphical objects: 3:1.
+  // QR modules are graphical — targeting 3:1 minimum, documenting 4.5:1 where achieved.
+  const scanColors: Array<[string, string]> = [
+    ['enter-scan',    uecScan['--uec-enter-scan']],
+    ['live-scan',     uecScan['--uec-live-scan']],
+    ['sponsor-scan',  uecScan['--uec-sponsor-scan']],
+    ['archive-scan',  uecScan['--uec-archive-scan']],
+    ['help-scan',     uecScan['--uec-help-scan']],
+    ['feedback-scan', uecScan['--uec-feedback-scan']],
+    ['utility-scan',  uecScan['--uec-utility-scan']],
+  ];
+
+  for (const [name, hex] of scanColors) {
+    it(`uec-${name} on white >= 4.5:1`, () => {
+      expect(contrastRatio(hex, white)).toBeGreaterThanOrEqual(4.5);
+    });
+  }
+});
+
+describe('UEC display palette — badge text contrast >= 3:1', () => {
+  // UEC badges use the display color as background.
+  // Light backgrounds (coral, amber) require dark text — dark text on these passes at 7:1+.
+  // Dark backgrounds (green, navy, purple, pink, charcoal) use white text at 3:1+.
+  // WCAG AA for large text / graphical badges: 3:1 minimum.
+  const white = '#FFFFFF';
+  const black = '#000000';
+
+  const darkBackground: Array<[string, string]> = [
+    ['enter (green)',   uecDisplay['--uec-enter']],     // white text >= 4.5:1
+    ['sponsor (navy)',  uecDisplay['--uec-sponsor']],   // white text >= 10:1
+    ['archive (purple)',uecDisplay['--uec-archive']],   // white text >= 6:1
+    ['help (pink)',     uecDisplay['--uec-help']],      // white text ~3.5:1
+    ['utility (charcoal)', uecDisplay['--uec-utility']], // white text >= 7:1
+  ];
+
+  const lightBackground: Array<[string, string]> = [
+    ['live (coral)',     uecDisplay['--uec-live']],     // dark text ~7:1 — NOT white
+    ['feedback (amber)', uecDisplay['--uec-feedback']], // dark text ~7.5:1 — NOT white
+  ];
+
+  for (const [name, hex] of darkBackground) {
+    it(`white text on uec-${name} >= 3:1`, () => {
+      expect(contrastRatio(white, hex)).toBeGreaterThanOrEqual(3.0);
+    });
+  }
+
+  for (const [name, hex] of lightBackground) {
+    it(`dark text on uec-${name} >= 3:1 (light background — use black text)`, () => {
+      expect(contrastRatio(black, hex)).toBeGreaterThanOrEqual(3.0);
+    });
+  }
 });
