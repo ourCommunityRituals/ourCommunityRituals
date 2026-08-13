@@ -84,15 +84,21 @@ jobs:
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
+      # Compute the lockfile hash in-shell instead of via the built-in
+      # hashFiles() expression. hashFiles enumerates the workspace root through
+      # the runner's Node globber, which fails DETERMINISTICALLY on the
+      # self-hosted BLOODRAVEN-2 host ("Fail to hash files under directory")
+      # regardless of the glob pattern. sha256sum over the single root lockfile
+      # is equivalent for cache-keying and sidesteps the broken enumeration.
+      - name: Hash pnpm lockfile
+        id: lockhash
+        run: echo "HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
       - name: Cache pnpm store
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          # Non-recursive glob: the repo has a single root lockfile. The '**/'
-          # recursive form triggers a full-tree walk that fails on the
-          # self-hosted BLOODRAVEN-2 host ("hashFiles ... Fail to hash files
-          # under directory"); matching the root file directly avoids it.
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: pnpm-store-${{ runner.os }}-${{ steps.lockhash.outputs.HASH }}
           restore-keys: |
             pnpm-store-${{ runner.os }}-
 
