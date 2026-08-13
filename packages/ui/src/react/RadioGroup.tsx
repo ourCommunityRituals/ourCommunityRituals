@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { OPTION_CONTROL, optionLabelClass } from './classNames';
 
 export interface RadioOption {
   value: string;
@@ -32,13 +33,7 @@ export function RadioGroup({
     <fieldset className="flex flex-col gap-2" data-testid={testId}>
       <legend className="text-sm font-medium text-text mb-1">{legend}</legend>
       {options.map((opt) => (
-        <label
-          key={opt.value}
-          className={
-            'inline-flex items-center gap-2.5 text-sm text-text cursor-pointer ' +
-            (opt.disabled ? 'opacity-40 cursor-not-allowed' : '')
-          }
-        >
+        <label key={opt.value} className={optionLabelClass(opt.disabled)}>
           <input
             type="radio"
             name={name}
@@ -48,10 +43,7 @@ export function RadioGroup({
             disabled={opt.disabled}
             onChange={onChange}
             aria-describedby={error ? errorId : undefined}
-            className={
-              'w-4 h-4 border border-border bg-surface accent-accent ' +
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-bg'
-            }
+            className={OPTION_CONTROL}
           />
           {opt.label}
         </label>

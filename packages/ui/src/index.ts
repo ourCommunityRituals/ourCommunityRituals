@@ -2,7 +2,8 @@ export {
   tokens, primitives, semanticDark, semanticLight, structural,
   rootBlock, lightModeBlock, forceDarkBlock,
   uecDisplay, uecScan, uecBlock,
-  type TokenName, type PrimitiveName,
+  brandThemes, brandBlock, brandBlocks,
+  type TokenName, type PrimitiveName, type BrandTheme,
 } from './tokens';
 export { componentStyles } from './styles';
 export { ocrStylesheet, serveCss, styleTag } from './css';

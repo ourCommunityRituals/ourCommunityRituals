@@ -71,6 +71,10 @@ export const primitives = {
   '--ocr-blue-700':   '#0057D6',  // accent light mode (4.7:1 on light-050)
   '--ocr-blue-600l':  '#2E6FDF',  // accent hover light
   '--ocr-slate-600':  '#4A6882',  // muted light mode (4.6:1 on light-050)
+
+  // Warn — amber (colorblind-safe alongside teal/blue; NOT green). OSE-654.
+  '--ocr-amber-400':  '#F5B32E',  // warn dark mode  (light amber on navy-950)
+  '--ocr-amber-700':  '#8A5A00',  // warn light mode (dark amber, AA on light-050)
 } as const;
 
 export type PrimitiveName = keyof typeof primitives;
@@ -85,12 +89,20 @@ export const semanticDark = {
   '--text-muted':    'var(--ocr-navy-500)',
   '--accent':        'var(--ocr-blue-600)',
   '--accent-hover':  'var(--ocr-blue-500)',
+  '--on-accent':     'var(--ocr-light-100)',  // fg for labels/icons ON --accent (AA >=3:1 large); brands with a light accent override this
   '--live':          'var(--ocr-teal-400)',   // on-air / active — teal, not green
   '--live-hover':    'var(--ocr-teal-300)',
   '--surface-hover':  'var(--ocr-navy-800)',
   '--danger':         'var(--ocr-red-500)',    // destructive actions only
   '--danger-hover':   'var(--ocr-red-400)',
   '--error':          'var(--ocr-red-500)',    // alias — form validation / error banners
+  // OSE-654 role vocabulary — the swap seam every OSE-653 surface consumes.
+  '--card':           'var(--ocr-navy-900)',   // card surface (= surface by default; brands may differ)
+  '--text-primary':   'var(--ocr-navy-100)',   // alias of --text (explicit role name)
+  '--text-secondary': 'var(--ocr-navy-500)',   // secondary shares the muted tone until a mid-tone is designed
+  '--success':        'var(--ocr-teal-400)',   // positive status — teal (colorblind-safe, NOT green)
+  '--warn':           'var(--ocr-amber-400)',  // caution — amber
+  '--info':           'var(--ocr-blue-500)',   // informational — blue
 } as const;
 
 // ── Tier 2: Light mode override ───────────────────────────────────────────────
@@ -103,12 +115,20 @@ export const semanticLight = {
   '--text-muted':    'var(--ocr-slate-600)',   // 4.6:1 — full AA
   '--accent':        'var(--ocr-blue-700)',    // 4.7:1 — full AA
   '--accent-hover':  'var(--ocr-blue-600l)',
+  '--on-accent':     'var(--ocr-light-100)',   // white on the dark-blue light-mode accent (~7:1)
   '--live':          'var(--ocr-teal-700)',    // 4.9:1 — full AA
   '--live-hover':    'var(--ocr-teal-600)',
   '--surface-hover':  'var(--ocr-light-200)',
   '--danger':         'var(--ocr-red-700)',     // 5.2:1 — full AA
   '--danger-hover':   'var(--ocr-red-600)',
   '--error':          'var(--ocr-red-700)',     // alias — form validation / error banners
+  // OSE-654 role vocabulary — light-mode values (each AA-validated).
+  '--card':           'var(--ocr-light-100)',
+  '--text-primary':   'var(--ocr-dark-900)',
+  '--text-secondary': 'var(--ocr-slate-600)',   // 4.6:1 — full AA
+  '--success':        'var(--ocr-teal-700)',    // 4.9:1 — full AA
+  '--warn':           'var(--ocr-amber-700)',   // dark amber — AA on light-050
+  '--info':           'var(--ocr-blue-700)',    // 4.7:1 — full AA
 } as const;
 
 // ── Shared structural tokens (not colour, not theme-sensitive) ────────────────
@@ -131,21 +151,23 @@ export const tokens = {
 
 export type TokenName = keyof typeof tokens;
 
+/** Format a token object as CSS custom-property declaration lines at the given indent. */
+function cssVars(obj: Record<string, string>, indent = '  '): string {
+  return Object.entries(obj).map(([k, v]) => `${indent}${k}: ${v};`).join('\n');
+}
+
 /** Full :root block — primitives + dark semantic defaults + structural. */
 export function rootBlock(): string {
-  const lines = (obj: Record<string, string>) =>
-    Object.entries(obj).map(([k, v]) => `  ${k}: ${v};`).join('\n');
-
   return [
     '/* Tier 1 — primitives */',
     ':root {',
-    lines(primitives),
+    cssVars(primitives),
     '}',
     '',
     '/* Tier 2 — semantic (dark default) */',
     ':root {',
-    lines(semanticDark),
-    lines(structural),
+    cssVars(semanticDark),
+    cssVars(structural),
     '}',
   ].join('\n');
 }
@@ -156,7 +178,7 @@ export function rootBlock(): string {
  * Force light: add data-theme="light" to <html> and call lightModeBlock('[data-theme="light"]').
  */
 export function lightModeBlock(selector = '@media (prefers-color-scheme: light)'): string {
-  const lines = Object.entries(semanticLight).map(([k, v]) => `    ${k}: ${v};`).join('\n');
+  const lines = cssVars(semanticLight, '    ');
   if (selector.startsWith('@')) {
     return `${selector} {\n  :root {\n${lines}\n  }\n}`;
   }
@@ -170,7 +192,7 @@ export function lightModeBlock(selector = '@media (prefers-color-scheme: light)'
  * users whose OS reports light mode but who prefer the dark interface.
  */
 export function forceDarkBlock(selector = '[data-theme="dark"]'): string {
-  const lines = Object.entries(semanticDark).map(([k, v]) => `  ${k}: ${v};`).join('\n');
+  const lines = cssVars(semanticDark);
   return `${selector} {\n${lines}\n}`;
 }
 
@@ -231,13 +253,81 @@ export const uecScan = {
  * Colors are theme-invariant — do NOT wrap in prefers-color-scheme.
  */
 export function uecBlock(): string {
-  const lines = (obj: Record<string, string>) =>
-    Object.entries(obj).map(([k, v]) => `  ${k}: ${v};`).join('\n');
   return [
     '/* UEC v1.1 — Universal Event Code category colors (theme-invariant) */',
     ':root {',
-    lines(uecDisplay),
-    lines(uecScan),
+    cssVars(uecDisplay),
+    cssVars(uecScan),
     '}',
   ].join('\n');
+}
+
+// ── Tier 3: Client brand themes (OSE-654) ─────────────────────────────────────
+//
+// A client theme is ONE object that re-maps semantic ROLE tokens (Tier 2) to
+// different values — structure and components never change, only paint. This is
+// the "swap on the fly / new client in days" seam OSE-653 is built on.
+//
+// Overrides MUST carry BOTH a dark and a light value: a single flat --accent
+// would clear WCAG AA in one mode and fail in the other (dark bg wants a lighter
+// accent; light bg wants a darker one). brandBlock() emits both.
+//
+// UEC category colors are NEVER themed — hue carries meaning (green = access).
+// A brand theme may re-map --accent/--card/--success/etc.; it may not touch --uec-*.
+
+export interface BrandTheme {
+  /** Semantic-token overrides applied on dark backgrounds. */
+  dark: Record<string, string>;
+  /** Semantic-token overrides applied on light backgrounds (AA against light bg). */
+  light: Record<string, string>;
+}
+
+/** Registered example client theme(s). "acme" proves the swap end-to-end. */
+export const brandThemes: Record<string, BrandTheme> = {
+  acme: {
+    // Violet brand. Dark values are light-on-dark (AA on navy-950); light
+    // values are dark-on-light (AA on light-050).
+    dark: {
+      '--accent': '#A78BFA',
+      '--accent-hover': '#C4B5FD',
+      '--info': '#A78BFA',
+    },
+    light: {
+      '--accent': '#6D28D9',
+      '--accent-hover': '#5B21B6',
+      '--info': '#6D28D9',
+    },
+  },
+};
+
+/**
+ * Emit the CSS for one registered brand theme: a base `[data-brand="x"]` block
+ * (dark defaults) plus light-mode overrides for both `prefers-color-scheme:
+ * light` and the explicit `[data-theme="light"]` path. Returns '' for unknown
+ * names (fail-soft — an unknown brand simply inherits the OCR base).
+ */
+export function brandBlock(name: string): string {
+  const theme = brandThemes[name];
+  if (!theme) return '';
+  const dark = cssVars(theme.dark);
+  const lightInner = cssVars(theme.light);
+  const lightIndented = cssVars(theme.light, '    ');
+  return [
+    `[data-brand="${name}"] {`,
+    dark,
+    '}',
+    `@media (prefers-color-scheme: light) {`,
+    `  [data-brand="${name}"] {`,
+    lightIndented,
+    '  }',
+    '}',
+    `[data-theme="light"][data-brand="${name}"] {`,
+    lightInner,
+    '}',
+  ].join('\n');
+}
+
+/** Emit every registered brand theme's CSS (included in the shared stylesheet). */
+export function brandBlocks(): string {
+  return Object.keys(brandThemes).map(brandBlock).join('\n\n');
 }

@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { OPTION_CONTROL, optionLabelClass } from './classNames';
 
 export interface CheckboxProps {
   id: string;
@@ -24,13 +25,7 @@ export function Checkbox({
   'data-testid': testId,
 }: CheckboxProps) {
   return (
-    <label
-      className={
-        'inline-flex items-center gap-2.5 text-sm text-text cursor-pointer ' +
-        (disabled ? 'opacity-40 cursor-not-allowed' : '')
-      }
-      data-testid={testId}
-    >
+    <label className={optionLabelClass(disabled)} data-testid={testId}>
       <input
         type="checkbox"
         id={id}
@@ -40,10 +35,7 @@ export function Checkbox({
         required={required}
         disabled={disabled}
         onChange={onChange}
-        className={
-          'w-4 h-4 rounded-sm border border-border bg-surface accent-accent ' +
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-bg'
-        }
+        className={`${OPTION_CONTROL} rounded-sm`}
       />
       {label}
     </label>

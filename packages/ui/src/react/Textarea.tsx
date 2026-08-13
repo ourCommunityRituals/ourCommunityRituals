@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { FIELD_BASE } from './classNames';
 
 export interface TextareaProps {
   id: string;
@@ -14,11 +15,7 @@ export interface TextareaProps {
   'data-testid'?: string;
 }
 
-const TEXTAREA_BASE =
-  'w-full px-3 py-2.5 rounded-sm border font-sans text-sm text-text bg-surface resize-y ' +
-  'placeholder:text-text-muted transition-colors ' +
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-bg ' +
-  'disabled:opacity-40 disabled:cursor-not-allowed';
+const TEXTAREA_BASE = `${FIELD_BASE} resize-y placeholder:text-text-muted`;
 
 export function Textarea({
   id,

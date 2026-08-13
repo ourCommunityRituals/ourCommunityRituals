@@ -1,4 +1,4 @@
-import { rootBlock, lightModeBlock, forceDarkBlock, uecBlock } from './tokens';
+import { rootBlock, lightModeBlock, forceDarkBlock, uecBlock, brandBlocks } from './tokens';
 import { componentStyles } from './styles';
 
 /**
@@ -16,6 +16,7 @@ export const ocrStylesheet = [
   lightModeBlock('[data-theme="light"]'),  // explicit forced light  — Claude Design preview
   forceDarkBlock(),                        // [data-theme="dark"]    — explicit forced dark
   uecBlock(),                              // UEC v1.1 — theme-invariant event category colors
+  brandBlocks(),                           // OSE-654 — registered client brand themes ([data-brand="x"])
   '',
   componentStyles,                         // components + :focus-visible + prefers-reduced-motion
   '',

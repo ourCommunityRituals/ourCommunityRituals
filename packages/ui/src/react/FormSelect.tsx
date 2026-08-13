@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { FIELD_BASE } from './classNames';
 
 export interface SelectOption {
   value: string;
@@ -18,11 +19,7 @@ export interface FormSelectProps {
   'data-testid'?: string;
 }
 
-const SELECT_BASE =
-  'w-full px-3 py-2.5 rounded-sm border font-sans text-sm text-text bg-surface ' +
-  'transition-colors appearance-none ' +
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-bg ' +
-  'disabled:opacity-40 disabled:cursor-not-allowed';
+const SELECT_BASE = `${FIELD_BASE} appearance-none`;
 
 export function FormSelect({
   id,
