@@ -7,6 +7,9 @@
       "name": "RUNNER-NAME",
       "path": "C:/path/to/actions-runner-2",
       "taskName": "GitHubActionsRunner-2",
+      "scope": "org",
+      "comment_scope": "'org' for org-level runners (managed under /orgs/{owner}), 'repo' (default) for repo-level. Org runners are invisible to the repo API.",
+      "comment_labels": "optional labels[] for re-registration; default ['self-hosted','Windows','X64']",
       "comment_linux": "use serviceName instead of taskName on Linux"
     }
   ],

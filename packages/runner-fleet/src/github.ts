@@ -1,4 +1,4 @@
-import type { GitHubRunnerRecord, RegistrationToken } from './types.ts';
+import type { GitHubRunnerRecord, RegistrationToken, RunnerScope } from './types.ts';
 import { RunnerFleetError, ErrorCode } from './errors.ts';
 
 export interface GitHubClientConfig {
@@ -56,23 +56,35 @@ async function ghFetch<T>(
 }
 
 export class GitHubClient {
-  private readonly base: string;
+  private readonly repoBase: string;
+  private readonly orgBase: string;
 
   constructor(private readonly cfg: GitHubClientConfig) {
-    this.base = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}`;
+    this.repoBase = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}`;
+    this.orgBase = `https://api.github.com/orgs/${cfg.owner}`;
   }
 
-  async listRunners(): Promise<GitHubRunnerRecord[]> {
+  /**
+   * Base URL for runner-management endpoints at the given scope. Org runners
+   * are only visible/managed under /orgs/{owner}; repo runners under
+   * /repos/{owner}/{repo}. (Runs/jobs are ALWAYS repo-scoped — GitHub has no
+   * org-level runs API — so getQueueDepth stays on repoBase.)
+   */
+  private baseFor(scope: RunnerScope): string {
+    return scope === 'org' ? this.orgBase : this.repoBase;
+  }
+
+  async listRunners(scope: RunnerScope = 'repo'): Promise<GitHubRunnerRecord[]> {
     const data = await ghFetch<{ runners: GitHubRunnerRecord[] }>(
-      `${this.base}/actions/runners`,
+      `${this.baseFor(scope)}/actions/runners`,
       this.cfg.token
     );
     return data.runners;
   }
 
-  async fetchRegistrationToken(): Promise<RegistrationToken> {
+  async fetchRegistrationToken(scope: RunnerScope = 'repo'): Promise<RegistrationToken> {
     const data = await ghFetch<{ token: string; expires_at: string }>(
-      `${this.base}/actions/runners/registration-token`,
+      `${this.baseFor(scope)}/actions/runners/registration-token`,
       this.cfg.token,
       { method: 'POST' }
     );
@@ -81,15 +93,15 @@ export class GitHubClient {
 
   async getQueueDepth(): Promise<number> {
     const data = await ghFetch<{ total_count: number }>(
-      `${this.base}/actions/runs?status=queued&per_page=1`,
+      `${this.repoBase}/actions/runs?status=queued&per_page=1`,
       this.cfg.token
     );
     return data.total_count;
   }
 
-  async deleteRunner(runnerId: number): Promise<void> {
+  async deleteRunner(runnerId: number, scope: RunnerScope = 'repo'): Promise<void> {
     await ghFetch<void>(
-      `${this.base}/actions/runners/${runnerId}`,
+      `${this.baseFor(scope)}/actions/runners/${runnerId}`,
       this.cfg.token,
       { method: 'DELETE' }
     );

@@ -1,9 +1,24 @@
-import { exec } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { Os } from './types.ts';
 import { RunnerFleetError, ErrorCode } from './errors.ts';
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
+
+/**
+ * Run a PowerShell script passed as a SINGLE argument via execFile — no outer
+ * cmd.exe/sh parses it, so interpolated values can't break out into shell
+ * injection. (Task names are config-controlled; this still removes the shell.)
+ */
+async function pwsh(script: string): Promise<string> {
+  const { stdout } = await execFileAsync('powershell', [
+    '-NoProfile',
+    '-NonInteractive',
+    '-Command',
+    script,
+  ]);
+  return stdout;
+}
 
 export function detectOs(): Os {
   switch (process.platform) {
@@ -16,18 +31,20 @@ export function detectOs(): Os {
   }
 }
 
-export async function stopService(
-  opts: { taskName?: string; serviceName?: string },
-  os: Os
-): Promise<void> {
+export interface ServiceOpts {
+  taskName?: string;
+  serviceName?: string;
+  /** Runner install dir — enables the path-scoped terminal kill on stop. */
+  path?: string;
+}
+
+export async function stopService(opts: ServiceOpts, os: Os): Promise<void> {
   if (os === 'windows') {
     const task = opts.taskName;
     if (!task)
       throw new RunnerFleetError(ErrorCode.CONFIG_INVALID, 'taskName required on Windows');
     try {
-      await execAsync(
-        `powershell -NoProfile -NonInteractive -Command "Stop-ScheduledTask -TaskName '${task}' -ErrorAction Stop"`
-      );
+      await pwsh(`Stop-ScheduledTask -TaskName '${task}' -ErrorAction Stop`);
     } catch (e) {
       throw new RunnerFleetError(
         ErrorCode.SERVICE_STOP_FAILED,
@@ -35,18 +52,32 @@ export async function stopService(
         { cause: e }
       );
     }
+    // TERMINAL: Stop-ScheduledTask does NOT kill a WEDGED Runner.Listener/Worker
+    // (the no-log hang). When the runner path is known, force-kill any runner
+    // process rooted under it — path-scoped, no elevation, best-effort. This is
+    // what makes hang recovery actually terminate the stuck job.
+    if (opts.path) {
+      const p = opts.path.replace(/'/g, "''");
+      try {
+        await pwsh(
+          `Get-Process Runner.Listener,Runner.Worker -ErrorAction SilentlyContinue | ` +
+            `Where-Object { $_.Path -and $_.Path.StartsWith('${p}') } | ` +
+            `Stop-Process -Force -ErrorAction SilentlyContinue`
+        );
+      } catch {
+        // best-effort — a clean stop leaves nothing to kill
+      }
+    }
   } else if (os === 'linux') {
     const svc = opts.serviceName;
     if (!svc)
       throw new RunnerFleetError(ErrorCode.CONFIG_INVALID, 'serviceName required on Linux');
     try {
-      await execAsync(`systemctl stop ${svc}`);
+      await execFileAsync('systemctl', ['stop', svc]);
     } catch (e) {
-      throw new RunnerFleetError(
-        ErrorCode.SERVICE_STOP_FAILED,
-        `systemctl stop '${svc}' failed`,
-        { cause: e }
-      );
+      throw new RunnerFleetError(ErrorCode.SERVICE_STOP_FAILED, `systemctl stop '${svc}' failed`, {
+        cause: e,
+      });
     }
   } else {
     throw new RunnerFleetError(
@@ -56,18 +87,13 @@ export async function stopService(
   }
 }
 
-export async function startService(
-  opts: { taskName?: string; serviceName?: string },
-  os: Os
-): Promise<void> {
+export async function startService(opts: ServiceOpts, os: Os): Promise<void> {
   if (os === 'windows') {
     const task = opts.taskName;
     if (!task)
       throw new RunnerFleetError(ErrorCode.CONFIG_INVALID, 'taskName required on Windows');
     try {
-      await execAsync(
-        `powershell -NoProfile -NonInteractive -Command "Start-ScheduledTask -TaskName '${task}' -ErrorAction Stop"`
-      );
+      await pwsh(`Start-ScheduledTask -TaskName '${task}' -ErrorAction Stop`);
     } catch (e) {
       throw new RunnerFleetError(
         ErrorCode.SERVICE_START_FAILED,
@@ -80,7 +106,7 @@ export async function startService(
     if (!svc)
       throw new RunnerFleetError(ErrorCode.CONFIG_INVALID, 'serviceName required on Linux');
     try {
-      await execAsync(`systemctl start ${svc}`);
+      await execFileAsync('systemctl', ['start', svc]);
     } catch (e) {
       throw new RunnerFleetError(
         ErrorCode.SERVICE_START_FAILED,
@@ -97,16 +123,14 @@ export async function startService(
 }
 
 export async function getServiceState(
-  opts: { taskName?: string; serviceName?: string },
+  opts: ServiceOpts,
   os: Os
 ): Promise<'running' | 'stopped' | 'unknown'> {
   if (os === 'windows') {
     const task = opts.taskName;
     if (!task) return 'unknown';
     try {
-      const { stdout } = await execAsync(
-        `powershell -NoProfile -NonInteractive -Command "(Get-ScheduledTask -TaskName '${task}').State"`
-      );
+      const stdout = await pwsh(`(Get-ScheduledTask -TaskName '${task}').State`);
       const state = stdout.trim().toLowerCase();
       if (state === 'running') return 'running';
       if (state === 'ready') return 'stopped';
@@ -118,7 +142,7 @@ export async function getServiceState(
     const svc = opts.serviceName;
     if (!svc) return 'unknown';
     try {
-      const { stdout } = await execAsync(`systemctl is-active ${svc}`);
+      const { stdout } = await execFileAsync('systemctl', ['is-active', svc]);
       return stdout.trim() === 'active' ? 'running' : 'stopped';
     } catch {
       return 'stopped';
@@ -138,12 +162,27 @@ export async function registerRunner(
   os: Os
 ): Promise<void> {
   const labels = opts.labels?.join(',') ?? 'self-hosted';
-  const args = `--url ${opts.repoUrl} --token ${opts.token} --name ${opts.name} --labels ${labels} --unattended --replace`;
+  // Arg-ARRAY (execFile, no shell): the registration token is a discrete argv
+  // element, never concatenated into a shell command string — so it can't be
+  // shell-parsed/injected and never touches a shell history. (config.* has no
+  // stdin token option, so the token remains a process arg — unavoidable — but
+  // the shell-string leak/injection is closed.)
+  const args = [
+    '--url',
+    opts.repoUrl,
+    '--token',
+    opts.token,
+    '--name',
+    opts.name,
+    '--labels',
+    labels,
+    '--unattended',
+    '--replace',
+  ];
 
   if (os === 'windows') {
-    const cmd = `"${opts.runnerPath}\\config.cmd" ${args}`;
     try {
-      await execAsync(cmd);
+      await execFileAsync(`${opts.runnerPath}\\config.cmd`, args);
     } catch (e) {
       throw new RunnerFleetError(
         ErrorCode.REGISTRATION_FAILED,
@@ -152,9 +191,8 @@ export async function registerRunner(
       );
     }
   } else if (os === 'linux' || os === 'darwin') {
-    const cmd = `"${opts.runnerPath}/config.sh" ${args}`;
     try {
-      await execAsync(cmd);
+      await execFileAsync(`${opts.runnerPath}/config.sh`, args);
     } catch (e) {
       throw new RunnerFleetError(
         ErrorCode.REGISTRATION_FAILED,

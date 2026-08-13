@@ -2,6 +2,14 @@ export type Os = 'windows' | 'linux' | 'darwin';
 export type RunnerStatus = 'online' | 'offline' | 'busy' | 'unknown';
 export type RecoveryAction = 'service_restart' | 're_register';
 
+/**
+ * GitHub registration scope for a runner. `repo` runners live under
+ * /repos/{owner}/{repo}; `org` runners live under /orgs/{owner} and are
+ * INVISIBLE to the repo endpoints (why an org-level runner like BLOODRAVEN-2
+ * cannot be seen or recovered until the fleet queries the org scope).
+ */
+export type RunnerScope = 'org' | 'repo';
+
 export interface RunnerConfig {
   /** Unique name matching the GitHub runner name (e.g. BLOODRAVEN-3) */
   name: string;
@@ -11,6 +19,10 @@ export interface RunnerConfig {
   taskName?: string;
   /** systemd service name — required on Linux */
   serviceName?: string;
+  /** Registration scope. Default 'repo'. Org runners require 'org'. */
+  scope?: RunnerScope;
+  /** Runner labels for re-registration. Default ['self-hosted','Windows','X64']. */
+  labels?: string[];
 }
 
 export interface FleetConfig {
@@ -28,6 +40,19 @@ export interface FleetConfig {
   tokenRefreshLeadMs?: number;
   /** Restart attempts before escalating to full re-registration. Default: 2 */
   maxRestartAttempts?: number;
+  /**
+   * Who owns dwell-cap kills of a no-log HANG (a runner stuck online+busy).
+   * 'janitor' (default): the invariant-#12 janitor+probe scheduled task owns it
+   * on production runners — the fleet detector stays DORMANT to avoid a
+   * split-brain double-bounce. 'fleet': the fleet's own busy-dwell detector is
+   * armed (use only on janitor-incapable hosts).
+   */
+  hangOwner?: 'janitor' | 'fleet';
+  /**
+   * How long a runner may stay online+busy before the fleet detector (when
+   * hangOwner==='fleet') treats it as a no-log hang. Default: 15 min.
+   */
+  hangDeadlineMs?: number;
 }
 
 export interface GitHubRunnerRecord {
@@ -48,6 +73,8 @@ export interface RunnerState {
   status: RunnerStatus;
   githubId: number | null;
   busy: boolean;
+  /** When the runner first went busy in the current busy streak (null if idle). */
+  busySince: Date | null;
   lastSeenOnlineAt: Date | null;
   restartAttempts: number;
   lastRecovery: RecoveryAction | null;

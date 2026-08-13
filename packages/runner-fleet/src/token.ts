@@ -1,4 +1,4 @@
-import type { RegistrationToken } from './types.ts';
+import type { RegistrationToken, RunnerScope } from './types.ts';
 import type { GitHubClient } from './github.ts';
 import { RunnerFleetError, ErrorCode } from './errors.ts';
 
@@ -13,65 +13,70 @@ const DEFAULT_LEAD_MS = 15 * 60 * 1000;
  * valid token ready for re-registration without a blocking round-trip.
  */
 export class TokenManager {
-  private cached: RegistrationToken | null = null;
-  private refreshTimer: ReturnType<typeof setTimeout> | null = null;
+  // Tokens are SCOPE-SPECIFIC: an org registration token cannot register a repo
+  // runner and vice-versa, so each scope has its own cache + refresh timer.
+  private readonly cached = new Map<RunnerScope, RegistrationToken>();
+  private readonly refreshTimers = new Map<RunnerScope, ReturnType<typeof setTimeout>>();
 
   constructor(
     private readonly client: GitHubClient,
     private readonly refreshLeadMs: number = DEFAULT_LEAD_MS
   ) {}
 
-  /** Get a valid registration token, fetching fresh if the cache is stale. */
-  async getToken(): Promise<RegistrationToken> {
-    if (this.isValid(this.cached)) return this.cached;
-    return this.refresh();
+  /** Get a valid registration token for a scope, fetching fresh if stale. */
+  async getToken(scope: RunnerScope = 'repo'): Promise<RegistrationToken> {
+    const c = this.cached.get(scope);
+    if (this.isValid(c)) return c;
+    return this.refresh(scope);
   }
 
-  /** Force-fetch a new token immediately and update the cache. */
-  async refresh(): Promise<RegistrationToken> {
+  /** Force-fetch a new token for a scope immediately and update its cache. */
+  async refresh(scope: RunnerScope = 'repo'): Promise<RegistrationToken> {
     let tok: RegistrationToken;
     try {
-      tok = await this.client.fetchRegistrationToken();
+      tok = await this.client.fetchRegistrationToken(scope);
     } catch (e) {
       if (e instanceof RunnerFleetError) throw e;
       throw new RunnerFleetError(ErrorCode.TOKEN_FETCH_FAILED, 'Registration token fetch failed', {
         cause: e,
       });
     }
-    this.cached = tok;
-    this.scheduleRefresh(tok);
+    this.cached.set(scope, tok);
+    this.scheduleRefresh(scope, tok);
     return tok;
   }
 
   /**
-   * Pre-warm: ensure a valid token is cached now so the first recovery
-   * attempt has zero latency waiting for a token fetch.
+   * Pre-warm: ensure a valid token is cached for each scope now so the first
+   * recovery attempt has zero latency waiting for a token fetch.
    */
-  async prefetch(): Promise<void> {
-    if (!this.isValid(this.cached)) {
-      await this.refresh();
+  async prefetch(scopes: readonly RunnerScope[] = ['repo']): Promise<void> {
+    for (const scope of new Set(scopes)) {
+      if (!this.isValid(this.cached.get(scope))) {
+        await this.refresh(scope);
+      }
     }
   }
 
   stop(): void {
-    if (this.refreshTimer !== null) {
-      clearTimeout(this.refreshTimer);
-      this.refreshTimer = null;
-    }
+    for (const timer of this.refreshTimers.values()) clearTimeout(timer);
+    this.refreshTimers.clear();
   }
 
-  private isValid(tok: RegistrationToken | null): tok is RegistrationToken {
-    if (tok === null) return false;
+  private isValid(tok: RegistrationToken | undefined): tok is RegistrationToken {
+    if (tok === undefined) return false;
     return tok.expiresAt.getTime() - this.refreshLeadMs > Date.now();
   }
 
-  private scheduleRefresh(tok: RegistrationToken): void {
-    this.stop();
+  private scheduleRefresh(scope: RunnerScope, tok: RegistrationToken): void {
+    const existing = this.refreshTimers.get(scope);
+    if (existing !== undefined) clearTimeout(existing);
     const delay = tok.expiresAt.getTime() - this.refreshLeadMs - Date.now();
     if (delay <= 0) return;
-    this.refreshTimer = setTimeout(() => {
-      void this.refresh();
+    const timer = setTimeout(() => {
+      void this.refresh(scope);
     }, delay);
-    this.refreshTimer.unref?.();
+    timer.unref?.();
+    this.refreshTimers.set(scope, timer);
   }
 }

@@ -11,9 +11,12 @@ import {
 } from './platform.ts';
 
 const RESTART_SETTLE_MS = 20_000;
+/** Default no-log-hang dwell cap when hangOwner==='fleet' (15 min). */
+const DEFAULT_HANG_DEADLINE_MS = 15 * 60 * 1000;
 
 export type WatchdogEvent =
   | { type: 'runner_offline'; runner: string }
+  | { type: 'job_stuck'; runner: string; busyMs: number }
   | { type: 'restart_attempted'; runner: string }
   | { type: 'restart_succeeded'; runner: string }
   | { type: 'restart_failed'; runner: string; error: RunnerFleetError }
@@ -55,9 +58,15 @@ export class Watchdog {
   }
 
   async tick(): Promise<void> {
-    let liveRunners: GitHubRunnerRecord[];
+    // List runners across every scope present in the config (org + repo), then
+    // merge — an org-level runner (BLOODRAVEN-2) is invisible to the repo
+    // endpoint, so a repo-only listing would report it perpetually offline.
+    const scopes = new Set(this.cfg.runners.map((r) => r.scope ?? 'repo'));
+    const liveRunners: GitHubRunnerRecord[] = [];
     try {
-      liveRunners = await this.gh.listRunners();
+      for (const scope of scopes) {
+        liveRunners.push(...(await this.gh.listRunners(scope)));
+      }
     } catch {
       // Network drop — skip cycle silently; don't escalate recovery
       return;
@@ -71,16 +80,42 @@ export class Watchdog {
       const s = this.ensureState(runnerCfg.name);
 
       if (live !== undefined && live.status === 'online') {
-        s.status = live.busy ? 'busy' : 'online';
-        s.busy = live.busy;
         s.githubId = live.id;
         s.lastSeenOnlineAt = new Date();
-        s.restartAttempts = 0;
+        s.busy = live.busy;
+
+        if (!live.busy) {
+          s.status = 'online';
+          s.busySince = null;
+          s.restartAttempts = 0;
+          continue;
+        }
+
+        // Online + BUSY. Track the busy streak. An offline-only watchdog treats
+        // this as healthy forever — which is exactly how a no-log HANG hides.
+        s.status = 'busy';
+        if (s.busySince === null) s.busySince = new Date();
+        const busyMs = Date.now() - s.busySince.getTime();
+        const hangOwner = this.cfg.hangOwner ?? 'janitor';
+        const deadlineMs = this.cfg.hangDeadlineMs ?? DEFAULT_HANG_DEADLINE_MS;
+        // The invariant-#12 janitor owns dwell-cap kills on production runners;
+        // the fleet detector arms ONLY on janitor-incapable hosts to avoid a
+        // split-brain double-bounce. Recovery = restart, which kills the wedged
+        // worker (works for org runners too, unlike an API run-cancel).
+        if (hangOwner === 'fleet' && busyMs > deadlineMs) {
+          allHealthy = false;
+          s.lastErrorCode = ErrorCode.JOB_STUCK;
+          this.emit({ type: 'job_stuck', runner: runnerCfg.name, busyMs });
+          s.busySince = null;
+          s.restartAttempts = 0;
+          await this.recover(s);
+        }
         continue;
       }
 
       allHealthy = false;
       s.status = 'offline';
+      s.busySince = null;
       this.emit({ type: 'runner_offline', runner: runnerCfg.name });
       await this.recover(s);
     }
@@ -91,7 +126,13 @@ export class Watchdog {
   private async recover(s: RunnerState): Promise<void> {
     const cfg = s.config;
     const maxAttempts = this.cfg.maxRestartAttempts ?? 2;
-    const serviceOpts = { taskName: cfg.taskName, serviceName: cfg.serviceName };
+    // Build with only the defined keys so it satisfies exactOptionalPropertyTypes
+    // (passing an explicit `undefined` to an optional prop is a type error).
+    const serviceOpts = {
+      ...(cfg.taskName !== undefined ? { taskName: cfg.taskName } : {}),
+      ...(cfg.serviceName !== undefined ? { serviceName: cfg.serviceName } : {}),
+      path: cfg.path, // enables the path-scoped terminal kill of a wedged worker
+    };
 
     if (s.restartAttempts < maxAttempts) {
       this.emit({ type: 'restart_attempted', runner: cfg.name });
@@ -129,17 +170,24 @@ export class Watchdog {
       }
     }
 
-    // Escalate: full re-registration with a fresh token
+    // Escalate: full re-registration with a fresh token. Scope-aware — an org
+    // runner registers against the ORG url with an org token; a repo runner
+    // against the repo url with a repo token. Labels come from config.
+    const scope = cfg.scope ?? 'repo';
     this.emit({ type: 're_register_attempted', runner: cfg.name });
     try {
-      const regToken = await this.tokens.refresh();
+      const regToken = await this.tokens.refresh(scope);
+      const registrationUrl =
+        scope === 'org'
+          ? `https://github.com/${this.cfg.repoOwner}`
+          : `https://github.com/${this.cfg.repoOwner}/${this.cfg.repoName}`;
       await registerRunner(
         {
           runnerPath: cfg.path,
-          repoUrl: `https://github.com/${this.cfg.repoOwner}/${this.cfg.repoName}`,
+          repoUrl: registrationUrl,
           token: regToken.token,
           name: cfg.name,
-          labels: ['self-hosted', 'Windows', 'X64'],
+          labels: cfg.labels ?? ['self-hosted', 'Windows', 'X64'],
         },
         this.os
       );
@@ -174,6 +222,7 @@ export class Watchdog {
         status: 'unknown',
         githubId: null,
         busy: false,
+        busySince: null,
         lastSeenOnlineAt: null,
         restartAttempts: 0,
         lastRecovery: null,
