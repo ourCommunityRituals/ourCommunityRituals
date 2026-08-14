@@ -8,7 +8,9 @@ function emit(sink: ObservabilitySink | undefined, adapter_id: string, error: un
     kind: 'fail_open',
     adapter_id,
     level: 'warn',
-    flag_key,
+    // Omit flag_key when undefined (exactOptionalPropertyTypes forbids passing
+    // it explicitly undefined to an optional property).
+    ...(flag_key !== undefined ? { flag_key } : {}),
     error_class: error instanceof Error ? error.constructor.name : typeof error,
     ts: new Date().toISOString(),
   });
