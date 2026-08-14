@@ -67,6 +67,20 @@ jobs:
           clean: false
           fetch-depth: 1
 
+      # Fetch the OCR-docs brain into the workspace so the L0 security gate, the
+      # codegen drift check, and generate-from-yaml.mjs resolve
+      # OCR-docs/ocr-docs-brain/flags-contract.yaml WITHOUT relying on a
+      # manually-placed copy on the self-hosted runner. OCR-docs/ is gitignored.
+      - name: Checkout OCR-docs brain
+        uses: actions/checkout@v6
+        with:
+          repository: ourCommunityRituals/OCR-docs
+          ref: main
+          path: OCR-docs
+          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          clean: false
+          fetch-depth: 1
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
