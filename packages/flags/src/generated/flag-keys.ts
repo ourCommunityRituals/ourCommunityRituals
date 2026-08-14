@@ -1,5 +1,5 @@
 // AUTO-GENERATED from OCR-docs/ocr-docs-brain/flags-contract.yaml
-// CONTRACT_SHA: 03e60e19c1545341
+// CONTRACT_SHA: 26ab0e83742367a6
 // DO NOT EDIT. Run `pnpm generate` to regenerate.
 
 export const FLAG_KEYS = {
@@ -87,9 +87,9 @@ export const FLAG_KEY_DOMAIN: Readonly<Record<FlagKey, string>> = Object.freeze(
   "intelligence.map-visualization": "intelligence",
   "intelligence.trend-detection": "intelligence",
   "intelligence.venue-signals": "intelligence",
-  "report.advanced-metrics": "report",
-  "report.custom-window": "report",
-  "report.export-json": "report",
-  "report.export-pdf": "report",
-  "report.portfolio": "report",
+  "report.advanced-metrics": "analytics",
+  "report.custom-window": "analytics",
+  "report.export-json": "analytics",
+  "report.export-pdf": "analytics",
+  "report.portfolio": "analytics",
 }) as Readonly<Record<FlagKey, string>>;

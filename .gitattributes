@@ -1,0 +1,5 @@
+# Generated flag artifacts are emitted with LF by scripts/generate-from-yaml.mjs.
+# Force LF on checkout so `flags:check:generated` (a byte-compare against the
+# generator's LF output) is stable on Windows self-hosted runners, where
+# autocrlf would otherwise convert them to CRLF and report false drift.
+packages/flags/src/generated/*.ts text eol=lf

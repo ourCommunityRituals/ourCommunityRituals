@@ -107,8 +107,12 @@ const presetsModule = [
 ].join('\n');
 
 if (checkMode) {
-  const existsKeys = existsSync(OUT_KEYS) ? readFileSync(OUT_KEYS, 'utf8') : '';
-  const existsPresets = existsSync(OUT_PRESETS) ? readFileSync(OUT_PRESETS, 'utf8') : '';
+  // Compare logical content, not line endings: the generator emits LF, but a
+  // Windows checkout (autocrlf) may present the committed files as CRLF. Without
+  // this the drift check reports false positives on the self-hosted runners.
+  const norm = (s) => s.replace(/\r\n/g, '\n');
+  const existsKeys = existsSync(OUT_KEYS) ? norm(readFileSync(OUT_KEYS, 'utf8')) : '';
+  const existsPresets = existsSync(OUT_PRESETS) ? norm(readFileSync(OUT_PRESETS, 'utf8')) : '';
   if (existsKeys !== keysModule || existsPresets !== presetsModule) {
     console.error('[generate] drift detected. Run `pnpm generate` and commit.');
     process.exit(1);
