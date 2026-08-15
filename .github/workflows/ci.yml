@@ -185,33 +185,42 @@ jobs:
     needs: [gate]
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout workspace
+        uses: actions/checkout@v6
         with:
           clean: false
           fetch-depth: 1
 
-      - name: Check for sibling OCR-docs checkout
+      # Self-contained: fetch the brain into THIS job's workspace (mirrors the
+      # gate job) rather than trusting a manually-placed sibling checkout. The
+      # old sibling probe (`$GITHUB_WORKSPACE/../OCR-docs`) never saw the gate's
+      # in-workspace `OCR-docs/` checkout, so this job silently `exit 0`'d and
+      # went green WITHOUT running the pyramid — a false-green (COST-201).
+      - name: Checkout OCR-docs brain
+        uses: actions/checkout@v6
+        with:
+          repository: ourCommunityRituals/OCR-docs
+          ref: main
+          path: OCR-docs
+          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          clean: false
+          fetch-depth: 1
+
+      # Hard-fail if the brain is absent. This gate MUST NOT pass without
+      # actually running — no silent-skip path remains.
+      - name: Resolve brain dir (hard-fail if absent)
         id: brain
         run: |
-          SIBLING="$GITHUB_WORKSPACE/../OCR-docs"
-          if [ -d "$SIBLING/ocr-docs-brain" ]; then
-            echo "PRESENT=true"  >> "$GITHUB_OUTPUT"
-            echo "BRAIN_DIR=$SIBLING/ocr-docs-brain" >> "$GITHUB_OUTPUT"
-          else
-            echo "PRESENT=false" >> "$GITHUB_OUTPUT"
+          BRAIN_DIR="$GITHUB_WORKSPACE/OCR-docs/ocr-docs-brain"
+          if [ ! -d "$BRAIN_DIR" ]; then
+            echo "::error::OCR-docs brain not found at $BRAIN_DIR after checkout — the brain checkout is mandatory; this gate must not pass without running the pyramid."
+            exit 1
           fi
+          echo "BRAIN_DIR=$BRAIN_DIR" >> "$GITHUB_OUTPUT"
 
-      - name: 'Run Brain pyramid L0-L2 (skip gracefully if absent)'
-        if: steps.brain.outputs.PRESENT == 'true'
+      - name: 'Run Brain pyramid L0-L2'
         working-directory: ${{ steps.brain.outputs.BRAIN_DIR }}
         run: py tests/run_all.py --level 2
-
-      - name: 'Flag Brain parity skipped (OCR-docs not adjacent)'
-        if: steps.brain.outputs.PRESENT != 'true'
-        run: |
-          echo "OCR-docs sibling repo not found at \$GITHUB_WORKSPACE/../OCR-docs"
-          echo "On the self-hosted runner this should always be present."
-          echo "If this skip fires on self-hosted, investigate workspace layout."
 
   shared-gate-drift:
     # security_gate.py is vendored from OCR-docs/shared/ into every consumer
@@ -223,16 +232,32 @@ jobs:
     needs: [gate]
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout workspace
+        uses: actions/checkout@v6
         with:
           clean: false
           fetch-depth: 1
 
-      - name: Check drift vs adjacent OCR-docs canonical
+      # Self-contained brain checkout (see brain-parity job). The old sibling
+      # probe silently `exit 0`'d when `../OCR-docs` was absent, letting the
+      # drift check pass without running — a false-green (COST-201).
+      - name: Checkout OCR-docs brain
+        uses: actions/checkout@v6
+        with:
+          repository: ourCommunityRituals/OCR-docs
+          ref: main
+          path: OCR-docs
+          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          clean: false
+          fetch-depth: 1
+
+      # Hard-fail if the canonical is absent. This drift gate MUST NOT pass
+      # without actually running the comparison.
+      - name: Check drift vs OCR-docs canonical (hard-fail if absent)
         run: |
-          SIBLING="$GITHUB_WORKSPACE/../OCR-docs"
-          if [ ! -f "$SIBLING/shared/check_drift.py" ]; then
-            echo "OCR-docs sibling not present — skipping drift check."
-            exit 0
+          CANONICAL="$GITHUB_WORKSPACE/OCR-docs"
+          if [ ! -f "$CANONICAL/shared/check_drift.py" ]; then
+            echo "::error::OCR-docs canonical not found at $CANONICAL/shared/check_drift.py after checkout — the drift check is mandatory; this gate must not pass without running."
+            exit 1
           fi
-          cd "$SIBLING" && py shared/check_drift.py
+          cd "$CANONICAL" && py shared/check_drift.py
