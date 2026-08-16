@@ -1,0 +1,47 @@
+name: 'Context banner'
+description: >-
+  Prints the run's Repo / PR / Linear / actor / SHA / runner context at the top
+  of a job log (and the job summary), so an operator watching the self-hosted
+  runner window — or reading a check in the GitHub UI — knows WHAT is running
+  WHERE up front instead of decoding an opaque "Running job:" line. Pairs with
+  the runner-side ACTIONS_RUNNER_PRINT_LOG_TO_STDOUT=1 verbosity flag.
+
+runs:
+  using: composite
+  steps:
+    - name: Print context banner
+      shell: bash
+      # Untrusted values (PR title, branch) are passed via env, NEVER interpolated
+      # inline into the script — an inline `${{ github.event.pull_request.title }}`
+      # with a backtick or $() in the title is a shell-injection vector.
+      env:
+        REPO: ${{ github.repository }}
+        WORKFLOW: ${{ github.workflow }}
+        JOB: ${{ github.job }}
+        EVENT: ${{ github.event_name }}
+        REF_NAME: ${{ github.ref_name }}
+        PR_NUM: ${{ github.event.pull_request.number }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        ACTOR: ${{ github.actor }}
+        SHA: ${{ github.sha }}
+      run: |
+        set -euo pipefail
+        # Linear ticket IDs mentioned in the branch name or PR title
+        # (e.g. ose-778-…, COST-211). COST→OSE mapping is manual, so surface all.
+        ids="$(printf '%s %s' "${REF_NAME:-}" "${PR_TITLE:-}" \
+          | grep -oiE '[A-Z]{2,5}-[0-9]+' \
+          | tr '[:lower:]' '[:upper:]' | sort -u | tr '\n' ' ' || true)"
+        pr="${PR_NUM:+#${PR_NUM} — ${PR_TITLE}}"
+
+        {
+          echo "════════════════════════════════════════════════════════════"
+          echo " JOB     : ${JOB}  ·  workflow: ${WORKFLOW}"
+          echo " REPO    : ${REPO}"
+          echo " EVENT   : ${EVENT}  ·  ref: ${REF_NAME}"
+          echo " PR      : ${pr:-<not a pull_request>}"
+          echo " ACTOR   : ${ACTOR}"
+          echo " SHA     : ${SHA}"
+          echo " RUNNER  : ${RUNNER_NAME:-unknown}"
+          echo " LINEAR  : ${ids:-<none detected>}"
+          echo "════════════════════════════════════════════════════════════"
+        } | tee -a "$GITHUB_STEP_SUMMARY"

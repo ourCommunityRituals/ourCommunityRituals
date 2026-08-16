@@ -68,6 +68,11 @@ jobs:
           clean: false
           fetch-depth: 1
 
+      # Repo / PR / Linear / runner context up front — legible on the verbose
+      # self-hosted runner window and in the job summary.
+      - name: Context banner
+        uses: ./.github/actions/context-banner
+
       # Fetch the OCR-docs brain into the workspace so the L0 security gate, the
       # codegen drift check, and generate-from-yaml.mjs resolve
       # OCR-docs/ocr-docs-brain/flags-contract.yaml WITHOUT relying on a
@@ -164,6 +169,8 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+      - name: Context banner
+        uses: ./.github/actions/context-banner
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -214,6 +221,9 @@ jobs:
           clean: false
           fetch-depth: 1
 
+      - name: Context banner
+        uses: ./.github/actions/context-banner
+
       # Self-contained: fetch the brain into THIS job's workspace (mirrors the
       # gate job) rather than trusting a manually-placed sibling checkout. The
       # old sibling probe (`$GITHUB_WORKSPACE/../OCR-docs`) never saw the gate's
@@ -260,6 +270,9 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+
+      - name: Context banner
+        uses: ./.github/actions/context-banner
 
       # Self-contained brain checkout (see brain-parity job). The old sibling
       # probe silently `exit 0`'d when `../OCR-docs` was absent, letting the
