@@ -7,6 +7,7 @@
   "scripts": {
     "flags:build": "pnpm --filter @ocr/flags build",
     "flags:test": "pnpm --filter @ocr/flags test",
+    "flags:test:gate": "pnpm --filter @ocr/flags test:gate",
     "flags:level0": "pnpm --filter @ocr/flags test:level0",
     "flags:generate": "pnpm --filter @ocr/flags generate",
     "flags:check:generated": "pnpm --filter @ocr/flags check:generated",
