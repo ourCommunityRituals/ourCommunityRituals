@@ -147,9 +147,11 @@ jobs:
         working-directory: packages/flags
         run: pnpm exec tsc -p tsconfig.json --noEmit
 
-      # ── Quality: unit + adapter-spec + invariants ─────────────────────
-      - name: 'Quality — vitest (adapter-spec × N adapters + invariants)'
-        run: pnpm flags:test
+      # ── Quality: unit + adapter-spec (invariants excluded here — they run
+      #    exactly once, authoritatively, in the dedicated `invariants` job
+      #    below; COST-212 dedupe, gate keeps every other test) ────────────
+      - name: 'Quality — vitest (adapter-spec × N adapters; invariants run in the dedicated job)'
+        run: pnpm flags:test:gate
 
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
@@ -168,9 +170,29 @@ jobs:
         with:
           # Version from package.json `packageManager`; see gate job above.
           run_install: false
+
+      # Share the pnpm store the gate job populated (COST-211). Same cache key
+      # as the gate, so this install restores a warm, lockfile-keyed store
+      # instead of a cold network install. --frozen-lockfile is retained below,
+      # so store reuse NEVER skips the integrity check (kill-pass: reuse the
+      # store, never weaken verification). Mirrors the gate job's cache steps.
+      - name: Resolve pnpm store
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Hash pnpm lockfile
+        id: lockhash
+        run: echo "HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-store-${{ runner.os }}-${{ steps.lockhash.outputs.HASH }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
       - name: Install
         run: pnpm install --frozen-lockfile
-      - name: 'Run invariants suite only'
+      - name: 'Run invariants suite only (authoritative — the single place invariants execute)'
         working-directory: packages/flags
         run: pnpm exec vitest run tests/invariants.test.ts
 

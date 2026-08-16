@@ -39,6 +39,7 @@
     "check:generated": "node scripts/generate-from-yaml.mjs --check",
     "lint": "eslint src tests",
     "test": "vitest run",
+    "test:gate": "vitest run --exclude '**/invariants.test.ts'",
     "test:watch": "vitest watch",
     "test:level0": "python3 tests/level0_security.py"
   },
