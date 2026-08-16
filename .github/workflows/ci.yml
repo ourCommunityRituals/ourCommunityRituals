@@ -20,15 +20,16 @@
 name: OCR Workspace CI
 
 on:
+  # The PR trigger is intentionally UNfiltered by path. The gate / invariants /
+  # brain-parity / shared-gate-drift jobs are REQUIRED status checks on main
+  # (branch protection, enabled 2026-08-16). A path-filtered PR that skipped this
+  # workflow would leave those required checks stuck "Expected — pending" and
+  # block the PR forever (e.g. a docs-only PR). Running the gate on every PR
+  # guarantees the required checks always report. `push` stays path-filtered
+  # below: the PR already validated the change, so a post-merge re-run is
+  # redundant, and the nightly cron still catches Brain drift between pushes.
   pull_request:
     branches: [main]
-    paths:
-      - 'packages/**'
-      - 'pnpm-workspace.yaml'
-      - 'package.json'
-      - '.npmrc'
-      - '.nvmrc'
-      - '.github/workflows/ci.yml'
   push:
     branches: [main]
     paths:
