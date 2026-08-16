@@ -30,7 +30,7 @@ Derived from a three-angle, evidence-only audit and its synthesis pass:
 3. **CI/CD pipeline cost audit** — per-gate cost, redundancy, runner contention.
 4. **Synthesis** — ranked recommendations R1–R7.
 
-**Governing finding:** served-user runtime operations cost **~0 LLM tokens** (deterministic Cloudflare Workers compute: D1/KV/R2 + local crypto — no model API in any runtime path). The free-forever promise to churches + chosen clients is **structurally sustainable — but only while the runtime stays LLM-free and Tier Equity stays byte-accurate.** The dormant `ai-sanitization.ts` (imported nowhere) is the canary.
+**Governing finding:** served-user runtime operations cost **~0 LLM tokens** (deterministic Cloudflare Workers compute: D1/KV/R2 + local crypto — no model API in any runtime path). The free-forever promise to churches + chosen clients is **structurally sustainable — but only while the runtime stays LLM-free and Tier Equity stays byte-accurate.** The dormant `ai-sanitization.ts` (imported nowhere) is the canary. The full standing rationale — evidence, the load-bearing property, the 10×/100× reasoning, and the canary — is written up in [FREE-FOREVER-THESIS.md](FREE-FOREVER-THESIS.md) (COST-103).
 
 ## Constitution (every story is checked against this)
 
@@ -56,7 +56,7 @@ Protects the free-forever thesis + fixes the live invariant conflict. Owners: PO
   - Roles: SEC (lead), BIA, DVO, QA · Pyramid: L0 + L2 + `e2e/0-architecture` invariant spec · DevOps: new `gate`-job step after `flags:level0`, reusable for spokes · Wall DoD: S0 includes new assertion; S2 confirms no runtime import slipped in.
 - **COST-102** — Ratify `ai-sanitization.ts` as the single sanctioned AI seam (ADR + CODEOWNERS review-lock).
   - Roles: PO, SEC, TW · Pyramid: L7 Contract · DevOps: CODEOWNERS forcing SEC review · Wall DoD: S0/S2 on merge.
-- **COST-103 (DOC)** — Document the free-forever sustainability thesis in the monorepo.
+- **COST-103 (DOC)** — Document the free-forever sustainability thesis in the monorepo. ✅ [FREE-FOREVER-THESIS.md](FREE-FOREVER-THESIS.md).
   - Roles: TW, PO · Pyramid: L1 doc-lint/link-check · Wall DoD: S2 review.
 
 ### Feature 1.2 — Sponsor-weight reconciliation (R2)
