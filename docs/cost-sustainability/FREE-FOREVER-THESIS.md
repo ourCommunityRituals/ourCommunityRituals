@@ -153,6 +153,7 @@ but a cost the platform never incurs.**
 ## References
 
 - [BACKLOG.md](BACKLOG.md) — the full Cost Sustainability effort (Epics 1–5, R1–R7)
+- [EVIDENCE-PACK.md](EVIDENCE-PACK.md) — the raw Phase 1–3 audit tables behind this thesis (COST-502)
 - ADR-014 — `ai-sanitization.ts` as the single sanctioned AI seam
   (`ourSharedEvents/docs/adr/ADR-014-ai-sanitization-sanctioned-seam.md`)
 - COST-101 — the runtime-LLM-free static gate

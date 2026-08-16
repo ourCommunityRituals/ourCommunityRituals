@@ -23,7 +23,8 @@
 
 ## Provenance
 
-Derived from a three-angle, evidence-only audit and its synthesis pass:
+Derived from a three-angle, evidence-only audit and its synthesis pass (the full Phase 1–3
+tables and the R1–R7 mapping are in the [EVIDENCE-PACK.md](EVIDENCE-PACK.md), COST-502):
 
 1. **Unit-cost measurement** — real token cost per operation.
 2. **File/context structure audit** — how context flows to agents; duplication; over-broad reads.
