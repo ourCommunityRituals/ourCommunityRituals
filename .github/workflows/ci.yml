@@ -251,9 +251,28 @@ jobs:
           fi
           echo "BRAIN_DIR=$BRAIN_DIR" >> "$GITHUB_OUTPUT"
 
+      # Bounded 2-attempt retry to close the fresh-checkout race observed on
+      # the Windows self-hosted runner. Symptom: the pyramid exits in ~0.4s
+      # printing `FAIL Level 2 — SCHEMA` with NO test counts (successful runs
+      # print `937 pass / 0 fail`). Signature of a race between the freshly
+      # written OCR-docs/ checkout and the schema loader reading it, not a
+      # test-code bug — the same SHA passed on the re-run seconds later.
+      # See run 31963463108 (sha cba1a907): attempt 1 fail, attempt 2 pass.
+      # A real regression still turns the job red because it must fail BOTH
+      # in-step attempts; a fresh-checkout hiccup only fails the first.
       - name: 'Run Brain pyramid L0-L2'
         working-directory: ${{ steps.brain.outputs.BRAIN_DIR }}
-        run: py tests/run_all.py --level 2
+        run: |
+          set +e
+          py tests/run_all.py --level 2
+          rc=$?
+          if [ $rc -ne 0 ]; then
+            echo "::warning::Brain pyramid failed on first attempt (rc=$rc) — retrying once to close the fresh-checkout race. A real regression will fail the retry too."
+            sleep 2
+            py tests/run_all.py --level 2
+            rc=$?
+          fi
+          exit $rc
 
   shared-gate-drift:
     # security_gate.py is vendored from OCR-docs/shared/ into every consumer
