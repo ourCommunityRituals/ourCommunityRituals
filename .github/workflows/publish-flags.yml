@@ -1,0 +1,84 @@
+# Publish @ocr/flags to GitHub Packages (OSE-1030).
+#
+# WHY: OSE consumes packages/flags via a cross-repo `file:` dance
+# (scripts/ci-stage-ocr-workspace.sh clones this hub repo into a cache that
+# only survives on the persistent self-hosted runner). On ephemeral managed
+# runners that cache is gone every run, and the SBOM step's `npm ls` rejects
+# the file:-linked package (ELSPROBLEMS). Publishing to a registry eliminates
+# the file: dance and is supply-chain-safer (a pinned version, not a
+# clone-at-build). See docs/security/INVARIANT_22 and the OSE consumer side.
+#
+# SCOPE RENAME (CI-only, NOT committed): GitHub Packages requires the npm
+# scope to match the owning org login (ourCommunityRituals), so the tarball
+# is published as `@ourcommunityrituals/flags`. The repo keeps the canonical
+# name `@ocr/flags` so:
+#   - existing file: consumers (WKRP, hub-internal) are untouched, and
+#   - Invariant #22's blessing of the `@ocr/*` shared-package name still holds.
+# OSE consumes the published tarball under the original import name via an
+# npm alias: "@ocr/flags": "npm:@ourcommunityrituals/flags@<version>".
+#
+# The published bytes are the SAME TS source OSE bundles today (main → src/),
+# so flag resolution and the free/mid/enterprise pricing tiers are unchanged.
+#
+# First publish is manual (workflow_dispatch). Re-publish on version bump.
+name: Publish @ocr/flags
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Pack + validate without publishing'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - 'packages/flags/package.json' # publish only when the package (version) changes
+
+concurrency:
+  group: publish-flags
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: 'Publish @ourcommunityrituals/flags'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    defaults:
+      run:
+        shell: bash
+        working-directory: packages/flags
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node + GitHub Packages registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@ourcommunityrituals'
+
+      - name: Rename to org scope for publish (CI-only, not committed)
+        # GitHub Packages routes by scope == owner. Repo keeps @ocr/flags;
+        # only the published tarball carries @ourcommunityrituals/flags.
+        run: npm pkg set name=@ourcommunityrituals/flags
+
+      - name: Report target version
+        run: |
+          echo "Publishing $(npm pkg get name | tr -d '\"')@$(npm pkg get version | tr -d '\"')"
+
+      - name: Publish (or dry-run)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN — packing only, not publishing"
+            npm publish --dry-run
+          else
+            # Idempotent: a re-run at an already-published version exits non-zero;
+            # bump packages/flags/package.json version to publish again.
+            npm publish
+          fi
