@@ -110,3 +110,44 @@ describe('COST-212 — invariants run once; dedicated gate stays authoritative',
     expect(gate, 'test:gate must exclude invariants').toMatch(/invariants/);
   });
 });
+
+describe('OSE-953 — hosted-runner migration topology (all jobs off self-hosted)', () => {
+  // Topology intent that no behavioral test observes: these jobs must run on
+  // GitHub-hosted runners, not the retired self-hosted BLOODRAVEN box. A silent
+  // revert to `self-hosted` (or a new job added on it) still executes correctly
+  // but would re-pin the workspace CI to a machine slated for retirement and
+  // reintroduce the Windows-isms this migration removed. Assert it structurally.
+  const jobsWithRunsOn = wf.jobs as Record<string, { 'runs-on'?: string; steps?: Array<{ run?: string; uses?: string }> }>;
+
+  it('no job runs on a self-hosted runner', () => {
+    const selfHosted = Object.entries(jobsWithRunsOn)
+      .filter(([, j]) => String(j['runs-on'] ?? '').includes('self-hosted'))
+      .map(([name]) => name);
+    expect(selfHosted, `these jobs are still self-hosted: ${JSON.stringify(selfHosted)}`).toEqual([]);
+  });
+
+  it('every job runs on ubuntu-latest', () => {
+    for (const [name, j] of Object.entries(jobsWithRunsOn)) {
+      expect(j['runs-on'], `${name} must run on ubuntu-latest`).toBe('ubuntu-latest');
+    }
+  });
+
+  it('no job invokes the Windows-only `py` launcher (ephemeral runners are ubuntu)', () => {
+    const pyUsers = Object.entries(jobsWithRunsOn)
+      .filter(([, j]) => (j.steps ?? []).some((s) => /(^|\s)py\s+\S+\.py/.test(s.run ?? '')))
+      .map(([name]) => name);
+    expect(pyUsers, `these jobs still call \`py\` instead of \`python3\`: ${JSON.stringify(pyUsers)}`).toEqual([]);
+  });
+
+  it('any job running a Python script provisions Python via actions/setup-python', () => {
+    for (const [name, j] of Object.entries(jobsWithRunsOn)) {
+      const steps = j.steps ?? [];
+      const runsPython = steps.some((s) => /python3?\s+\S+\.py|flags:level0|test:level0/.test(s.run ?? ''));
+      if (!runsPython) continue;
+      expect(
+        steps.some((s) => (s.uses ?? '').startsWith('actions/setup-python')),
+        `${name} runs Python but does not set up Python — it would fail on the hosted runner`
+      ).toBe(true);
+    }
+  });
+});
