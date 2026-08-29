@@ -171,6 +171,22 @@ jobs:
           fetch-depth: 1
       - name: Context banner
         uses: ./.github/actions/context-banner
+
+      # invariants.test.ts reads OCR-docs/ocr-docs-brain/flags-contract.yaml and
+      # asserts the sibling brain is present. On the self-hosted box the gate
+      # job's checkout persisted in the shared workspace (clean:false); on an
+      # ephemeral hosted runner this job has its own fresh VM, so it must fetch
+      # the brain itself (mirrors the gate / brain-parity jobs).
+      - name: Checkout OCR-docs brain
+        uses: actions/checkout@v6
+        with:
+          repository: ourCommunityRituals/OCR-docs
+          ref: main
+          path: OCR-docs
+          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          clean: false
+          fetch-depth: 1
+
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -244,6 +260,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      # The brain level scripts import PyYAML (levels 1+) and jsonschema
+      # (level 2). The self-hosted box had these installed globally; a clean
+      # setup-python does not, so `import yaml` crashed Level 1 instantly. The
+      # brain repo ships no requirements.txt, so install the pyramid's deps
+      # explicitly here. (Follow-up: OCR-docs should declare test requirements.)
+      - name: Install brain pyramid deps
+        run: python3 -m pip install --disable-pip-version-check pyyaml jsonschema
 
       # Hard-fail if the brain is absent. This gate MUST NOT pass without
       # actually running — no silent-skip path remains.
