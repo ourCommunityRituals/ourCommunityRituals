@@ -1,9 +1,13 @@
 # ourCommunityRituals root workspace CI.
 #
-# Runs on the self-hosted runner alongside OSE/OW/OCR-docs (same physical
-# machine, same `self-hosted` label). This workspace hosts shared packages
-# (packages/*) that bind Brain contracts to runtime code. Sibling app repos
-# are gitignored here and have their own independent CI.
+# Runs on GitHub-hosted `ubuntu-latest` runners (migrated off the self-hosted
+# BLOODRAVEN box — see EPIC OSE-953). These jobs are pure Node/pnpm/Python
+# checks with no Windows or persistent-workspace coupling: they check out the
+# Brain fresh via actions/checkout rather than reading a manually-placed sibling
+# copy, so they ride ephemeral runners cleanly. This workspace hosts shared
+# packages (packages/*) that bind Brain contracts to runtime code — the common
+# foundation every spoke consumes. Sibling app repos are gitignored here and
+# have their own independent CI (migrated per-repo under the same EPIC).
 #
 # Pipeline order honors the priority hierarchy (Quality > Security > Maintenance
 # > Performance > Functionality) via Level-0 security gate first, then drift
@@ -59,7 +63,7 @@ defaults:
 jobs:
   gate:
     name: 'Gate — L0 security + drift + tests'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout workspace
@@ -100,11 +104,9 @@ jobs:
           # ERR_PNPM_BAD_PM_VERSION and fails the whole job.
           run_install: false
 
-      # The L0 security gate runs `python3 tests/level0_security.py`. The
-      # self-hosted BLOODRAVEN runners have no system Python on PATH (both
-      # .env PATHs resolve `python3` to the Windows Store alias stub), so
-      # provision Python via the action rather than relying on the host —
-      # portable across runners and does not weaken the gate.
+      # The L0 security gate runs `python3 tests/level0_security.py`. Provision
+      # Python via the action (pinned 3.11) rather than relying on whatever the
+      # host ships — portable across runners and does not weaken the gate.
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -114,12 +116,10 @@ jobs:
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
-      # Compute the lockfile hash in-shell instead of via the built-in
-      # hashFiles() expression. hashFiles enumerates the workspace root through
-      # the runner's Node globber, which fails DETERMINISTICALLY on the
-      # self-hosted BLOODRAVEN-2 host ("Fail to hash files under directory")
-      # regardless of the glob pattern. sha256sum over the single root lockfile
-      # is equivalent for cache-keying and sidesteps the broken enumeration.
+      # Compute the lockfile hash in-shell (sha256sum over the single root
+      # lockfile) rather than via hashFiles(). Equivalent for cache-keying and
+      # kept portable/deterministic across runners; originally introduced to
+      # sidestep a hashFiles enumeration failure on the self-hosted host.
       - name: Hash pnpm lockfile
         id: lockhash
         run: echo "HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
@@ -161,7 +161,7 @@ jobs:
 
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [gate]
     timeout-minutes: 5
     steps:
@@ -171,6 +171,22 @@ jobs:
           fetch-depth: 1
       - name: Context banner
         uses: ./.github/actions/context-banner
+
+      # invariants.test.ts reads OCR-docs/ocr-docs-brain/flags-contract.yaml and
+      # asserts the sibling brain is present. On the self-hosted box the gate
+      # job's checkout persisted in the shared workspace (clean:false); on an
+      # ephemeral hosted runner this job has its own fresh VM, so it must fetch
+      # the brain itself (mirrors the gate / brain-parity jobs).
+      - name: Checkout OCR-docs brain
+        uses: actions/checkout@v6
+        with:
+          repository: ourCommunityRituals/OCR-docs
+          ref: main
+          path: OCR-docs
+          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          clean: false
+          fetch-depth: 1
+
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -206,12 +222,11 @@ jobs:
 
   brain-parity:
     # Validates that the @ocr/flags contract (Brain YAML) still parses and
-    # conforms to Brain's own pyramid levels 0-2. Requires OCR-docs to be
-    # available as a sibling checkout (self-hosted runner has it; GitHub-
-    # hosted runners would need a separate checkout step). Gracefully skips
-    # if the sibling repo isn't present.
+    # conforms to Brain's own pyramid levels 0-2. Checks out OCR-docs fresh
+    # into this job's workspace (below), so it is self-contained on the
+    # ephemeral hosted runner — no reliance on a manually-placed sibling copy.
     name: 'Brain parity — flags-contract.yaml ↔ OCR-docs pyramid'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [gate]
     timeout-minutes: 5
     steps:
@@ -239,6 +254,21 @@ jobs:
           clean: false
           fetch-depth: 1
 
+      # Brain pyramid is a Python test suite; provision Python on the hosted
+      # runner (ubuntu ships python3, but pin the version for reproducibility).
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # The brain level scripts import PyYAML (levels 1+) and jsonschema
+      # (level 2). The self-hosted box had these installed globally; a clean
+      # setup-python does not, so `import yaml` crashed Level 1 instantly. The
+      # brain repo ships no requirements.txt, so install the pyramid's deps
+      # explicitly here. (Follow-up: OCR-docs should declare test requirements.)
+      - name: Install brain pyramid deps
+        run: python3 -m pip install --disable-pip-version-check pyyaml jsonschema
+
       # Hard-fail if the brain is absent. This gate MUST NOT pass without
       # actually running — no silent-skip path remains.
       - name: Resolve brain dir (hard-fail if absent)
@@ -251,25 +281,24 @@ jobs:
           fi
           echo "BRAIN_DIR=$BRAIN_DIR" >> "$GITHUB_OUTPUT"
 
-      # Bounded 2-attempt retry to close the fresh-checkout race observed on
-      # the Windows self-hosted runner. Symptom: the pyramid exits in ~0.4s
-      # printing `FAIL Level 2 — SCHEMA` with NO test counts (successful runs
-      # print `937 pass / 0 fail`). Signature of a race between the freshly
-      # written OCR-docs/ checkout and the schema loader reading it, not a
-      # test-code bug — the same SHA passed on the re-run seconds later.
-      # See run 31963463108 (sha cba1a907): attempt 1 fail, attempt 2 pass.
+      # Bounded 2-attempt retry to close a fresh-checkout race: the pyramid can
+      # exit in ~0.4s printing `FAIL Level 2 — SCHEMA` with NO test counts
+      # (successful runs print `937 pass / 0 fail`) when the schema loader reads
+      # the freshly written OCR-docs/ checkout before it settles — not a
+      # test-code bug (the same SHA passes on re-run). Originally observed on the
+      # Windows self-hosted runner; retained as a cheap guard on hosted runners.
       # A real regression still turns the job red because it must fail BOTH
       # in-step attempts; a fresh-checkout hiccup only fails the first.
       - name: 'Run Brain pyramid L0-L2'
         working-directory: ${{ steps.brain.outputs.BRAIN_DIR }}
         run: |
           set +e
-          py tests/run_all.py --level 2
+          python3 tests/run_all.py --level 2
           rc=$?
           if [ $rc -ne 0 ]; then
             echo "::warning::Brain pyramid failed on first attempt (rc=$rc) — retrying once to close the fresh-checkout race. A real regression will fail the retry too."
             sleep 2
-            py tests/run_all.py --level 2
+            python3 tests/run_all.py --level 2
             rc=$?
           fi
           exit $rc
@@ -280,7 +309,7 @@ jobs:
     # matches the canonical. Drift = must run `py shared/sync_to_repos.py`
     # from OCR-docs before merging.
     name: 'Shared security_gate.py drift check'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [gate]
     timeout-minutes: 3
     steps:
@@ -306,6 +335,12 @@ jobs:
           clean: false
           fetch-depth: 1
 
+      # Drift check is a Python script; provision Python on the hosted runner.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       # Hard-fail if the canonical is absent. This drift gate MUST NOT pass
       # without actually running the comparison.
       - name: Check drift vs OCR-docs canonical (hard-fail if absent)
@@ -315,4 +350,4 @@ jobs:
             echo "::error::OCR-docs canonical not found at $CANONICAL/shared/check_drift.py after checkout — the drift check is mandatory; this gate must not pass without running."
             exit 1
           fi
-          cd "$CANONICAL" && py shared/check_drift.py
+          cd "$CANONICAL" && python3 shared/check_drift.py
