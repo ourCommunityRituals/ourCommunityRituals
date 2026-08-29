@@ -1,0 +1,124 @@
+# OSE-1070 (S2.1) — `tests/e2e` coverage / risk map
+
+> **Pyramid-demotion audit for OSE-1062 (F2).** Classification only — **no code moves.**
+> Produced 2026-08-29 against `oursharedevents@be3a7f8`. Mechanical capability detection
+> per spec, then spot-verified by reading source.
+
+## Headline
+
+**10 of 133 specs are genuinely only-E2E** (143 of 2094 test blocks).
+
+The ticket estimated ~150 specs / ~20–30 only-E2E. Real inventory is **133 specs** — the
+ticket's per-directory counts are exact, only the ~150 headline drifts — and only-E2E is
+**lower** than estimated.
+
+## Method, and its limits
+
+| Signal | Detected by | Implies |
+| --- | --- | --- |
+| Browser | `page.goto/click/fill/locator/evaluate` | needs a browser at all |
+| Layout engine | `boundingBox`, `getComputedStyle`, `setViewportSize`, screenshots | component/viewport, real engine, no deploy |
+| Edge behaviour | CF-Access, redirects, response headers, 3xx | genuinely only-E2E |
+| Network | `request.*`, `fetch(` | contract or integration |
+| Filesystem only | `readFileSync`/`readdirSync` with **no** browser call | static — never was E2E |
+
+**Limit — read before acting.** First-pass classifier plus spot-checks, not a per-assertion
+review. Specs are classified on file-level capability profile; one edge-dependent assertion
+inside an otherwise demotable spec would be missed. Each batch gets an assertion-level read
+before it moves, and per the epic's own rule mutation score must hold after each move. This
+map does not substitute for that proof.
+
+**No minute estimates.** The ticket asks for "est. minutes saved". Producing those honestly
+needs real per-step timings from CI run history, which this pass did not measure. Fabricated
+minutes would be precisely the vanity metric the epic exists to kill. Method for getting
+them is in *Next*.
+
+## The map
+
+| Target layer | Specs | Tests | Destination |
+| --- | ---: | ---: | --- |
+| ONLY-E2E (live edge) | 10 | 143 | stays on live staging |
+| COMPONENT / VIEWPORT | 47 | 995 | **real-engine Playwright CT on Chromium *and* WebKit** — no deploy |
+| INTEGRATION (browser, no edge) | 35 | 483 | in-job miniflare / wrangler dev |
+| INTEGRATION (browser + net) | 8 | 90 | in-job miniflare / wrangler dev |
+| CONTRACT (API shape) | 4 | 46 | Newman contract tier |
+| UNIT (static / code-shape) | 22 | 201 | Vitest — never was E2E |
+| UNIT (no browser used) | 7 | 136 | Vitest |
+
+**123 of 133 specs (1951 test blocks) do not require live staging.**
+
+### Engine policy for the component/viewport batch
+
+Per EPIC correction #5 the 47-spec batch runs on a **real layout engine, never jsdom** —
+and per F4 device tiering that means **both Chromium and WebKit (Safari)**. Safari is not
+optional here: this batch is where responsive layout and computed-style assertions live, and
+WebKit is exactly where those diverge from Chromium. Demoting them to a Chromium-only CT
+runner would retire less risk than the live-staging run it replaces — a coverage loss
+disguised as a cost win, which the equal-or-higher mutation rule is meant to catch.
+
+WebKit is already provisioned in CI (`.github/workflows/oursharedevents-ci.yml:1356`,
+`npx playwright install --with-deps chromium webkit`), so the engine is available; the batch
+needs a CT project targeting both, not new infrastructure. Related in-flight: OSE-1058/1059.
+
+## The `0-architecture` finding — the safest batch, and it isn't a demotion
+
+**22 of 25 `0-architecture` specs never open a browser**, yet CI runs the whole directory
+against live staging (`playwright test --config=playwright.e2e-smoke.config.ts tests/e2e/0-architecture/`).
+
+These specs **declare their own tier in their headers**:
+
+```
+Pyramid coverage for this invariant:
+  L0 STATIC (this file)   — code shape: ...
+  T4 DEPLOYED (planned)   — runtime spec against staging
+```
+
+1. **They were never E2E.** Moving them is a relocation to the tier they already name, not a
+   judgement call. Mutation score cannot fall — no browser assertion is removed. Lowest-risk
+   batch in the F2 line, and the natural first move once F1's baseline exists.
+2. **Their genuine T4 counterparts are marked `planned` — unwritten.** The live-edge coverage
+   these invariants are supposed to have does not exist. Relocating the static half makes that
+   gap visible instead of hiding it behind a green E2E directory. A coverage finding, not only
+   a cost finding — it belongs in F5's risk manifest.
+
+Consistent with EPIC correction #2 (reconciled pyramid preserved): the multi-layer
+corroboration is by design in these files. Nothing collapses to one layer — the L0 half moves
+where it says it belongs, and the T4 half gets written.
+
+## Genuinely only-E2E — the 10 that stay
+
+| Spec | Tests |
+| --- | ---: |
+| `tests/e2e/3-flows/sponsor-journey.spec.ts` | 25 |
+| `tests/e2e/4-negative/surface-navigation-negative.spec.js` | 22 |
+| `tests/e2e/stage-2/staging-worker-cutover.spec.js` | 21 |
+| `tests/e2e/stage-2/html-surfaces.spec.ts` | 13 |
+| `tests/e2e/2-pages/sponsor-page-gating.spec.js` | 12 |
+| `tests/e2e/1-smoke/api-contract.spec.js` | 11 |
+| `tests/e2e/1-smoke/security-smoke.spec.js` | 10 |
+| `tests/e2e/0-architecture/geo-resolution.invariant.spec.ts` | 10 |
+| `tests/e2e/3-flows/forms-shortlinks-qr.spec.js` | 10 |
+| `tests/e2e/1-smoke/critical-smoke.spec.js` | 9 |
+
+## Blocking caveat — this map is measured over a suite that may not run
+
+`tests/e2e` carries **185 skip guards**, and the repo contains
+**zero** `test.fixme` — no annotated skips exist anywhere. OSE-852 (MINE-0) records this class
+at 288 repo-wide; the current count is higher.
+
+This bears directly on F2's proof mechanism. F1's mutation baseline (OSE-1066) would be computed
+over a suite whose *executed extent is unknown*, and demotion validated against that same
+baseline — so the score can hold steady **because both measurements share the blindness**, not
+because coverage held.
+
+**Recommended DAG edge: OSE-1066 `blockedBy` OSE-852.** Correction #3 already blocks demotion on
+the baseline; nothing blocks the baseline on the harness being honest.
+
+## Next
+
+1. **OSE-852 (MINE-0)** — before any mutation baseline.
+2. **Minutes**: pull per-step durations from CI run history for the Playwright steps and join on
+   this map's spec→step mapping. That yields defensible minutes; nothing else does.
+3. **Assertion-level read of the 47-spec component/viewport batch** — largest group, and
+   where a stray edge-dependent assertion is most likely to hide.
+
