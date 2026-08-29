@@ -43,7 +43,41 @@ tables and the R1–R7 mapping are in the [EVIDENCE-PACK.md](EVIDENCE-PACK.md), 
 
 **SCRUM roles:** PO · SM · BIA (Backend/Infra) · DVO (DevOps/CI-CD) · SRE · SEC (Wall-Keeper, owns S0/S2) · QA · TW (Tech Writer).
 
-**Test-pyramid tiers (real, from repo):** L0 Security (`flags:level0`) → L1 Lint → L2 Schema/drift → L3 Unit (vitest) → L4 Regression/`invariants.test.ts` → L5 Boundary → L6 Integration → L7 Contract → L8 Pact (brain parity) → L9 Academic; plus `tests/e2e/{0-architecture,1-smoke,2-pages,3-flows,4-negative}`.
+**Test-pyramid tiers (specified):** L0 Security (`flags:level0`) → L1 Lint → L2 Schema/drift → L3 Unit (vitest) → L4 Regression/`invariants.test.ts` → L5 Boundary → L6 Integration → L7 Contract → L8 Pact (brain parity) → L9 Academic; plus `tests/e2e/{0-architecture,1-smoke,2-pages,3-flows,4-negative}`.
+
+> ⚠️ **Reconciliation correction (2026-08-29).** This line previously read
+> "*(real, from repo)*". That claim was **false for L1 Lint**, and the wording is
+> corrected to "specified" above. Verified: there is **no ESLint configuration in
+> this repository in any form** — no `.eslintrc*`, no `eslint.config.*`, and no
+> `eslintConfig` key in any `package.json` — so `eslint` exits 2 on a config
+> error before evaluating a single file. **No workflow invokes lint at all**
+> (`grep -rn lint .github/workflows/` returns nothing). Two packages
+> (`@ocr/flags`, `@ocr/data-provider`) ship a `lint` script that cannot run.
+>
+> **L1 is specified but does not execute.** It was never red and never green —
+> it is *absent*, which is invisible from any tier above it.
+>
+> **This reverberates upward through the whole pyramid** (see Case 11 in
+> `docs/methodology/ccr-extended-scrum-case-studies.md`):
+> - The **priority hierarchy inverts in practice.** `ci.yml` states the pipeline
+>   order honors *Quality > Security > …*. Quality is the top band and it is the
+>   one missing a gate; Security's L0 runs, and runs first. The Quality band
+>   executes drift + `tsc --noEmit` + vitest — **typecheck is not lint.**
+> - **Every green tier above L1 was measured against a base never established.**
+> - **The ratchet has no floor.** A verified property becomes a regression lock,
+>   but at L1 there is no mean to not-recede from.
+> - **Every story closed under the Wall DoD above inherits the gap** — no Done
+>   ever had a lint assertion, because none existed to run.
+> - **A tier-counting coverage meter overcounts L1 as present** — the companion
+>   error to Case 1's meter undercounting invariants.
+>
+> Closing it means landing a **strict** config and fixing what it finds. A
+> permissively-tuned config adopted to turn the cell green would make the absence
+> permanent and invisible — worse than the honest gap, and forbidden by this
+> backlog's own standard (*no gate weakened*).
+>
+> **Untracked — needs a ticket.** Owners: DVO (lead) + QA. Pyramid: L1, plus a
+> meta-test that lint is actually invoked by CI, so this cannot recur silently.
 
 **Wall DoD (every story):** opens with **S0** (pre-execution semgrep/L0 green), closes with **S2** (post-execution security re-assertion). No story is Done until S2 confirms no wall/invariant regression.
 
