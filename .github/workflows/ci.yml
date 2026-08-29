@@ -52,6 +52,13 @@ on:
         type: boolean
         default: false
 
+# Least-privilege by default. No job in this workflow writes to the repo, the
+# API, or the package registry; the only elevated credential is the explicit
+# OCR_PROPAGATE_TOKEN used to READ the private OCR-docs brain. Declaring this
+# here stops the workflow inheriting whatever the repo default happens to be.
+permissions:
+  contents: read
+
 concurrency:
   group: ocr-workspace-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -71,6 +78,7 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       # Repo / PR / Linear / runner context up front — legible on the verbose
       # self-hosted runner window and in the job summary.
@@ -90,6 +98,7 @@ jobs:
           token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -169,6 +178,7 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+          persist-credentials: false
       - name: Context banner
         uses: ./.github/actions/context-banner
 
@@ -186,6 +196,7 @@ jobs:
           token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       - uses: actions/setup-node@v6
         with:
@@ -235,6 +246,7 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Context banner
         uses: ./.github/actions/context-banner
@@ -253,6 +265,7 @@ jobs:
           token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       # Brain pyramid is a Python test suite; provision Python on the hosted
       # runner (ubuntu ships python3, but pin the version for reproducibility).
@@ -318,6 +331,7 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Context banner
         uses: ./.github/actions/context-banner
@@ -334,6 +348,7 @@ jobs:
           token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
           clean: false
           fetch-depth: 1
+          persist-credentials: false
 
       # Drift check is a Python script; provision Python on the hosted runner.
       - name: Setup Python

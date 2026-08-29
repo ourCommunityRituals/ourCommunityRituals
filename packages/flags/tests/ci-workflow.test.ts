@@ -29,7 +29,10 @@ const CI_PATH = resolve(__dirname, '../../../.github/workflows/ci.yml');
 const PKG_PATH = resolve(__dirname, '../package.json');
 
 const raw = readFileSync(CI_PATH, 'utf8');
-const wf = yaml.load(raw) as { jobs?: Record<string, { steps?: Array<{ run?: string; uses?: string }> }> };
+const wf = yaml.load(raw) as {
+  permissions?: Record<string, string>;
+  jobs?: Record<string, { steps?: Array<{ run?: string; uses?: string; with?: Record<string, unknown> }> }>;
+};
 const jobs = wf.jobs ?? {};
 
 const runsOf = (jobName: string): string[] =>
@@ -149,5 +152,48 @@ describe('OSE-953 — hosted-runner migration topology (all jobs off self-hosted
         `${name} runs Python but does not set up Python — it would fail on the hosted runner`
       ).toBe(true);
     }
+  });
+});
+
+describe('OSE-1045 — CI credential hygiene (no org-write token left for install scripts)', () => {
+  // Reactive correction. The hardened pattern from the OCR_PROPAGATE_TOKEN
+  // review (token must not outlive the clone that needs it) was applied on the
+  // OSE surface and never propagated to this workspace: every OCR-docs checkout
+  // here carried an org-write token with `persist-credentials` left at its
+  // default of TRUE, writing the credential into OCR-docs/.git/config — where
+  // the `pnpm install` that runs later in the same job exposes it to every
+  // dependency lifecycle script. Nothing was shaped to go red. This is that
+  // object.
+  const checkoutSteps = Object.entries(jobs).flatMap(([job, def]) =>
+    (def.steps ?? [])
+      .filter((s) => (s.uses ?? '').startsWith('actions/checkout@'))
+      .map((s) => ({ job, with: (s.with ?? {}) as Record<string, unknown> })),
+  );
+
+  it('the workflow actually has checkout steps to assert on', () => {
+    expect(checkoutSteps.length, 'no actions/checkout steps parsed — the guard would vacuously pass').toBeGreaterThan(0);
+  });
+
+  it('every checkout sets persist-credentials: false', () => {
+    const leaky = checkoutSteps
+      .filter((s) => s.with['persist-credentials'] !== false)
+      .map((s) => s.job);
+    expect(leaky, `these jobs persist checkout credentials into .git/config: ${JSON.stringify(leaky)}`).toEqual([]);
+  });
+
+  it('no token-bearing checkout persists its credential', () => {
+    const tokened = checkoutSteps.filter((s) => typeof s.with['token'] === 'string');
+    expect(tokened.length, 'expected at least one explicitly-tokened checkout (the OCR-docs brain)').toBeGreaterThan(0);
+    for (const s of tokened) {
+      expect(
+        s.with['persist-credentials'],
+        `${s.job}: a checkout carrying an explicit token MUST set persist-credentials: false`,
+      ).toBe(false);
+    }
+  });
+
+  it('the workflow declares an explicit least-privilege permissions block', () => {
+    expect(wf.permissions, 'ci.yml must not inherit the repo-default GITHUB_TOKEN scope').toBeDefined();
+    expect(wf.permissions?.contents, 'contents must be read-only — no job here writes to the repo').toBe('read');
   });
 });
