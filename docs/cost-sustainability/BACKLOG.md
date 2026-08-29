@@ -76,8 +76,36 @@ tables and the R1–R7 mapping are in the [EVIDENCE-PACK.md](EVIDENCE-PACK.md), 
 > permanent and invisible — worse than the honest gap, and forbidden by this
 > backlog's own standard (*no gate weakened*).
 >
-> **Untracked — needs a ticket.** Owners: DVO (lead) + QA. Pyramid: L1, plus a
-> meta-test that lint is actually invoked by CI, so this cannot recur silently.
+> **CLOSED 2026-08-29.** L1 now exists and executes. A strict type-aware flat
+> config (`eslint.config.js`, `strictTypeChecked`) is at the workspace root,
+> `eslint` is a *declared, pinned* devDependency (it previously was not declared
+> at all, so the two packages shipping a `lint` script were resolving whatever
+> `npx` fetched), and the gate job runs `pnpm lint` in the Quality band ahead of
+> the typecheck. It surfaced **75 violations, all fixed** — including two real
+> defects: a `HeadersInit` spread into an object literal that silently dropped
+> caller headers when they arrived in array or `Headers` form
+> (`runner-fleet/src/github.ts`), and a dead comparison masking an unreachable
+> platform guard (`runner-fleet/src/platform.ts`). It was landed strict and the
+> violations were fixed, not tuned away; the four scoped relaxations that remain
+> each carry a written justification in the config and are narrowed to adapter
+> implementations or test files.
+>
+> `ci-workflow.test.ts` now asserts the lint step exists in the gate, that the
+> root `lint` script and the declared `eslint` dependency exist, and that the
+> flat config is present — mutation-verified by deleting the step and confirming
+> exactly that assertion goes red. **L1 cannot go absent again silently.**
+>
+> ⚠️ **Sibling gap, still open — the Quality band's other tier.** While closing
+> L1 it emerged that `tsc` coverage has the same shape of hole. CI's
+> "Quality — TypeScript" step runs in `packages/flags` only, against a tsconfig
+> whose `include` is `src/**/*` and whose `exclude` lists `tests` and `scripts`.
+> There is **no root tsconfig**, and **`packages/data-provider` has no tsconfig
+> at all**. So the named typecheck gate covers **one of four packages' source,
+> and no test or script anywhere.** Those same files consequently get only
+> non-type-aware lint (the residual list in `eslint.config.js`, which must only
+> shrink). Closing it — a root project plus per-package tsconfigs covering tests
+> — promotes those files into full type-aware linting and into `tsc` coverage in
+> one move. **Untracked — needs a ticket.** Owners: BIA (lead) + DVO.
 
 **Wall DoD (every story):** opens with **S0** (pre-execution semgrep/L0 green), closes with **S2** (post-execution security re-assertion). No story is Done until S2 confirms no wall/invariant regression.
 

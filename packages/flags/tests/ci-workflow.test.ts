@@ -18,7 +18,7 @@
  * directly, so drift between the intended CI shape and the actual workflow fails
  * here rather than silently reintroducing the double-run or a cold install.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
@@ -195,5 +195,31 @@ describe('OSE-1045 — CI credential hygiene (no org-write token left for instal
   it('the workflow declares an explicit least-privilege permissions block', () => {
     expect(wf.permissions, 'ci.yml must not inherit the repo-default GITHUB_TOKEN scope').toBeDefined();
     expect(wf.permissions?.contents, 'contents must be read-only — no job here writes to the repo').toBe('read');
+  });
+});
+
+describe('L1 lint — the base static-quality tier exists and executes', () => {
+  // The tier was specified in docs/cost-sustainability/BACKLOG.md but did not
+  // exist: no eslint config in any form, no workflow invoking lint, and eslint
+  // not even a declared dependency. It was never red and never green — absent,
+  // and absence is invisible from every tier above it. These assertions are the
+  // object whose job is to go red if it disappears again.
+  it('a lint step runs in the gate job', () => {
+    const lintSteps = runsOf('gate').filter((r) => /\blint\b/.test(r));
+    expect(lintSteps.length, 'the gate job must invoke lint — L1 is the base tier').toBeGreaterThan(0);
+  });
+
+  it('the root package exposes the lint script the gate calls', () => {
+    const root = JSON.parse(readFileSync(resolve(__dirname, '../../../package.json'), 'utf8')) as {
+      scripts?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+    expect(root.scripts?.lint, 'root `lint` script must exist').toBeDefined();
+    expect(root.devDependencies?.eslint, 'eslint must be a DECLARED dependency — otherwise the version resolved is whatever npx happens to fetch').toBeDefined();
+  });
+
+  it('an eslint flat config exists at the workspace root', () => {
+    const cfg = resolve(__dirname, '../../../eslint.config.js');
+    expect(existsSync(cfg), 'eslint.config.js must exist — without it eslint exits on a config error before reading a single file').toBe(true);
   });
 });

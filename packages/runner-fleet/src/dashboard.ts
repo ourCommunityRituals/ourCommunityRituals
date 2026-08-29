@@ -37,7 +37,7 @@ export function renderDashboard(
           ? `<div class="card-recovery">Last recovery: ${esc(r.lastRecovery)}${r.lastRecoveryAt ? ` at ${r.lastRecoveryAt.toISOString()}` : ''}</div>`
           : ''
       }
-      <div class="card-meta">Restart attempts: ${r.restartAttempts}</div>
+      <div class="card-meta">Restart attempts: ${String(r.restartAttempts)}</div>
     </div>`;
     })
     .join('\n');
@@ -58,7 +58,7 @@ export function renderDashboard(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>@ocr/runner-fleet</title>
-  <meta http-equiv="refresh" content="${Math.round(refreshMs / 1000)}">
+  <meta http-equiv="refresh" content="${String(Math.round(refreshMs / 1000))}">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;padding:2rem;line-height:1.5}
@@ -84,17 +84,17 @@ export function renderDashboard(
   <h1>@ocr/runner-fleet</h1>
   <div class="meta">
     Updated: ${snapshot.timestamp.toISOString()} &nbsp;·&nbsp;
-    Auto-refresh: ${Math.round(refreshMs / 1000)}s
+    Auto-refresh: ${String(Math.round(refreshMs / 1000))}s
   </div>
 
   <div class="section">
-    <h2>Runners (${snapshot.runners.length})</h2>
+    <h2>Runners (${String(snapshot.runners.length)})</h2>
     <div class="cards">${cards}</div>
   </div>
 
   <div class="section">
     <h2>Queue</h2>
-    <div class="queue">${snapshot.queueDepth ?? '—'} pending</div>
+    <div class="queue">${String(snapshot.queueDepth ?? '—')} pending</div>
   </div>
 
   <div class="section">

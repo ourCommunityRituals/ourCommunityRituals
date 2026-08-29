@@ -14,15 +14,15 @@ async function ghFetch<T>(
 ): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(url, {
-      ...opts,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        ...(opts?.headers ?? {}),
-      },
-    });
+    // HeadersInit is `Headers | string[][] | Record<string, string>`. Spreading
+    // the array or Headers form into an object literal yields index keys and
+    // drops the caller's headers silently — build through Headers instead, which
+    // normalises all three forms.
+    const headers = new Headers(opts?.headers);
+    headers.set('Authorization', `Bearer ${token}`);
+    headers.set('Accept', 'application/vnd.github+json');
+    headers.set('X-GitHub-Api-Version', '2022-11-28');
+    res = await fetch(url, { ...opts, headers });
   } catch (e) {
     throw new RunnerFleetError(
       ErrorCode.NETWORK_DROP,
@@ -41,14 +41,14 @@ async function ghFetch<T>(
   if (res.status === 401 || res.status === 403) {
     throw new RunnerFleetError(
       ErrorCode.TOKEN_INVALID,
-      `GitHub API auth failed (${res.status}) — verify GITHUB_TOKEN has repo scope`
+      `GitHub API auth failed (${String(res.status)}) — verify GITHUB_TOKEN has repo scope`
     );
   }
   if (!res.ok) {
     const body = await res.text().catch(() => '(unreadable)');
     throw new RunnerFleetError(
       ErrorCode.NETWORK_DROP,
-      `GitHub API ${res.status} from ${url}: ${body}`
+      `GitHub API ${String(res.status)} from ${url}: ${body}`
     );
   }
 
@@ -100,8 +100,8 @@ export class GitHubClient {
   }
 
   async deleteRunner(runnerId: number, scope: RunnerScope = 'repo'): Promise<void> {
-    await ghFetch<void>(
-      `${this.baseFor(scope)}/actions/runners/${runnerId}`,
+    await ghFetch<unknown>(
+      `${this.baseFor(scope)}/actions/runners/${String(runnerId)}`,
       this.cfg.token,
       { method: 'DELETE' }
     );

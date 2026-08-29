@@ -37,6 +37,8 @@ function rowToFlagRow(r: Record<string, unknown>): FlagRow {
   return {
     id: String(r.id),
     scope: String(r.scope) as Scope,
+    // SQLite column value, coerced defensively at the driver boundary.
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     scope_id: String(r.scope_id ?? ''),
     flag_key: String(r.flag_key),
     enabled: Number(r.enabled) === 1,
@@ -74,12 +76,12 @@ export class SqliteAdapter implements StorageAdapter {
     const globals = this.db
       .prepare("SELECT flag_key, enabled FROM feature_flags WHERE scope = 'global' AND scope_id = ''")
       .all() as Array<{ flag_key: string; enabled: number }>;
-    for (const r of globals) out.set(r.flag_key, Number(r.enabled) === 1);
+    for (const r of globals) out.set(r.flag_key, r.enabled === 1);
     if (eventId) {
       const events = this.db
         .prepare("SELECT flag_key, enabled FROM feature_flags WHERE scope = 'event' AND scope_id = ?")
         .all(eventId) as Array<{ flag_key: string; enabled: number }>;
-      for (const r of events) out.set(r.flag_key, Number(r.enabled) === 1);
+      for (const r of events) out.set(r.flag_key, r.enabled === 1);
     }
     return out;
   }

@@ -157,6 +157,16 @@ jobs:
       - name: 'Drift — generated flag-keys + presets match Brain YAML'
         run: pnpm flags:check:generated
 
+      # ── Quality: L1 lint ──────────────────────────────────────────────
+      # L1 is the base static-quality tier. It was listed in the backlog's
+      # pyramid but had no configuration in any form and no workflow invoked it,
+      # so it was never red and never green — it was absent, which is invisible
+      # from every tier above it. `eslint` was not even a declared dependency.
+      # ci-workflow.test.ts now asserts this step exists, so it cannot go absent
+      # again silently.
+      - name: 'Quality — L1 lint'
+        run: pnpm lint
+
       # ── Quality: TypeScript typecheck ─────────────────────────────────
       - name: 'Quality — TypeScript'
         working-directory: packages/flags

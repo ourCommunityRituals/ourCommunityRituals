@@ -180,30 +180,38 @@ export async function registerRunner(
     '--replace',
   ];
 
-  if (os === 'windows') {
-    try {
-      await execFileAsync(`${opts.runnerPath}\\config.cmd`, args);
-    } catch (e) {
+  // switch, not if/else-if: `os` is a closed union, so `os === 'darwin'` in the
+  // right operand of an `||` is always true and lint flags it — but the trailing
+  // guard is a deliberate runtime defence for an `os` that does not match its
+  // declared type. A switch keeps that default branch without the dead compare.
+  switch (os) {
+    case 'windows':
+      try {
+        await execFileAsync(`${opts.runnerPath}\\config.cmd`, args);
+      } catch (e) {
+        throw new RunnerFleetError(
+          ErrorCode.REGISTRATION_FAILED,
+          `config.cmd failed for runner '${opts.name}'`,
+          { runnerName: opts.name, cause: e }
+        );
+      }
+      break;
+    case 'linux':
+    case 'darwin':
+      try {
+        await execFileAsync(`${opts.runnerPath}/config.sh`, args);
+      } catch (e) {
+        throw new RunnerFleetError(
+          ErrorCode.REGISTRATION_FAILED,
+          `config.sh failed for runner '${opts.name}'`,
+          { runnerName: opts.name, cause: e }
+        );
+      }
+      break;
+    default:
       throw new RunnerFleetError(
-        ErrorCode.REGISTRATION_FAILED,
-        `config.cmd failed for runner '${opts.name}'`,
-        { runnerName: opts.name, cause: e }
+        ErrorCode.PLATFORM_UNSUPPORTED,
+        'Unsupported platform for runner registration'
       );
-    }
-  } else if (os === 'linux' || os === 'darwin') {
-    try {
-      await execFileAsync(`${opts.runnerPath}/config.sh`, args);
-    } catch (e) {
-      throw new RunnerFleetError(
-        ErrorCode.REGISTRATION_FAILED,
-        `config.sh failed for runner '${opts.name}'`,
-        { runnerName: opts.name, cause: e }
-      );
-    }
-  } else {
-    throw new RunnerFleetError(
-      ErrorCode.PLATFORM_UNSUPPORTED,
-      'Unsupported platform for runner registration'
-    );
   }
 }
