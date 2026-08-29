@@ -221,9 +221,41 @@ where it belongs, not from asserting less.
 | **requested for testing** | **Local · Regional · National** | this request |
 
 **A spec written against `Regional` or `National` today binds to no testid and no class.**
-The sponsor axis cannot be implemented until this is reconciled — tracked as **OSE-1011**
-(*first-pass legibility: tier nomenclature reconciliation*). That ticket is a prerequisite
-for the sponsor axis and should be linked as such.
+The table above is *what the code shows*; more names are believed to exist elsewhere and this
+enumeration should not be treated as exhaustive.
+
+### A marketing-led rename is coming — so do not pin specs to any vocabulary
+
+The naming is scheduled to be standardized as a marketing effort. That makes vocabulary
+churn a **certainty**, not a risk, and it settles the design question:
+
+> **The sponsor specs must enumerate classes from the data at runtime, never hardcode them.**
+
+The invariance shape does this for free. A spec that says *"for every sponsor class present,
+assert the rendering is identical"* is **rename-proof by construction** — it never names a
+class, so a rename costs zero spec edits. The differentiating shape (three classes, three
+expected outputs) hardcodes the vocabulary in the assertions and would have to be rewritten
+on every rename, forever.
+
+So the axis shape is not merely cheaper. Given a rename is coming, it is the only shape that
+survives it. **This is the single highest-leverage decision in the sponsor axis, and it costs
+nothing to take now** — the specs do not exist yet, so there is nothing to migrate.
+
+Two consequences to carry into the rename itself:
+
+- **It is a cross-surface reconciliation, not a find-and-replace.** The vocabulary appears in
+  CSS classes, `data-testid` hooks (`sponsor-class-row-*`, `local-impressions` /
+  `mid-impressions` / `premium-impressions`), the data model, report payload keys, docs, and
+  the brain invariants. Per Case 7 those move in one pass or the rename just relocates the
+  drift. Payload keys in particular are covered by Invariant #16
+  `api_response_schema_stability` — renaming them is a contract change, not cosmetics.
+- **Renaming or removing a `data-testid` is a recorded decision under Invariant #10
+  `deprecation_lock`**, not a silent edit. This overlaps MINE-0's Gate 0.5 orphan-testid
+  cleanup; the two should be sequenced so the same hooks are not churned twice.
+
+**OSE-1011** (*first-pass legibility: tier nomenclature reconciliation*) is the prerequisite,
+and it should be re-scoped as **marketing-led with engineering reconciliation attached**
+rather than an engineering-only cleanup.
 
 **Open question, not a finding.** `admin.html` renders `spon-tier-pill` with the tier as a
 CSS class against a six-rung colour ladder. Whether that is a #25 violation or legitimate
