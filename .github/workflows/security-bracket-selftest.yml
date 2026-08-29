@@ -1,0 +1,47 @@
+# security-bracket-selftest.yml
+# ----------------------------------------------------------------------------
+# Consumer-zero self-test for the shared S0/S2 security bracket.
+#
+# security-bracket.yml is a reusable workflow that SPOKES call via
+# `uses: ourCommunityRituals/ourCommunityRituals/.github/workflows/security-bracket.yml@v1`.
+# Nothing in THIS repo called it, so a defect in the bracket or in the
+# security-scan composite it invokes would only surface downstream, in a
+# spoke's pipeline — exactly the "never trust an untested CI assumption"
+# trap the bracket's own header warns about (ADR-005 says validate on a real
+# green consumer-zero run BEFORE cutting @v1).
+#
+# This workflow closes that gap: it calls the LOCAL bracket with its default
+# runner (ubuntu-latest as of OSE-953) so a PR that touches the bracket or the
+# composite proves the hosted semgrep path runs green HERE, not in a spoke.
+# It is the OCR-Workspace analogue of OCR-docs' actions-selftest.yml.
+#
+# Scoped by path: it runs only when the bracket or the composite changes, so
+# it does not add semgrep latency to every unrelated PR. The workspace's own
+# broad L0 gate lives in ci.yml (pnpm flags:level0) and is unaffected.
+# ----------------------------------------------------------------------------
+
+name: security-bracket selftest
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/security-bracket.yml'
+      - '.github/actions/security-scan/**'
+      - '.github/workflows/security-bracket-selftest.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: security-bracket-selftest-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Invoke the bracket exactly as a spoke would, but against the LOCAL copy and
+  # relying on the default runs-on (ubuntu-latest). A green run here is the
+  # real-run evidence ADR-005 requires before the change fans out to spokes.
+  s0-bracket:
+    name: 'S0 bracket — default (ubuntu) runner'
+    uses: ./.github/workflows/security-bracket.yml
+    with:
+      phase: pre-execution
+      output-file: semgrep-selftest.json
