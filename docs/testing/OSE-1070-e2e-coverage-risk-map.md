@@ -148,6 +148,92 @@ where it says it belongs, and the T4 half gets written.
 | `tests/e2e/3-flows/forms-shortlinks-qr.spec.js` | 10 |
 | `tests/e2e/1-smoke/critical-smoke.spec.js` | 9 |
 
+## Additional flow matrix — and why it does not multiply out
+
+Requested coverage adds three axes on top of the device ladder:
+
+| Axis | Values |
+| --- | --- |
+| Config path | wizard · advanced |
+| Event scope | Local · Regional · Enterprise |
+| Sponsor class | Local · Regional · National |
+
+Multiplied naively against the 6-project device matrix that is
+**2 × 3 × 3 × 6 = 108 live-staging combinations** — the exact cost explosion this EPIC
+exists to prevent. It does not need to be paid, because **the three axes are not the same
+kind of axis.**
+
+### Sponsor class is an invariance axis, not a differentiating one
+
+Under Invariant #25 `sponsor_share_covenant` and #5 `tier_equity`, sponsor class **must not
+drive presentation**. So this axis does not produce three expected renderings to assert —
+it produces **one assertion, iterated across the axis, that the rendering is identical**.
+
+```
+WRONG SHAPE   3 classes × 3 expected outputs           = 3 specs, and it encodes the covenant violation
+RIGHT SHAPE   1 spec iterating all classes, asserting  = 1 spec; adding a 4th class costs nothing
+              identical geometry / typography / size
+```
+
+This is already the shape OSE-854 uses (D1/D2/D3, Q1/Q2, P1: *"every `display-sponsor-item`
+returns an identical `boundingBox()`"*). The axis multiplies the **fixture**, not the spec
+count. It does need the real layout engine and the device ladder, because that is where a
+tier-driven size difference would actually show — so this is the one axis that legitimately
+crosses with {Chromium, WebKit} × {mobile, tablet, desktop}.
+
+### Event scope is a genuine differentiating axis — and it is cheap
+
+`Local | Regional | Enterprise` resolves through `src/lib/feature-flags.ts` and
+`src/handlers/feature-flags.ts` — it gates **features**, so the three values genuinely have
+different expected outputs. But feature-gate resolution is pure logic: it belongs at
+**Vitest unit**, not live staging. Only where a scope changes a *rendered surface* does it
+need a browser, and then only once per surface, not once per scope × device.
+
+### Config path is an equivalence axis
+
+`wizard | advanced` are two entry paths to the same end state. The high-value assertion is
+not "each path works" twice over, but that **both converge on equivalent event state** — a
+single equivalence/metamorphic test at the integration layer. `tests/e2e/3-flows/admin-wizard-flow.spec.js`
+already covers the wizard path end-to-end (12 tests incl. keyboard + mobile viewport); the
+advanced path needs its counterpart plus the one equivalence assertion, not a parallel suite.
+
+### Net effect
+
+| | Combinations |
+| --- | ---: |
+| Naive full cross-product on live staging | **108** |
+| Sponsor covenant, iterated, across the device ladder | 6 |
+| Event scope at unit + one render check per surface | ~cheap, no live staging |
+| Config-path equivalence at integration | 1 |
+
+The axes collapse because two of the three are not presentation axes at all. This is the
+same lever as the `0-architecture` finding: the saving comes from putting each assertion
+where it belongs, not from asserting less.
+
+## Blocker for the sponsor axis — the vocabulary does not exist yet
+
+**Three incompatible sponsor vocabularies are live simultaneously:**
+
+| Surface | Vocabulary | Evidence |
+| --- | --- | --- |
+| admin CSS ladder | `title` `platinum` `gold` `silver` `bronze` `primary` | `admin.html:935-958`, applied at `:2949` |
+| reporting / data | `local` `mid` `premium` | `local-impressions`, `sponsor-class-row-local\|mid\|premium` |
+| **requested for testing** | **Local · Regional · National** | this request |
+
+**A spec written against `Regional` or `National` today binds to no testid and no class.**
+The sponsor axis cannot be implemented until this is reconciled — tracked as **OSE-1011**
+(*first-pass legibility: tier nomenclature reconciliation*). That ticket is a prerequisite
+for the sponsor axis and should be linked as such.
+
+**Open question, not a finding.** `admin.html` renders `spon-tier-pill` with the tier as a
+CSS class against a six-rung colour ladder. Whether that is a #25 violation or legitimate
+descriptive labelling is a **decision, not something this audit should assert** — OSE-854
+already ruled the analogous `advanced-metrics-tier-badge` legitimate because it labels depth
+rather than ranking a sponsor, and an operator-facing admin table naming a tier may fall the
+same way. Recorded here so the reconciliation makes the call explicitly. It is distinct from
+the confirmed rendering violations in OSE-878 (display 64px vs 48px) and OSE-864 (poster
+40/34/28/22px), which are attendee-facing.
+
 ## Blocking caveat — this map is measured over a suite that may not run
 
 `tests/e2e` carries **185 skip guards**, and the repo contains
