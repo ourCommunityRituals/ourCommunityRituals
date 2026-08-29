@@ -46,7 +46,15 @@ runs:
         # cygpath, so it resolves even when the runner's canonical Git-Bash-first
         # .env omits it (the bare-`semgrep` exit-127 on BLOODRAVEN-2). Do NOT use
         # `python -m semgrep`: deprecated since 1.38.0, exits 2 without scanning.
-        if [ -n "${pythonLocation:-}" ]; then export PATH="$PATH:$(cygpath -u "$pythonLocation")/Scripts"; fi
+        #
+        # cygpath is a Git-Bash/Windows-only tool — it does NOT exist on
+        # ubuntu-latest, and under `bash -eo pipefail` a bare call would abort the
+        # scan. Guard on its presence: the PATH fixup is only needed on the
+        # self-hosted Windows runner. On hosted Linux, pip installs semgrep onto
+        # PATH already, so the branch is correctly skipped (OSE-953 migration).
+        if command -v cygpath >/dev/null 2>&1 && [ -n "${pythonLocation:-}" ]; then
+          export PATH="$PATH:$(cygpath -u "$pythonLocation")/Scripts"
+        fi
         semgrep --version || { echo "::error::semgrep unavailable on runner"; exit 1; }
         CONFIG_ARGS=""
         for c in $SCAN_CONFIGS; do CONFIG_ARGS="$CONFIG_ARGS --config=$c"; done

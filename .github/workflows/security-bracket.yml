@@ -32,10 +32,14 @@ on:
         required: false
         default: 'semgrep-results.json'
       runs-on:
-        description: 'Runner label. Self-hosted by default.'
+        # Hosted by default (OSE-953). semgrep flaked on the self-hosted Windows
+        # box under Smart App Control; ubuntu-latest is the fix, and the
+        # security-scan composite is OS-portable (cygpath PATH fixup is guarded).
+        # Spokes that still need a self-hosted label pass runs-on: self-hosted.
+        description: 'Runner label. Hosted (ubuntu-latest) by default.'
         type: string
         required: false
-        default: 'self-hosted'
+        default: 'ubuntu-latest'
 
 jobs:
   security-scan:
