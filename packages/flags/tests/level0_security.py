@@ -84,7 +84,12 @@ generated_files = [
 if not BRAIN_CONTRACT.exists():
     check('generated_parity', False, 'contract YAML missing; cannot verify parity')
 else:
-    yaml_sha = hashlib.sha256(BRAIN_CONTRACT.read_bytes()).hexdigest()[:16]
+    # Hash over LF-normalized bytes so this matches the generator's embedded
+    # CONTRACT_SHA regardless of whether the brain YAML was checked out with LF
+    # (GitHub-hosted ubuntu) or CRLF (Windows autocrlf). Hashing raw bytes made
+    # the gate pass on the self-hosted Windows box but fail on ubuntu (OSE-953).
+    yaml_bytes = BRAIN_CONTRACT.read_bytes().replace(b'\r\n', b'\n')
+    yaml_sha = hashlib.sha256(yaml_bytes).hexdigest()[:16]
     parity_fail = False
     details = []
     for gf in generated_files:

@@ -25,9 +25,15 @@ function die(msg) {
 
 if (!existsSync(CONTRACT)) die(`contract not found at ${CONTRACT}`);
 
-const raw = readFileSync(CONTRACT);
-const sha = createHash('sha256').update(raw).digest('hex').slice(0, 16);
-const doc = yaml.load(raw.toString('utf8'));
+// Hash over LF-normalized bytes so the embedded CONTRACT_SHA is identical
+// whether the brain YAML was checked out with LF (GitHub-hosted ubuntu) or
+// CRLF (Windows autocrlf). Hashing raw bytes made the sha OS-dependent: the
+// parity/drift gates passed on the self-hosted Windows box and failed on hosted
+// runners (OSE-953). The generator already normalizes line endings for the
+// --check file comparison below; the sha must be normalized the same way.
+const normalized = readFileSync(CONTRACT, 'utf8').replace(/\r\n/g, '\n');
+const sha = createHash('sha256').update(normalized, 'utf8').digest('hex').slice(0, 16);
+const doc = yaml.load(normalized);
 
 if (!doc?.flag_keys) die('contract missing flag_keys section');
 if (!doc?.tier_presets) die('contract missing tier_presets section');

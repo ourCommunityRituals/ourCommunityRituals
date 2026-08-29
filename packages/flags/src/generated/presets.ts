@@ -1,5 +1,5 @@
 // AUTO-GENERATED from OCR-docs/ocr-docs-brain/flags-contract.yaml
-// CONTRACT_SHA: 26ab0e83742367a6
+// CONTRACT_SHA: 03e60e19c1545341
 // DO NOT EDIT. Run `pnpm generate` to regenerate.
 
 import type { Tier } from '../types.js';
