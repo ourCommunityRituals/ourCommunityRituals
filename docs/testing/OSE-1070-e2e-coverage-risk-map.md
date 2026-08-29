@@ -56,9 +56,57 @@ WebKit is exactly where those diverge from Chromium. Demoting them to a Chromium
 runner would retire less risk than the live-staging run it replaces — a coverage loss
 disguised as a cost win, which the equal-or-higher mutation rule is meant to catch.
 
-WebKit is already provisioned in CI (`.github/workflows/oursharedevents-ci.yml:1356`,
-`npx playwright install --with-deps chromium webkit`), so the engine is available; the batch
-needs a CT project targeting both, not new infrastructure. Related in-flight: OSE-1058/1059.
+### Device ladder — mobile / tablet / desktop, and it already exists
+
+The verification target is **mobile, tablet and desktop**, on **both engines**. The device
+ladder for this is **already built** — `playwright.config.ts` defines exactly it:
+
+| Project | Class | Note (verbatim from the config) |
+| --- | --- | --- |
+| `iPhone SE` | mobile (floor) | *"Smallest modern iPhone — the WCAG floor."* |
+| `iPhone 14 Pro Max` | mobile (ceiling) | *"Largest current iPhone — validates nothing collapses on wide mobile."* |
+| `iPad Air` | **tablet** | `devices['iPad Air 5']` |
+| `Desktop Safari` | desktop | `viewport: 1280×900` |
+
+**It is quarantined.** That config's `testDir` is `tests/playwright`, and it is driven by a
+separate workflow (`mobile-workability-audit.yml`) against a single spec. The demoted
+component/viewport batch should **point at this existing ladder**, not have a new one built.
+
+The one real gap: every project in that ladder carries a Safari/WebKit UA — there is **no
+Chromium column**. So the target matrix is **{Chromium, WebKit} × {mobile, tablet, desktop}**
+= 6 projects, of which the WebKit column exists today and the desktop-Chrome cell exists in
+`e2e-smoke`/`e2e` configs. This is assembly of proven parts, not new infrastructure —
+`npx playwright install --with-deps chromium webkit` is already in CI
+(`oursharedevents-ci.yml:1356`). Related in-flight: OSE-1058/1059.
+
+## MINE-0 (OSE-852) — Gate 0 confirmed, with a concrete instance
+
+MINE-0's zero-discovery claim is **confirmed** on at least one step. Checking every
+`npx playwright test` invocation in `oursharedevents-ci.yml` against its config's `testDir`:
+
+```
+L1512  T4e: Attendee Arc Journey
+       --config=playwright.e2e-smoke.config.ts   (testDir: ./tests/e2e)
+       tests/ui/smoke/journey-attendee-arc.smoke.spec.ts   <-- OUTSIDE testDir
+```
+
+Playwright filters positional arguments against `testDir`, so this step **discovers zero
+tests and exits 0**. The file exists, which is why it reads as fine.
+
+**This step is insulated from going red three separate ways**, any one of which would be
+enough on its own:
+
+1. the positional path lies outside the config's `testDir` → zero discovery;
+2. a Playwright run that discovers nothing exits 0 → green;
+3. the step carries `continue-on-error: true` → even a genuine failure is swallowed.
+
+That is the same shape as OSE-834 (*"a blocking tier goes green on an empty staging
+database: the seed step is `continue-on-error`"*). MINE-0 records **two** zero-discovery
+steps; static analysis evidences **this one**. The second is not disproven — it may live in a
+path-glob or a config default this method cannot resolve — but it is not evidenced here, and
+should not be reported as confirmed until it is.
+
+All other invocations resolve inside their `testDir` and their paths exist.
 
 ## The `0-architecture` finding — the safest batch, and it isn't a demotion
 
