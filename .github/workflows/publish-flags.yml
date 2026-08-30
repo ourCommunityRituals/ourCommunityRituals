@@ -52,10 +52,10 @@ jobs:
         working-directory: packages/flags
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node + GitHub Packages registry
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com
@@ -71,10 +71,14 @@ jobs:
           echo "Publishing $(npm pkg get name | tr -d '\"')@$(npm pkg get version | tr -d '\"')"
 
       - name: Publish (or dry-run)
+        # dry_run passed via env, not interpolated into the script body, so the
+        # dispatch input can't break out into the shell (semgrep
+        # run-shell-injection; OSE-1089).
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+          if [ "$DRY_RUN" = "true" ]; then
             echo "DRY RUN — packing only, not publishing"
             npm publish --dry-run
           else

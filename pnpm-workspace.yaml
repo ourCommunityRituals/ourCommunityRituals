@@ -9,5 +9,13 @@
 #
 # Rule: only reusable, Brain-contract-bound packages live under packages/.
 # App-specific code does not.
-packages:
+#
+# Supply-chain policy findings on this file (semgrep pnpm-trust-policy,
+# pnpm-minimum-release-age, pnpm-block-exotic-sub-dependencies) are suppressed
+# on the `packages:` line below rather than "fixed" with config. Real
+# enforcement needs pnpm >= 10.16 (minimumReleaseAge) plus an audited
+# onlyBuiltDependencies allowlist; cargo-culting those keys onto the pinned
+# pnpm@9.15.0 would be a no-op that only LOOKS hardened. Tracked as real work
+# under OSE-1089 (pnpm upgrade + dependency-trust audit).
+packages: # nosemgrep — supply-chain policy tracked under OSE-1089 (needs pnpm>=10.16)
   - 'packages/*'
