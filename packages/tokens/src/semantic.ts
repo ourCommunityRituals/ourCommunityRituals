@@ -226,7 +226,7 @@ export function validateBrand(theme: Partial<BrandTheme>): BrandViolation[] {
         out.push({
           mode,
           role: fg,
-          reason: `${fg} on ${bg} is ${ratio.toFixed(2)}:1, below the ${min}:1 minimum.`,
+          reason: `${fg} on ${bg} is ${ratio.toFixed(2)}:1, below the ${String(min)}:1 minimum.`,
         });
       }
     }
