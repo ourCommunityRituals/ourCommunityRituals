@@ -13,7 +13,7 @@ import { componentStyles } from './styles';
 export const ocrStylesheet = [
   rootBlock(),
   lightModeBlock(),                        // @media (prefers-color-scheme: light)
-  lightModeBlock('[data-theme="light"]'),  // explicit forced light  — Claude Design preview
+  lightModeBlock('[data-theme="light"]'),  // explicit forced light  — manual theme toggle
   forceDarkBlock(),                        // [data-theme="dark"]    — explicit forced dark
   uecBlock(),                              // UEC v1.1 — theme-invariant event category colors
   brandBlocks(),                           // OSE-654 — registered client brand themes ([data-brand="x"])
