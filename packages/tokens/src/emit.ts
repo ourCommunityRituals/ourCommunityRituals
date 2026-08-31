@@ -37,12 +37,12 @@ function surfaceBlock(name: string): string {
   const lines: string[] = [];
   if (s.type !== 1) {
     for (const key of Object.keys(primitives).filter((k) => k.startsWith('--ocr-size-'))) {
-      lines.push(`  ${key}: calc(${primitives[key as keyof typeof primitives]} * ${s.type});`);
+      lines.push(`  ${key}: calc(${primitives[key as keyof typeof primitives]} * ${String(s.type)});`);
     }
   }
   if (s.space !== 1) {
     for (const key of Object.keys(primitives).filter((k) => k.startsWith('--ocr-space-'))) {
-      lines.push(`  ${key}: calc(${primitives[key as keyof typeof primitives]} * ${s.space});`);
+      lines.push(`  ${key}: calc(${primitives[key as keyof typeof primitives]} * ${String(s.space)});`);
     }
   }
   lines.push(`  --surface-target: ${s.target};`);
