@@ -46,7 +46,7 @@ export class Watchdog {
     this.timer = setInterval(() => {
       void this.tick();
     }, intervalMs);
-    this.timer.unref?.();
+    this.timer.unref();
     void this.tick();
   }
 

@@ -43,7 +43,69 @@ tables and the R1–R7 mapping are in the [EVIDENCE-PACK.md](EVIDENCE-PACK.md), 
 
 **SCRUM roles:** PO · SM · BIA (Backend/Infra) · DVO (DevOps/CI-CD) · SRE · SEC (Wall-Keeper, owns S0/S2) · QA · TW (Tech Writer).
 
-**Test-pyramid tiers (real, from repo):** L0 Security (`flags:level0`) → L1 Lint → L2 Schema/drift → L3 Unit (vitest) → L4 Regression/`invariants.test.ts` → L5 Boundary → L6 Integration → L7 Contract → L8 Pact (brain parity) → L9 Academic; plus `tests/e2e/{0-architecture,1-smoke,2-pages,3-flows,4-negative}`.
+**Test-pyramid tiers (specified):** L0 Security (`flags:level0`) → L1 Lint → L2 Schema/drift → L3 Unit (vitest) → L4 Regression/`invariants.test.ts` → L5 Boundary → L6 Integration → L7 Contract → L8 Pact (brain parity) → L9 Academic; plus `tests/e2e/{0-architecture,1-smoke,2-pages,3-flows,4-negative}`.
+
+> ⚠️ **Reconciliation correction (2026-08-29).** This line previously read
+> "*(real, from repo)*". That claim was **false for L1 Lint**, and the wording is
+> corrected to "specified" above. Verified: there is **no ESLint configuration in
+> this repository in any form** — no `.eslintrc*`, no `eslint.config.*`, and no
+> `eslintConfig` key in any `package.json` — so `eslint` exits 2 on a config
+> error before evaluating a single file. **No workflow invokes lint at all**
+> (`grep -rn lint .github/workflows/` returns nothing). Two packages
+> (`@ocr/flags`, `@ocr/data-provider`) ship a `lint` script that cannot run.
+>
+> **L1 is specified but does not execute.** It was never red and never green —
+> it is *absent*, which is invisible from any tier above it.
+>
+> **This reverberates upward through the whole pyramid** (see Case 11 in
+> `docs/methodology/ccr-extended-scrum-case-studies.md`):
+> - The **priority hierarchy inverts in practice.** `ci.yml` states the pipeline
+>   order honors *Quality > Security > …*. Quality is the top band and it is the
+>   one missing a gate; Security's L0 runs, and runs first. The Quality band
+>   executes drift + `tsc --noEmit` + vitest — **typecheck is not lint.**
+> - **Every green tier above L1 was measured against a base never established.**
+> - **The ratchet has no floor.** A verified property becomes a regression lock,
+>   but at L1 there is no mean to not-recede from.
+> - **Every story closed under the Wall DoD above inherits the gap** — no Done
+>   ever had a lint assertion, because none existed to run.
+> - **A tier-counting coverage meter overcounts L1 as present** — the companion
+>   error to Case 1's meter undercounting invariants.
+>
+> Closing it means landing a **strict** config and fixing what it finds. A
+> permissively-tuned config adopted to turn the cell green would make the absence
+> permanent and invisible — worse than the honest gap, and forbidden by this
+> backlog's own standard (*no gate weakened*).
+>
+> **CLOSED 2026-08-29.** L1 now exists and executes. A strict type-aware flat
+> config (`eslint.config.js`, `strictTypeChecked`) is at the workspace root,
+> `eslint` is a *declared, pinned* devDependency (it previously was not declared
+> at all, so the two packages shipping a `lint` script were resolving whatever
+> `npx` fetched), and the gate job runs `pnpm lint` in the Quality band ahead of
+> the typecheck. It surfaced **75 violations, all fixed** — including two real
+> defects: a `HeadersInit` spread into an object literal that silently dropped
+> caller headers when they arrived in array or `Headers` form
+> (`runner-fleet/src/github.ts`), and a dead comparison masking an unreachable
+> platform guard (`runner-fleet/src/platform.ts`). It was landed strict and the
+> violations were fixed, not tuned away; the four scoped relaxations that remain
+> each carry a written justification in the config and are narrowed to adapter
+> implementations or test files.
+>
+> `ci-workflow.test.ts` now asserts the lint step exists in the gate, that the
+> root `lint` script and the declared `eslint` dependency exist, and that the
+> flat config is present — mutation-verified by deleting the step and confirming
+> exactly that assertion goes red. **L1 cannot go absent again silently.**
+>
+> ⚠️ **Sibling gap, still open — the Quality band's other tier.** While closing
+> L1 it emerged that `tsc` coverage has the same shape of hole. CI's
+> "Quality — TypeScript" step runs in `packages/flags` only, against a tsconfig
+> whose `include` is `src/**/*` and whose `exclude` lists `tests` and `scripts`.
+> There is **no root tsconfig**, and **`packages/data-provider` has no tsconfig
+> at all**. So the named typecheck gate covers **one of four packages' source,
+> and no test or script anywhere.** Those same files consequently get only
+> non-type-aware lint (the residual list in `eslint.config.js`, which must only
+> shrink). Closing it — a root project plus per-package tsconfigs covering tests
+> — promotes those files into full type-aware linting and into `tsc` coverage in
+> one move. **Untracked — needs a ticket.** Owners: BIA (lead) + DVO.
 
 **Wall DoD (every story):** opens with **S0** (pre-execution semgrep/L0 green), closes with **S2** (post-execution security re-assertion). No story is Done until S2 confirms no wall/invariant regression.
 

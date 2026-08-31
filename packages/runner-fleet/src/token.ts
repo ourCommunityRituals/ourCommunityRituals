@@ -76,7 +76,7 @@ export class TokenManager {
     const timer = setTimeout(() => {
       void this.refresh(scope);
     }, delay);
-    timer.unref?.();
+    timer.unref();
     this.refreshTimers.set(scope, timer);
   }
 }

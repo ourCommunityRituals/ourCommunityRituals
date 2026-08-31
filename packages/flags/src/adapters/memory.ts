@@ -65,7 +65,7 @@ export class MemoryAdapter implements StorageAdapter {
     const key = k(scope, resolvedScopeId, flagKey);
     const existing = this.store.get(key);
     this.store.set(key, {
-      id: existing?.id ?? `mem_${++this.seq}`,
+      id: existing?.id ?? `mem_${String(++this.seq)}`,
       scope,
       scope_id: resolvedScopeId,
       flag_key: flagKey,

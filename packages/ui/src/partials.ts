@@ -170,7 +170,7 @@ export function textarea(o: TextareaOpts): string {
   const errorHtml = o.error ? `<div id="${errorId}" class="form-error" role="alert">${esc(o.error)}</div>` : '';
   return `<div class="form-field">
   <label for="${o.id}">${esc(o.label)}${requiredMark}</label>
-  <textarea id="${o.id}" name="${o.id}" class="${cls}" rows="${o.rows ?? 4}"${o.placeholder ? ` placeholder="${esc(o.placeholder)}"` : ''}${o.required ? ' required' : ''}${o.disabled ? ' disabled' : ''}${aria ? ' ' + aria : ''}>${esc(o.value ?? '')}</textarea>
+  <textarea id="${o.id}" name="${o.id}" class="${cls}" rows="${String(o.rows ?? 4)}"${o.placeholder ? ` placeholder="${esc(o.placeholder)}"` : ''}${o.required ? ' required' : ''}${o.disabled ? ' disabled' : ''}${aria ? ' ' + aria : ''}>${esc(o.value ?? '')}</textarea>
   ${hintHtml}${errorHtml}
 </div>`;
 }

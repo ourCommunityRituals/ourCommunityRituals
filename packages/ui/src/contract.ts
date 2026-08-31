@@ -33,7 +33,7 @@ export function checkTemplate(file: string, html: string): DriftFinding[] {
     findings.push({
       file,
       issue: 'large-inline-style',
-      detail: `Inline <style> is ${inlineCss.length} chars (budget ${INLINE_STYLE_BUDGET}). Move shared rules into @ocr/ui.`,
+      detail: `Inline <style> is ${String(inlineCss.length)} chars (budget ${String(INLINE_STYLE_BUDGET)}). Move shared rules into @ocr/ui.`,
     });
   }
 

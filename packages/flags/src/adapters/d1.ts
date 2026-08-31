@@ -72,7 +72,7 @@ export class D1Adapter implements StorageAdapter {
         .all<{ scope: string; scope_id: string | null; flag_key: string; enabled: number }>();
       const globals = new Map<string, boolean>();
       const events = new Map<string, boolean>();
-      for (const r of res.results ?? []) {
+      for (const r of res.results) {
         if (r.scope === 'event') events.set(r.flag_key, r.enabled === 1);
         else globals.set(r.flag_key, r.enabled === 1);
       }
@@ -85,7 +85,7 @@ export class D1Adapter implements StorageAdapter {
            WHERE scope = 'global' AND (scope_id IS NULL OR scope_id = '')`,
         )
         .all<{ flag_key: string; enabled: number }>();
-      for (const r of res.results ?? []) out.set(r.flag_key, r.enabled === 1);
+      for (const r of res.results) out.set(r.flag_key, r.enabled === 1);
     }
     return out;
   }
@@ -113,7 +113,7 @@ export class D1Adapter implements StorageAdapter {
       enabled: number;
       updated_at: string;
     }>();
-    return (res.results ?? []).map((r) => ({
+    return res.results.map((r) => ({
       id: r.id,
       scope: r.scope as Scope,
       scope_id: r.scope_id ?? '',

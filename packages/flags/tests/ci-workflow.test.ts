@@ -18,7 +18,7 @@
  * directly, so drift between the intended CI shape and the actual workflow fails
  * here rather than silently reintroducing the double-run or a cold install.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
@@ -29,7 +29,10 @@ const CI_PATH = resolve(__dirname, '../../../.github/workflows/ci.yml');
 const PKG_PATH = resolve(__dirname, '../package.json');
 
 const raw = readFileSync(CI_PATH, 'utf8');
-const wf = yaml.load(raw) as { jobs?: Record<string, { steps?: Array<{ run?: string; uses?: string }> }> };
+const wf = yaml.load(raw) as {
+  permissions?: Record<string, string>;
+  jobs?: Record<string, { steps?: Array<{ run?: string; uses?: string; with?: Record<string, unknown> }> }>;
+};
 const jobs = wf.jobs ?? {};
 
 const runsOf = (jobName: string): string[] =>
@@ -149,5 +152,74 @@ describe('OSE-953 — hosted-runner migration topology (all jobs off self-hosted
         `${name} runs Python but does not set up Python — it would fail on the hosted runner`
       ).toBe(true);
     }
+  });
+});
+
+describe('OSE-1045 — CI credential hygiene (no org-write token left for install scripts)', () => {
+  // Reactive correction. The hardened pattern from the OCR_PROPAGATE_TOKEN
+  // review (token must not outlive the clone that needs it) was applied on the
+  // OSE surface and never propagated to this workspace: every OCR-docs checkout
+  // here carried an org-write token with `persist-credentials` left at its
+  // default of TRUE, writing the credential into OCR-docs/.git/config — where
+  // the `pnpm install` that runs later in the same job exposes it to every
+  // dependency lifecycle script. Nothing was shaped to go red. This is that
+  // object.
+  const checkoutSteps = Object.entries(jobs).flatMap(([job, def]) =>
+    (def.steps ?? [])
+      .filter((s) => (s.uses ?? '').startsWith('actions/checkout@'))
+      .map((s) => ({ job, with: (s.with ?? {}) as Record<string, unknown> })),
+  );
+
+  it('the workflow actually has checkout steps to assert on', () => {
+    expect(checkoutSteps.length, 'no actions/checkout steps parsed — the guard would vacuously pass').toBeGreaterThan(0);
+  });
+
+  it('every checkout sets persist-credentials: false', () => {
+    const leaky = checkoutSteps
+      .filter((s) => s.with['persist-credentials'] !== false)
+      .map((s) => s.job);
+    expect(leaky, `these jobs persist checkout credentials into .git/config: ${JSON.stringify(leaky)}`).toEqual([]);
+  });
+
+  it('no token-bearing checkout persists its credential', () => {
+    const tokened = checkoutSteps.filter((s) => typeof s.with['token'] === 'string');
+    expect(tokened.length, 'expected at least one explicitly-tokened checkout (the OCR-docs brain)').toBeGreaterThan(0);
+    for (const s of tokened) {
+      expect(
+        s.with['persist-credentials'],
+        `${s.job}: a checkout carrying an explicit token MUST set persist-credentials: false`,
+      ).toBe(false);
+    }
+  });
+
+  it('the workflow declares an explicit least-privilege permissions block', () => {
+    expect(wf.permissions, 'ci.yml must not inherit the repo-default GITHUB_TOKEN scope').toBeDefined();
+    expect(wf.permissions?.contents, 'contents must be read-only — no job here writes to the repo').toBe('read');
+  });
+});
+
+describe('L1 lint — the base static-quality tier exists and executes', () => {
+  // The tier was specified in docs/cost-sustainability/BACKLOG.md but did not
+  // exist: no eslint config in any form, no workflow invoking lint, and eslint
+  // not even a declared dependency. It was never red and never green — absent,
+  // and absence is invisible from every tier above it. These assertions are the
+  // object whose job is to go red if it disappears again.
+  it('a lint step runs in the gate job', () => {
+    const lintSteps = runsOf('gate').filter((r) => /\blint\b/.test(r));
+    expect(lintSteps.length, 'the gate job must invoke lint — L1 is the base tier').toBeGreaterThan(0);
+  });
+
+  it('the root package exposes the lint script the gate calls', () => {
+    const root = JSON.parse(readFileSync(resolve(__dirname, '../../../package.json'), 'utf8')) as {
+      scripts?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+    expect(root.scripts?.lint, 'root `lint` script must exist').toBeDefined();
+    expect(root.devDependencies?.eslint, 'eslint must be a DECLARED dependency — otherwise the version resolved is whatever npx happens to fetch').toBeDefined();
+  });
+
+  it('an eslint flat config exists at the workspace root', () => {
+    const cfg = resolve(__dirname, '../../../eslint.config.js');
+    expect(existsSync(cfg), 'eslint.config.js must exist — without it eslint exits on a config error before reading a single file').toBe(true);
   });
 });

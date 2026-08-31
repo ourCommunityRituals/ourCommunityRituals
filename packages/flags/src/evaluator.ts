@@ -45,13 +45,14 @@ export async function resolveFlags(
   try {
     const resolved = await adapter.resolveAll(eventId);
     for (const key of ALL_FLAG_KEYS) {
-      out[key] = resolved.has(key) ? resolved.get(key)! : true;
+      const hit = resolved.get(key);
+    out[key] = hit ?? true;
     }
-    return out as Record<FlagKey, boolean>;
+    return out;
   } catch (err) {
     emit(opts?.observability, adapter.id, err);
     for (const key of ALL_FLAG_KEYS) out[key] = true;
-    return out as Record<FlagKey, boolean>;
+    return out;
   }
 }
 

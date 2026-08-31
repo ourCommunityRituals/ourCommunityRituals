@@ -33,8 +33,8 @@ async function main(): Promise<void> {
         const err = r.lastErrorCode ? `  [${r.lastErrorCode}]` : '';
         console.log(`  ${icon}  ${r.config.name.padEnd(24)} ${r.status}${busy}${err}`);
       }
-      console.log(`\n  Queue depth : ${snap.queueDepth ?? 'unavailable'}`);
-      console.log(`  Runners     : ${snap.runners.length}\n`);
+      console.log(`\n  Queue depth : ${String(snap.queueDepth ?? 'unavailable')}`);
+      console.log(`  Runners     : ${String(snap.runners.length)}\n`);
       fleet.stop();
       break;
     }
@@ -48,7 +48,7 @@ async function main(): Promise<void> {
       if (offline.length === 0) {
         console.log('All runners healthy.');
       } else {
-        console.log(`${offline.length} runner(s) still offline after bounce.`);
+        console.log(`${String(offline.length)} runner(s) still offline after bounce.`);
         for (const r of offline) {
           console.log(`  ✗  ${r.config.name}  [${r.lastErrorCode ?? 'unknown'}]`);
         }
@@ -126,7 +126,7 @@ Example config (fleet.config.json):
   }
 }
 
-main().catch((e) => {
+main().catch((e: unknown) => {
   console.error(e instanceof Error ? e.message : String(e));
   process.exit(1);
 });

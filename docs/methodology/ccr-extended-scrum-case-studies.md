@@ -34,6 +34,16 @@ The methodology's contribution: an **assessment whose explicit job was to find w
 
 **Specifics [SCRUB].** "Just have the workflow open a PR" for the meter refresh. (a) `GITHUB_TOKEN`-opened PRs don't trigger workflows → 0/7 required checks. (b) `OCR_PROPAGATE_TOKEN` (org-write) present during `npm ci`. Hardened path: token after `npm ci`, `persist-credentials:false`, `gh pr create` create-or-update, human/CODEOWNERS merge, App-migration fast-follow (OSE-1045). CCR worksheet on OSE-1031.
 
+> ⚠️ **Correction (2026-08-29).** The hardened path recorded above was applied to
+> the OSE surface **only**. Two days later the hub workspace
+> (`ourCommunityRituals`) still ran the *unhardened* pattern in all four
+> token-bearing `ci.yml` jobs: `actions/checkout` with `token:
+> OCR_PROPAGATE_TOKEN` and `persist-credentials` left at its default of **true**,
+> followed later in the same job by `pnpm install` — which was verified to
+> execute dependency lifecycle scripts (`better-sqlite3` install, `esbuild`
+> postinstall). Finding (b) was therefore **still live on a sibling surface while
+> this pack described it as resolved.** See Case 10.
+
 ---
 
 ## Case 3 — Verify-first vs. a confident, fabricated answer
@@ -106,14 +116,111 @@ The methodology's contribution: an **assessment whose explicit job was to find w
 
 ---
 
+---
+
+## Case 10 — The security fix that was recorded as done on one surface only
+
+**Pattern.** A security review produced a genuinely good hardening (a
+credential must not outlive the clone that needs it). It was applied where it
+was found, written up as the resolved state, and taught as a case study. It was
+never propagated to the sibling surface running the identical pattern. Two days
+later an unrelated readiness review — asked a completely different question —
+re-derived the *same* vulnerability from scratch on that sibling, because
+nothing in the record indicated it was still open there.
+
+The cost was not the delay. It was that the write-up **actively concealed** the
+remaining surface: a reader (human or agent) who found the case study would reasonably
+conclude the class was closed. A documented fix is a stronger false-green than
+an undocumented one, because it stops the next person looking.
+
+**Lesson.** Case 7 said reconciliation means every surface. This is the same
+rule with the stakes raised: **for a security finding, "every surface" is part of
+the fix, not follow-up.** A vulnerability class is closed when every surface
+carrying the pattern is remediated *and* each one has an object whose job is to
+go red — not when the first instance is patched and written up. Until then the
+correct record state is "open on N surfaces, remediated on M", never "hardened".
+Write-ups of security fixes should enumerate the surfaces checked, so absence of
+a surface from the list reads as *unchecked* rather than *safe*.
+
+**Specifics [SCRUB].** Case 2's finding (b) hardening landed on OSE (PR #406 /
+OSE-1031). Hub `ourCommunityRituals` `ci.yml` still had all 8 checkouts at
+`persist-credentials` default-true (4 carrying org-write `OCR_PROPAGATE_TOKEN`),
+no top-level `permissions:` block, `.npmrc` with no `ignore-scripts` and
+`resolution-mode=highest`, and a deliberately path-unfiltered `pull_request`
+trigger. Remediated with `persist-credentials: false` ×8, `permissions: contents:
+read`, and four assertions in `ci-workflow.test.ts` (in `test:gate`, a required
+check) — the first object in this repo whose job is to go red on credential
+persistence. Found while answering "is this ready for production release?", not
+by a security pass.
+
+
+---
+
+## Case 11 — The base layer that was never built (and the nine tiers measured on top of it)
+
+**Pattern.** A test pyramid was specified tier-by-tier and published in the
+backlog as "*(real, from repo)*". Nine of its ten tiers were real. **Tier 1 —
+lint, the base static-quality layer — did not exist in any form**: no
+configuration file of any kind, so the linter aborted on a config error before
+reading a single source file, and no pipeline stage invoked it at all. It was
+never red. It was never green. It was *absent*, while every tier above it
+reported green for months.
+
+This is not one missing check. The base layer is the thing every tier above it
+assumes. Its absence propagates **upward** through the whole structure:
+
+1. **The stated priority hierarchy inverts in practice.** The pipeline header
+   claims its order honors *Quality > Security > Maintenance > Performance >
+   Functionality*. Quality is the top band — and it is the band missing a gate,
+   while Security's L0 runs first and runs well. The published priority and the
+   executed priority are opposites.
+2. **Every green tier above L1 was measured against a base never established.**
+   "84 unit tests pass" is a true statement about behavior and an empty one
+   about quality; nothing in the pipeline ever asserted the code was fit to
+   test.
+3. **The ratchet has no floor.** Once a property is verified it becomes a
+   regression lock — you cannot recede from the mean. But at L1 *there is no
+   mean*. Every ratchet in the system is anchored to a baseline that was never
+   set at its base.
+4. **Every story closed under the Wall DoD inherits the gap.** If "no story is
+   Done until S2 confirms no regression," and the quality tier never ran, then
+   every Done in the backlog closed without that assertion having existed.
+5. **A tier-counting coverage meter overcounts.** A meter enumerating specified
+   tiers scores L1 as present. The companion failure to Case 1's meter, which
+   *under*counted invariants — same artifact, opposite direction, both silent.
+6. **Dead scripts teach avoidance.** Two packages shipped a `lint` script that
+   exits on a config error. A developer who runs it once learns the command is
+   broken and stops running it — the absence defends itself.
+
+**Lesson.** Verify that a gate **exists and executes** before you verify that it
+passes; "not failing" and "not running" are indistinguishable from the outside
+and opposite in meaning. Audit a pyramid **bottom-up**, because a missing base
+tier is invisible from the top — every tier above it looks fine, and looks fine
+*because* nothing beneath it is enforcing anything. And the deepest form of
+Case 9: the strongest signal a methodology is real is that it is applied to
+itself — here, nine case studies about rigor sat on top of an unbuilt base
+quality layer. **Closing it means landing a strict config and fixing what it
+finds.** A permissive config adopted to turn the cell green would make the
+absence permanent and invisible, which is strictly worse than the honest gap.
+
+**Specifics [SCRUB].** `BACKLOG.md` "Test-pyramid tiers (real, from repo)"
+listed L1 Lint. Verified 2026-08-29: no `.eslintrc*`, no `eslint.config.*`, no
+`eslintConfig` key in any `package.json`; ESLint 10.1.0 exits 2 on config
+resolution. `grep -rn lint .github/workflows/` returns nothing — no workflow
+invokes it. `@ocr/flags` (`eslint src tests`) and `@ocr/data-provider`
+(`eslint src`) both ship unrunnable scripts. The Quality band in `ci.yml` runs
+drift, `tsc --noEmit`, and vitest — typecheck is not lint. Found while answering
+"is this ready for production release?"
+
+
 ## The through-line (the shareable thesis)
 
 Every case above is the same beam seen from a different angle:
 
-- **Reconciliation** — drive every layer to agreement; the bug lives where they diverge (Cases 1, 4, 6, 7).
-- **The embedded security veto** — awesome ≠ safe; the veto is absolute on exploitable findings and generative when embedded early (Cases 2, 8).
+- **Reconciliation** — drive every layer to agreement; the bug lives where they diverge (Cases 1, 4, 6, 7, 10).
+- **The embedded security veto** — awesome ≠ safe; the veto is absolute on exploitable findings and generative when embedded early (Cases 2, 8, 10).
 - **Verify-first / evidence-based** — plausible is not verified; check ground truth before acting (Cases 3, 5, 6).
-- **Fail-closed honesty** — red/absent when unproven, never silently green; an object whose job is to go red (Cases 1, 9).
+- **Fail-closed honesty** — red/absent when unproven, never silently green; an object whose job is to go red (Cases 1, 9, 11). A gate that never runs is the limiting case: not green, not red, *absent* — and absence is invisible from above, so audit bottom-up.
 - **The CCR run at extended-scrum status** — the convergence gate where all of the above become one scored, auditable, defensible decision *before* ship.
 
 In an era where anyone can generate a plausible solution in seconds, the scarce and sellable thing is a process that reliably tells you which ones will hold — and refuses to ship the ones that won't. These are the receipts that it does.
