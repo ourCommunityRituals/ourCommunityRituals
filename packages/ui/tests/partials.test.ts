@@ -26,7 +26,7 @@ describe('stylesheet', () => {
     expect(ocrStylesheet).toContain('prefers-color-scheme: light');
   });
 
-  it('stylesheet contains [data-theme="light"] forced override (Claude Design + manual toggle)', () => {
+  it('stylesheet contains [data-theme="light"] forced override (manual toggle)', () => {
     expect(ocrStylesheet).toContain('[data-theme="light"]');
   });
 
