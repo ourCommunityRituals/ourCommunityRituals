@@ -136,7 +136,9 @@ Never print a secret value. Print the location only.
 
 ## 2. Dispatch waves
 
-Nine repos, four jobs. Do **not** run all thirty-six at once. Waves exist so the Gate Queue stays reviewable.
+Ten repos, four jobs. Do **not** run all forty at once. Waves exist so the Gate
+Queue stays reviewable. (Amended 2026-08-31 — see §8. The original list said nine
+repos and omitted the hub.)
 
 ### Wave 1 — Calibration (ourSharedEvents only)
 
@@ -158,9 +160,35 @@ ourSharedRecords, ourSharedGames, ourSharedMagnets.
 
 ourAirwaves, ourEventRings, ourSharedPulse.
 
+`ourEventRings` is confirmed real (private, last pushed 2026-04-20 — dormant ~4
+months). Expect the drift-auditor's dominant finding there to be dormancy itself:
+docs describing a system nobody has touched in a third of a year.
+
 ### Wave 5 — The brain
 
 OCR-docs. Run `drift-auditor` and `invariant-sweeper` only. This wave answers the question the other four waves raise: does the documented law match what the code actually enforces anywhere?
+
+Sharpened by the §8.1 measurement: the register is OSE-shaped, so for five of the
+ten repos this wave is less "does the law match the code" than "is there a law at
+all." Ask it in that form.
+
+### Wave 6 — The hub (ourCommunityRituals)
+
+Added 2026-08-31. Run all four. The hub holds `packages/flags` — the conformance
+meter's own source — plus `packages/tokens`, `packages/ui`, `packages/runner-fleet`
+and `packages/data-provider`, four workflows, two composite actions, and the
+`OCR_PROPAGATE_TOKEN`-bearing CI jobs. It carries three register invariants under
+the `ocr` surface (#20 standards_propagation_completeness, #23 red_team_coverage,
+#24 auditability — all three `partial`).
+
+It was the one repo the original wave list did not schedule, which is precisely the
+Case 10 shape from the case-study pack: the surface the register is generated from
+is the surface nobody audits. `posture-scanner` matters most here — the hub is where
+the write-scoped token lives.
+
+`demo-repository` (private, last pushed 2026-04-06) is the eleventh repo in the org
+and is **not** scheduled. Triage it once by hand: if it holds no OCR state, say so in
+a rollup and drop it from the register of things that need auditing.
 
 ---
 
@@ -259,23 +287,104 @@ in the dispatching environment. A mismatch yields no tool and no error — the w
 reports on git history alone and calls it a board reconciliation. CCR sessions
 register the server as `mcp__Linear__*`. Confirm with `/mcp` before Wave 3.
 
-### 7.4 Two repos in the wave list do not reconcile with the hub's own sibling list
+### 7.4 Two repos in the wave list did not reconcile with the hub's own sibling list
 
-The waves name nine repos: ourSharedEvents, ourWKRP, ourSharedRecords,
-ourSharedGames, ourSharedMagnets, ourAirwaves, **ourEventRings**, ourSharedPulse,
-OCR-docs.
+**Resolved 2026-08-31 — both were the hub's record being stale, not the wave list
+being wrong. Amended into §2; kept here as the provenance of that amendment.**
 
-- `ourEventRings` appears nowhere in this repo — not in `.gitignore`'s sibling list,
-  not in `package.json`'s description ("OSE, OW, OA, OSM, OSG, OSP, OSR, OCR-docs"),
-  not in any doc. Either it is a repo the hub has not been told about, or the name is
-  stale. Resolve before Wave 4, or Wave 4 is a batch of two.
-- **`ourCommunityRituals` itself gets no wave.** The hub holds `packages/flags`,
-  `packages/tokens`, `packages/ui`, `packages/runner-fleet`, and
-  `packages/data-provider` — real code, with a real invariant surface (the flags
-  package is the conformance meter's own source) and a real agent-trust surface
-  (four workflows, two composite actions, `OCR_PROPAGATE_TOKEN`-bearing jobs). It is
-  the repo the register is generated from and the one no worker is scheduled to
-  look at. Case 10 of the case-study pack is exactly this shape: a finding recorded
-  as resolved on the OSE surface while it stayed live on the hub.
+- `ourEventRings` appears nowhere in the hub repo — not in `.gitignore`'s sibling
+  list, not in `package.json`'s description ("OSE, OW, OA, OSM, OSG, OSP, OSR,
+  OCR-docs"), not in any doc. The repo **is real**:
+  `ourCommunityRituals/ourEventRings`, private, last pushed 2026-04-20. The hub's
+  sibling list is out of date, and a tool that trusted it would have skipped a live
+  repo. Fixing that list is a hub change, tracked below.
+- **`ourCommunityRituals` itself got no wave.** Now Wave 6. Rationale in §2.
 
-Both are corrections to the wave list, not to the method. The rails are unaffected.
+Both were corrections to the wave list, not to the method. The rails are unaffected.
+
+---
+
+## 8. Measured before Wave 1 (2026-08-31)
+
+### 8.1 The invariant register is OSE-shaped
+
+Parsed from `OCR-docs/ocr-docs-brain/architectural-invariants.yaml`: 25 invariants,
+18 `live` / 7 `partial`. `applies_to` coverage by surface:
+
+| Surface | Repo | Invariants |
+| --- | --- | --- |
+| `ose` | ourSharedEvents | 23 |
+| `osm` | ourSharedMagnets | 8 |
+| `oaw` | ourAirwaves | 7 |
+| `wkrp` | ourWKRP | 6 |
+| `ocr` | hub / brain | 3 |
+| `osr` | ourSharedRecords | 1 |
+| `osg` | ourSharedGames | 1 |
+| `oureventring` | ourEventRings | 1 |
+| `osp` | **ourSharedPulse** | **0** |
+
+Invariant #13 (`brain_enforcement_location`) carries an empty `applies_to`.
+
+What this means for dispatch: `invariant-sweeper` is a high-yield agent in Waves 1,
+2 and parts of 3–4, and close to a no-op in the rest. For ourSharedRecords and
+ourSharedGames it will check exactly one invariant — #14 `mobile_workability`, itself
+`partial` — and for ourSharedPulse, none. It will correctly return near-total ABSENT.
+That is a true finding, but it is a finding about the **register**, not about those
+repos, and it will read as noise if the rollup does not say so.
+
+Do not tune the agent to compensate. Either accept the thin result and record it as
+register debt, or extend the register first and re-run. The one thing not to do is
+let a sweeper with nothing to check generate five items to fill its Gate Queue —
+that is kill condition 6 arriving by construction rather than by drift.
+
+### 8.2 The Wave 1 baseline is five months stale
+
+`ourSharedEvents/.claude/documents/RECONCILIATION.md` is dated **2026-03-27**. Its
+headline findings — dual Worker (`worker/` 1,819-line router vs
+`workers/oursharedevents/` 80-line), 7 undocumented D1 migrations, legacy
+`stage1.yml`/`stage2.yml`, stale GAS-targeted Postman collections — are the exact
+shallow-rediscovery trap §2 warns about. Wave 1's `drift-auditor` was therefore
+dispatched with the baseline's findings stated up front and instructed to report the
+**delta** (RESOLVED / UNCHANGED / WORSE per item, then what is drifting now), and to
+close with an explicit "Calibration verdict" line if it cannot beat the baseline.
+
+A prompt that has to be told what not to rediscover is a prompt with a known
+weakness. If the verdict comes back thin, tighten §1.1 before Wave 2 spends it on
+nine more repos — which is what Wave 1 is for.
+
+### 8.3 Open hub changes this recon implies
+
+Not done here; they are hub edits, not recon artifacts.
+
+1. `.gitignore`'s "Sibling OCR app repos" block and `package.json`'s description both
+   omit `ourEventRings`. Add it, or a tool that reads either will keep skipping a
+   live repo.
+2. `ourSharedPulse` has zero register coverage. Either write its invariants or record
+   the decision that it has none.
+3. `demo-repository` is untriaged (see §2, Wave 6).
+
+### 8.4 How Wave 1 was actually dispatched — a deviation worth recording
+
+Wave 1 did not run the four checked-in definitions. It ran the four **prompts**,
+inlined, on a harness-provided read-only agent type (no `Edit`, no `Write`, no
+`Agent` at the tool level). Two reasons, and the second is the interesting one:
+
+1. Agent definitions added to `.claude/agents/` during a session are not registered
+   as dispatchable types in that same session.
+2. The read-only agent type enforces R1 **mechanically**. The checked-in definitions
+   assert R1 through `tools:` frontmatter whose scoping is, per §7.2, unverified and
+   silent-open. Given a choice between a rail the harness enforces and a rail a file
+   asserts, Wave 1 took the harness.
+
+This means Wave 1 calibrated the **prompts** — which is what §2 says Wave 1 is for —
+but did **not** calibrate the `tools:` scoping. §7.2 stays open. Verify it separately
+on a local dispatch where the transcript is readable, before Wave 2.
+
+The inlined prompts also carried three additions the checked-in files do not:
+the baseline's known findings and the "Calibration verdict" requirement
+(`drift-auditor`, per §8.2); the `ToolSearch` step and capital-`L` warning for the
+deferred Linear tools plus an explicit refuse-to-fabricate clause
+(`board-reconciler`, per §7.3); and the shallow-clone caveat, since a `--depth 1`
+clone makes `git log`-based findings unavailable until a bounded fetch is run. If
+those additions prove load-bearing, fold them back into §1 rather than leaving them
+in one session's dispatch.
