@@ -1,0 +1,27 @@
+{
+  "name": "@ocr/tokens",
+  "version": "0.1.0",
+  "description": "One token source for the OCR fleet. Three tiers, two orthogonal axes (brand paints, surface scales), emitted as CSS and JSON.",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./css": "./dist/tokens.css",
+    "./json": "./dist/tokens.json"
+  },
+  "files": ["src", "dist"],
+  "scripts": {
+    "build": "tsx scripts/build.mjs",
+    "check:generated": "tsx scripts/check-generated.mjs",
+    "check:raw": "node scripts/check-raw-values.mjs",
+    "check": "pnpm check:generated && pnpm check:raw",
+    "test": "vitest run tests/",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}

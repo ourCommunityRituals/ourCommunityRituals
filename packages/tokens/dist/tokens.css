@@ -1,0 +1,378 @@
+/* @ocr/tokens — GENERATED. Do not edit. Run `pnpm --filter @ocr/tokens build`. */
+
+/* ── Tier 1: primitives ───────────────────────────────────────────── */
+:root {
+  --ocr-navy-950: #0F1824;
+  --ocr-navy-900: #1A2740;
+  --ocr-navy-800: #223350;
+  --ocr-navy-700: #2A3D5A;
+  --ocr-navy-500: #7A94B0;
+  --ocr-navy-100: #F0F4F8;
+  --ocr-carbon-950: #0A0A0A;
+  --ocr-carbon-900: #141414;
+  --ocr-carbon-800: #1A1A1A;
+  --ocr-carbon-700: #2A2A2A;
+  --ocr-carbon-500: #888888;
+  --ocr-carbon-100: #F0F0F0;
+  --ocr-paper-050: #F4F7FC;
+  --ocr-paper-100: #FFFFFF;
+  --ocr-paper-200: #D4E0ED;
+  --ocr-ink-900: #162945;
+  --ocr-ink-500: #4A6882;
+  --ocr-signal-700: #0057D6;
+  --ocr-signal-600: #1785FB;
+  --ocr-signal-500: #3D9BFF;
+  --ocr-signal-400: #2E6FDF;
+  --ocr-ember-800: #8A5A00;
+  --ocr-ember-600: #D4954B;
+  --ocr-ember-500: #E8A849;
+  --ocr-teal-400: #00C4B4;
+  --ocr-teal-300: #33D4C6;
+  --ocr-teal-700: #00796B;
+  --ocr-teal-600: #009688;
+  --ocr-warn-400: #F5B32E;
+  --ocr-warn-700: #8A5A00;
+  --ocr-red-500: #E05252;
+  --ocr-red-400: #E87272;
+  --ocr-red-700: #B03030;
+  --ocr-red-600: #C03838;
+  --ocr-broadcast-500: #FF4136;
+  --ocr-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ocr-font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  --ocr-size-0: 0.75rem;
+  --ocr-size-1: 0.875rem;
+  --ocr-size-2: 1rem;
+  --ocr-size-3: 1.125rem;
+  --ocr-size-4: 1.375rem;
+  --ocr-size-5: 1.75rem;
+  --ocr-size-6: 2.25rem;
+  --ocr-size-7: 3rem;
+  --ocr-size-8: 4rem;
+  --ocr-leading-tight: 1.1;
+  --ocr-leading-snug: 1.3;
+  --ocr-leading-normal: 1.5;
+  --ocr-leading-loose: 1.7;
+  --ocr-space-1: 4px;
+  --ocr-space-2: 8px;
+  --ocr-space-3: 12px;
+  --ocr-space-4: 16px;
+  --ocr-space-5: 24px;
+  --ocr-space-6: 32px;
+  --ocr-space-7: 48px;
+  --ocr-space-8: 64px;
+  --ocr-space-9: 96px;
+  --ocr-radius-0: 0;
+  --ocr-radius-1: 4px;
+  --ocr-radius-2: 8px;
+  --ocr-radius-3: 12px;
+  --ocr-radius-pill: 999px;
+  --ocr-border-1: 1px;
+  --ocr-border-2: 2px;
+  --ocr-border-3: 3px;
+  --ocr-elevation-0: none;
+  --ocr-elevation-1: 0 1px 2px rgb(0 0 0 / 0.08);
+  --ocr-elevation-2: 0 4px 12px rgb(0 0 0 / 0.12);
+  --ocr-layer-base: 0;
+  --ocr-layer-raised: 10;
+  --ocr-layer-sticky: 20;
+  --ocr-layer-overlay: 30;
+  --ocr-layer-modal: 40;
+  --ocr-layer-toast: 50;
+  --ocr-duration-0: 0ms;
+  --ocr-duration-1: 120ms;
+  --ocr-duration-2: 200ms;
+  --ocr-duration-3: 320ms;
+  --ocr-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ocr-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ocr-target-min: 44px;
+  --ocr-target-default: 48px;
+  --ocr-target-public: 56px;
+  --ocr-bp-sm: 480px;
+  --ocr-bp-md: 768px;
+  --ocr-bp-lg: 1024px;
+  --ocr-bp-xl: 1440px;
+  --ocr-bp-tv: 1920px;
+}
+
+/* ── Tier 2: semantics (paint axis — [data-brand]) ────────────────── */
+/* brand: ose — dark base */
+:root {
+  --ground: var(--ocr-navy-950);
+  --surface: var(--ocr-navy-900);
+  --surface-raised: var(--ocr-navy-800);
+  --border: var(--ocr-navy-700);
+  --text: var(--ocr-navy-100);
+  --text-muted: var(--ocr-navy-500);
+  --action: var(--ocr-signal-500);
+  --action-hover: var(--ocr-signal-600);
+  --on-action: var(--ocr-navy-950);
+  --status-live: var(--ocr-teal-400);
+  --status-warn: var(--ocr-warn-400);
+  --status-danger: var(--ocr-red-500);
+  --status-danger-hover: var(--ocr-red-400);
+  --focus-ring: var(--ocr-signal-500);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground: var(--ocr-paper-050);
+    --surface: var(--ocr-paper-100);
+    --surface-raised: var(--ocr-paper-200);
+    --border: var(--ocr-paper-200);
+    --text: var(--ocr-ink-900);
+    --text-muted: var(--ocr-ink-500);
+    --action: var(--ocr-signal-700);
+    --action-hover: var(--ocr-signal-400);
+    --on-action: var(--ocr-paper-100);
+    --status-live: var(--ocr-teal-700);
+    --status-warn: var(--ocr-warn-700);
+    --status-danger: var(--ocr-red-700);
+    --status-danger-hover: var(--ocr-red-600);
+    --focus-ring: var(--ocr-signal-700);
+  }
+}
+:root[data-theme="light"] {
+  --ground: var(--ocr-paper-050);
+  --surface: var(--ocr-paper-100);
+  --surface-raised: var(--ocr-paper-200);
+  --border: var(--ocr-paper-200);
+  --text: var(--ocr-ink-900);
+  --text-muted: var(--ocr-ink-500);
+  --action: var(--ocr-signal-700);
+  --action-hover: var(--ocr-signal-400);
+  --on-action: var(--ocr-paper-100);
+  --status-live: var(--ocr-teal-700);
+  --status-warn: var(--ocr-warn-700);
+  --status-danger: var(--ocr-red-700);
+  --status-danger-hover: var(--ocr-red-600);
+  --focus-ring: var(--ocr-signal-700);
+}
+
+/* brand: ow — dark base */
+[data-brand="ow"] {
+  --ground: var(--ocr-carbon-950);
+  --surface: var(--ocr-carbon-900);
+  --surface-raised: var(--ocr-carbon-800);
+  --border: var(--ocr-carbon-700);
+  --text: var(--ocr-carbon-100);
+  --text-muted: var(--ocr-carbon-500);
+  --action: var(--ocr-ember-600);
+  --action-hover: var(--ocr-ember-500);
+  --on-action: var(--ocr-carbon-950);
+  --status-live: var(--ocr-broadcast-500);
+  --status-warn: var(--ocr-warn-400);
+  --status-danger: var(--ocr-red-500);
+  --status-danger-hover: var(--ocr-red-400);
+  --focus-ring: var(--ocr-ember-600);
+}
+@media (prefers-color-scheme: light) {
+  [data-brand="ow"]:not([data-theme="dark"]) {
+    --ground: var(--ocr-paper-050);
+    --surface: var(--ocr-paper-100);
+    --surface-raised: var(--ocr-paper-200);
+    --border: var(--ocr-paper-200);
+    --text: var(--ocr-ink-900);
+    --text-muted: var(--ocr-ink-500);
+    --action: var(--ocr-ember-800);
+    --action-hover: var(--ocr-ember-800);
+    --on-action: var(--ocr-paper-100);
+    --status-live: var(--ocr-red-700);
+    --status-warn: var(--ocr-warn-700);
+    --status-danger: var(--ocr-red-700);
+    --status-danger-hover: var(--ocr-red-600);
+    --focus-ring: var(--ocr-ember-800);
+  }
+}
+[data-brand="ow"][data-theme="light"] {
+  --ground: var(--ocr-paper-050);
+  --surface: var(--ocr-paper-100);
+  --surface-raised: var(--ocr-paper-200);
+  --border: var(--ocr-paper-200);
+  --text: var(--ocr-ink-900);
+  --text-muted: var(--ocr-ink-500);
+  --action: var(--ocr-ember-800);
+  --action-hover: var(--ocr-ember-800);
+  --on-action: var(--ocr-paper-100);
+  --status-live: var(--ocr-red-700);
+  --status-warn: var(--ocr-warn-700);
+  --status-danger: var(--ocr-red-700);
+  --status-danger-hover: var(--ocr-red-600);
+  --focus-ring: var(--ocr-ember-800);
+}
+
+/* ── Tier 3: components ───────────────────────────────────────────── */
+:root {
+  --button-height: var(--ocr-target-default);
+  --button-padding-x: var(--ocr-space-5);
+  --button-padding-y: var(--ocr-space-3);
+  --button-radius: var(--ocr-radius-2);
+  --button-font-size: var(--ocr-size-2);
+  --button-gap: var(--ocr-space-2);
+  --button-primary-bg: var(--action);
+  --button-primary-fg: var(--on-action);
+  --button-primary-bg-hover: var(--action-hover);
+  --button-secondary-bg: var(--surface);
+  --button-secondary-fg: var(--text);
+  --button-secondary-border: var(--border);
+  --button-danger-bg: var(--status-danger);
+  --button-danger-fg: var(--ocr-paper-100);
+  --button-disabled-opacity: 0.4;
+  --field-height: var(--ocr-target-default);
+  --field-padding-x: var(--ocr-space-3);
+  --field-padding-y: var(--ocr-space-3);
+  --field-radius: var(--ocr-radius-2);
+  --field-font-size: var(--ocr-size-2);
+  --field-bg: var(--surface);
+  --field-fg: var(--text);
+  --field-border: var(--border);
+  --field-border-focus: var(--action);
+  --field-placeholder: var(--text-muted);
+  --field-label-size: var(--ocr-size-1);
+  --field-label-fg: var(--text-muted);
+  --field-invalid-border: var(--status-danger);
+  --field-invalid-fg: var(--status-danger);
+  --card-bg: var(--surface);
+  --card-border: var(--border);
+  --card-border-width: var(--ocr-border-1);
+  --card-radius: var(--ocr-radius-2);
+  --card-padding: var(--ocr-space-4);
+  --card-gap: var(--ocr-space-3);
+  --card-elevation: var(--ocr-elevation-0);
+  --table-row-height: var(--ocr-target-default);
+  --table-cell-padding-x: var(--ocr-space-3);
+  --table-cell-padding-y: var(--ocr-space-3);
+  --table-border: var(--border);
+  --table-header-fg: var(--text-muted);
+  --table-header-size: var(--ocr-size-1);
+  --table-row-hover-bg: var(--surface-raised);
+  --table-numeric-font: var(--ocr-font-mono);
+  --status-region-min-height: var(--ocr-space-9);
+  --skeleton-bg: var(--surface-raised);
+  --skeleton-radius: var(--ocr-radius-1);
+  --skeleton-duration: var(--ocr-duration-3);
+  --empty-padding: var(--ocr-space-7);
+  --empty-title-size: var(--ocr-size-4);
+  --empty-body-size: var(--ocr-size-2);
+  --empty-body-fg: var(--text-muted);
+  --empty-measure: 34ch;
+  --error-bg: var(--surface);
+  --error-border: var(--status-danger);
+  --error-fg: var(--status-danger);
+  --error-padding: var(--ocr-space-4);
+  --disclosure-summary-min-height: var(--ocr-target-default);
+  --disclosure-summary-padding-y: var(--ocr-space-3);
+  --disclosure-summary-padding-x: var(--ocr-space-4);
+  --disclosure-summary-size: var(--ocr-size-2);
+  --disclosure-summary-fg: var(--text);
+  --disclosure-rule-size: var(--ocr-size-1);
+  --disclosure-rule-fg: var(--text-muted);
+  --disclosure-marker-size: var(--ocr-size-2);
+  --disclosure-panel-padding: var(--ocr-space-4);
+  --disclosure-panel-bg: var(--surface);
+  --disclosure-panel-border: var(--border);
+  --disclosure-panel-radius: var(--ocr-radius-2);
+  --disclosure-edited-marker: var(--status-warn);
+  --disclosure-step-gap: var(--ocr-space-5);
+  --disclosure-duration: var(--ocr-duration-2);
+  --focus-width: var(--ocr-border-3);
+  --focus-offset: var(--ocr-border-2);
+  --focus-color: var(--focus-ring);
+  --focus-radius: var(--ocr-radius-1);
+  --report-row-border: var(--border);
+  --report-row-padding-y: var(--ocr-space-3);
+  --report-figure-size: var(--ocr-size-6);
+  --report-figure-font: var(--ocr-font-mono);
+  --report-figure-fg: var(--text);
+  --report-label-size: var(--ocr-size-1);
+  --report-label-fg: var(--text-muted);
+  --report-shared-figure-border: var(--action);
+  --report-section-gap: var(--ocr-space-6);
+  --poster-qr-size: 2.75in;
+  --poster-qr-quiet-zone: 0.25in;
+  --poster-when-size: var(--ocr-size-8);
+  --poster-what-size: var(--ocr-size-6);
+  --poster-meta-size: var(--ocr-size-3);
+  --poster-ink: var(--ocr-ink-900);
+  --poster-stock: var(--ocr-paper-100);
+  --poster-margin: 0.5in;
+  --poster-sponsor-slot-height: 0.9in;
+  --tv-safe-inset: 3%;
+  --tv-rotation-slot-height: var(--ocr-space-9);
+  --tv-rotation-slot-gap: var(--ocr-space-5);
+  --tv-headline-size: var(--ocr-size-8);
+  --tv-meta-size: var(--ocr-size-5);
+  --tv-transition-duration: var(--ocr-duration-3);
+}
+
+/* ── Surface adaptation (scale axis — [data-surface]) ─────────────── */
+/* surface: console — Desk use, mouse and keyboard, dense data. The baseline. */
+:root {
+  --surface-target: var(--ocr-target-default);
+}
+
+/* surface: public — Standing, outdoors, one-handed. Bigger targets matter more than bigger type. */
+[data-surface="public"] {
+  --ocr-size-0: calc(0.75rem * 1.06);
+  --ocr-size-1: calc(0.875rem * 1.06);
+  --ocr-size-2: calc(1rem * 1.06);
+  --ocr-size-3: calc(1.125rem * 1.06);
+  --ocr-size-4: calc(1.375rem * 1.06);
+  --ocr-size-5: calc(1.75rem * 1.06);
+  --ocr-size-6: calc(2.25rem * 1.06);
+  --ocr-size-7: calc(3rem * 1.06);
+  --ocr-size-8: calc(4rem * 1.06);
+  --surface-target: var(--ocr-target-public);
+}
+
+/* surface: tv — Ten feet away across a hall. Zero interaction, so targets are irrelevant. */
+[data-surface="tv"] {
+  --ocr-size-0: calc(0.75rem * 2.2);
+  --ocr-size-1: calc(0.875rem * 2.2);
+  --ocr-size-2: calc(1rem * 2.2);
+  --ocr-size-3: calc(1.125rem * 2.2);
+  --ocr-size-4: calc(1.375rem * 2.2);
+  --ocr-size-5: calc(1.75rem * 2.2);
+  --ocr-size-6: calc(2.25rem * 2.2);
+  --ocr-size-7: calc(3rem * 2.2);
+  --ocr-size-8: calc(4rem * 2.2);
+  --ocr-space-1: calc(4px * 1.8);
+  --ocr-space-2: calc(8px * 1.8);
+  --ocr-space-3: calc(12px * 1.8);
+  --ocr-space-4: calc(16px * 1.8);
+  --ocr-space-5: calc(24px * 1.8);
+  --ocr-space-6: calc(32px * 1.8);
+  --ocr-space-7: calc(48px * 1.8);
+  --ocr-space-8: calc(64px * 1.8);
+  --ocr-space-9: calc(96px * 1.8);
+  --surface-target: var(--ocr-target-default);
+}
+
+/* surface: poster — Print. Hierarchy does the work here, not a scale multiplier. */
+[data-surface="poster"] {
+  --surface-target: var(--ocr-target-min);
+}
+
+/* ── UEC v1.1 — locked: theme-invariant AND brand-invariant ───────── */
+:root {
+  --uec-enter: #2D6A4F;
+  --uec-live: #E07A5F;
+  --uec-sponsor: #1D3557;
+  --uec-archive: #6C3483;
+  --uec-help: #D4668E;
+  --uec-feedback: #C4930A;
+  --uec-utility: #4A4A4A;
+  --uec-alert: #B8960A;
+  --uec-staff: #A00020;
+  --uec-checkin: #006B6B;
+  --uec-shop: #1A4A48;
+  --uec-enter-scan: #1A6B2F;
+  --uec-live-scan: #C04048;
+  --uec-sponsor-scan: #1A3A8A;
+  --uec-archive-scan: #5E1A9A;
+  --uec-help-scan: #B01468;
+  --uec-feedback-scan: #8A5A00;
+  --uec-utility-scan: #2A2A3A;
+  --uec-alert-scan: #B8960A;
+  --uec-staff-scan: #A00020;
+  --uec-checkin-scan: #006B6B;
+  --uec-shop-scan: #1A4A48;
+}
