@@ -61,3 +61,8 @@ fleet-dashboard.html
 /_*.ps1
 /_run-hidden.vbs
 /reconfig-*.ps1
+
+# @ocr/tokens ships its generated CSS/JSON: check-generated.mjs compares
+# against them and consumers import ./dist/tokens.css directly.
+!packages/tokens/dist/
+!packages/tokens/dist/**
