@@ -369,12 +369,14 @@ Wave 1 did not run the four checked-in definitions. It ran the four **prompts**,
 inlined, on a harness-provided read-only agent type (no `Edit`, no `Write`, no
 `Agent` at the tool level). Two reasons, and the second is the interesting one:
 
-1. Agent definitions added to `.claude/agents/` during a session are not registered
-   as dispatchable types in that same session.
+1. At dispatch time the four definitions were not yet registered as dispatchable
+   types. **This turned out to be a timing effect, not a limitation** — they
+   registered partway through Wave 1 and became available mid-session. Corrected
+   here rather than left standing; see §8.5.
 2. The read-only agent type enforces R1 **mechanically**. The checked-in definitions
    assert R1 through `tools:` frontmatter whose scoping is, per §7.2, unverified and
    silent-open. Given a choice between a rail the harness enforces and a rail a file
-   asserts, Wave 1 took the harness.
+   asserts, Wave 1 took the harness. This reason stands.
 
 This means Wave 1 calibrated the **prompts** — which is what §2 says Wave 1 is for —
 but did **not** calibrate the `tools:` scoping. §7.2 stays open. Verify it separately
@@ -388,3 +390,49 @@ deferred Linear tools plus an explicit refuse-to-fabricate clause
 clone makes `git log`-based findings unavailable until a bounded fetch is run. If
 those additions prove load-bearing, fold them back into §1 rather than leaving them
 in one session's dispatch.
+
+
+### 8.5 §7.2 partially answered: the scoped form survives registration
+
+When the four definitions registered mid-session, the harness listed them with their
+`tools:` lines intact — `drift-auditor` as `Read, Grep, Glob, Bash(git log:*),
+Bash(git status:*), Bash(git diff:*)`, and the other three likewise. The scoped form
+was **parsed and retained**, not silently dropped and not widened to bare `Bash`.
+
+That closes the loudest half of §7.2's worry. What it does not close: a tool list
+displayed correctly is not proof the scope is *enforced* at call time. The remaining
+check is behavioural — dispatch `drift-auditor` and confirm from the transcript that
+a non-`git` Bash call is actually refused. Until someone runs that, treat R1 on the
+checked-in definitions as probable rather than proven, and prefer a mechanically
+read-only agent type for any worker whose containment actually matters.
+
+Note also that the registered `board-reconciler` carries the lowercase
+`mcp__linear__*` names verbatim, exactly as §7.3 warns. Registration validates
+nothing about whether those names resolve.
+
+### 8.6 A worker read the wrong repo's git history — the R3 mechanism, demonstrated
+
+`board-reconciler` self-reported that one `git log --since` call returned commits that
+do not resolve in ourSharedEvents, including a `0b3b646` "docs(recon)" commit and an
+`OW-127` reference. Verified: `git cat-file -t 0b3b646` in ourSharedEvents returns
+*"not a valid object name."* Those were **this lead session's own hub commits**. The
+worker's shell had defaulted to the lead session's working directory rather than the
+repo it was auditing.
+
+The worker caught it, discarded the result, and re-verified every SHA before writing
+— correct behaviour, and the reason this is a near-miss rather than a corrupted
+artifact. But the mechanism is exactly what R3 exists to prevent. Here it crossed a
+harmless boundary (hub → OSE). In a session holding both ourSharedEvents and ourWKRP
+it would cross the legal wall, silently, through a default working directory that
+nobody set deliberately.
+
+**R3's "separate sessions, separate invocations" is therefore not belt-and-braces —
+it is the only thing standing between a default cwd and a wall breach.** Wave 2 in
+its own session is not ceremony.
+
+Two changes follow:
+1. Every worker prompt must state the absolute path of the repo under scan and
+   require `git -C <path>` for every git call. Never a bare `git` command.
+2. A session must never hold clones of both ourSharedEvents and ourWKRP, regardless
+   of which repo any individual worker is pointed at. Attachment is the boundary,
+   not instruction.
