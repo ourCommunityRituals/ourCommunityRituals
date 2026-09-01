@@ -436,3 +436,53 @@ Two changes follow:
 2. A session must never hold clones of both ourSharedEvents and ourWKRP, regardless
    of which repo any individual worker is pointed at. Attachment is the boundary,
    not instruction.
+
+### 8.7 §7.2 RESOLVED — the `tools:` scoping is NOT enforced. R1 is prose.
+
+**This supersedes §8.5's tentative reading. Act on this one.**
+
+Two workers dispatched through the checked-in definitions — `drift-auditor` against
+OCR-docs and `posture-scanner` against the hub — were each asked, separately from
+their audit, to report every Bash command they ran and whether any was refused.
+Both reported the same thing independently:
+
+- `drift-auditor` (frontmatter: `Bash(git log:*)`, `Bash(git status:*)`,
+  `Bash(git diff:*)`) executed `python3 ocr-docs-brain/tests/run_all.py`, plus `ls`,
+  `find`, `cat`, `sed`, `awk`, `wc`, and heredoc Python scripts. It ran the brain's
+  ten-level pyramid and reported the result (10/10 PASS).
+- `posture-scanner` (frontmatter: `Bash(git log:*)`) ran `find`, `cat`, `grep -r`,
+  `ls`, `git status --ignored`, `git ls-files`, `git tag -l`, `git check-ignore`, and
+  `git log --all -p`. Its own words: *"my actual runtime tool grant was the full,
+  unscoped `Bash` tool, not the `Bash(git log:*)` scope declared in this repo's own
+  `.claude/agents/posture-scanner.md`."*
+
+Neither reported a single refusal. §8.5 was right that the scoped form is *parsed and
+displayed* at registration; it is wrong to have read that as evidence of anything.
+The string survives registration and is not enforced at call time — the silent-open
+failure §7.2 predicted, confirmed.
+
+**What this actually means.** Bash writes files. `echo > file`, `rm`, `git checkout`,
+a `python3` heredoc — all available to every worker carrying a `Bash(...)` line. The
+four repo-committed definitions have **no mechanical read-only guarantee whatsoever**.
+R1 for them is a sentence in a prompt, and the only reason nothing was written this
+round is that the prompts said not to and the workers complied.
+
+This is not a rail breach (kill condition 3 did not fire — no worker attempted a
+write). It is worse in one respect: the rail was never there to breach.
+
+**Standing changes, effective immediately:**
+1. **Containment comes from the agent type, not from `tools:`.** Dispatch any worker
+   whose read-only property matters on a harness-provided mechanically read-only
+   agent type. The Wave 1 choice recorded in §8.4 was correct, and now for a proven
+   reason rather than a cautious one.
+2. **Treat `Bash(...)` in these definitions as documentation of intent**, not as a
+   control. Keep the lines — they say what the worker *should* need — but never cite
+   them as the reason a worker cannot write.
+3. **Every worker prompt states the read-only constraint explicitly**, because that
+   sentence is now the actual mechanism.
+4. Re-verify on any CLI upgrade. This is a harness property and it can change in
+   either direction without notice.
+
+The self-report question — *"list every Bash command you ran and state whether any was
+refused"* — cost nothing and produced the most consequential finding of the round.
+Put it in every dispatch.
