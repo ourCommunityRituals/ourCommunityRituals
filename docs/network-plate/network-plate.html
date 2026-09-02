@@ -220,11 +220,12 @@
   .rstep[data-state="queued"] .st{background:var(--veg-pale);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--veg)}
   .rstep[data-state="blocked"] .st{background:var(--paper-2);color:var(--flag);box-shadow:inset 0 0 0 1.5px var(--flag)}
   .rstep.dim{opacity:.22}
-  table.ledger{border-collapse:collapse;width:100%;font-family:var(--cond);font-size:13px;min-width:860px}
+  table.ledger{border-collapse:collapse;width:100%;font-family:var(--cond);font-size:13px;min-width:960px}
   .ledger th,.ledger td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
   .ledger th{font-weight:600;color:var(--ink-soft);font-size:11px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
   .ledger th.c,.ledger td.c{text-align:center;white-space:nowrap}
-  .ledger td .code{font-size:11px;color:var(--ink-soft)}
+  .ledger td:first-child{min-width:280px}
+  .ledger td .code{font-size:11px;color:var(--ink-soft);display:block;margin-top:2px}
   .ledger tr.grp td{background:var(--paper-2);font-weight:600;font-size:12px;padding:5px 8px}
   .ledger tr.frow{cursor:pointer}
   .ledger tr.frow:hover td,.ledger tr.frow:focus-visible td{background:var(--paper-2)}
