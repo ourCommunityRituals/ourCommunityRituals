@@ -38,6 +38,14 @@ Each item was verified by reading source at the SHAs above. They change the plan
 
 **F8 — The engine is Bruno now, and the legacy Bruno SharedReport collection is GAS-era.** OSE-1191 is Done (PR #445). The T2 job is `T2 Contract → Staging (Bruno)` and runs `npx bru run . -r --env ose-staging --reporter-junit`. `bruno/ose-sharedreport/` still targets `api_getSharedAnalytics`-style behaviour (`gate_test_event_f6`, "Export to Sheets"); so do the four Event-POV Playwright specs the epic names (`shared-reporting.spec.js`, `admin-surface-sharedreport.spec.js`, `shared-report-mobile.spec.js`, `shared-report-name-resolution.spec.js`), which drive `api_getSharedAnalytics` and Sheets export. Under Invariant #10 (deprecation lock) these are candidates for retirement, not folding. §8 lists the disposition.
 
+**F10 — Live tenant-isolation gap in `headcount_trend` (CCR Loop 1, backend lens; verified by the lead).** `event_series` (migration 0033) has no `brand_id`. The auto-detector (`shared-report.ts`, series detector) clusters on `location` + weekday + hour with no brand predicate, and the trend read (`shared-report-builder.ts`, instances query) selects every event with the series id, again with no brand predicate. Two brands sharing one venue string on the same cadence cluster into one series; once an admin confirms it, a premium viewer on one brand's event receives the other brand's per-instance `unique_gatherings`. Aggregate-only and K-floored, so never-who holds, but Invariant #9 (`tenant_isolation`) does not. This predates the matrix and is Security-owned now: read-time `AND brand_id = ?` bound to the anchor event (the one-line stop), the same predicate in the detector (defence in depth), a data audit for existing cross-brand series, and a new matrix cell asserting every `headcount_trend.instances[].event_id` shares the token event's brand (§3.6).
+
+**F11 — T4f is double-masked.** Beyond the seed step (F6), the `T4f` step itself is `continue-on-error: true` with no `Fail check` behind it, while the sibling `T2 Contract → Staging (Bruno)` job already pairs `continue-on-error` with an explicit `Fail check` step that reads `steps.*.outcome` and exits 1. T4e in the same job had its mask removed under OSE-852 for exactly this reason. Cheapest change in the whole programme: remove the line, add the T2-style fail check.
+
+**F12 — The current sponsor-isolation test asserts nothing on today's fixtures.** `sharedreport-depth.spec.ts` guards its isolation assertions with `if (impressions.length > 0)`; the fixture SQL seeds no placements or aggregates, so the branch never runs and the test passes with zero assertions. The matrix spec must not inherit this: every sponsor cell asserts a minimum row count on B3/B4 or emits `SKIP[precondition-unmet]` (§6), and distinguishes "nothing scanned yet" on B1/B2 from "fixture not seeded".
+
+**F13 — The "post_event gates full-report render" rule exists nowhere.** `shared-report.html` (signed-link render path) has no phase or status branch; it renders whatever `report.*` contains. E1 (OSE-1184) is therefore a **build** story with a design question, not a test-coverage story, and the brain contract's "phase = post_event gates full-report rendering" line describes intent, not code. Owner ruling needed (§10, M-Q7).
+
 **F9 — OSE-1194 scope omits this hub repo.** The retirement ticket lists OSE files and the OCR-docs brain invariant #11. This workspace also carries self-hosted runner apparatus: `packages/runner-fleet/` (with `runner-fleet:*` scripts in the root `package.json`), `_provision-runner-4.ps1` and `_reregister-runner-3.ps1` at the root, and `docs/methodology/ocr-recon-fleet-dispatch-runbook.md` referencing runner workers. Nothing here is deleted by this PR; it is a scope addition for OSE-1194 item 5, to land in lockstep with the brain PR (item 4).
 
 ## 2. Vocabulary (do not invent a fourth tier axis)
@@ -125,6 +133,14 @@ Plus the cross-depth wire checks that apply to every 200 cell: no `"sponsor_tier
 
 Both run **without** `ADMIN_SCOPE_ALL` on the identity. If the job cannot obtain a scoped identity, S1/S2 skip as `precondition-unmet`, and the summary shows that, never green.
 
+### 3.6 Tenant-scope cell on `headcount_trend` (F10)
+
+| # | Fixture | Expected |
+| --- | --- | --- |
+| T1 | a confirmed series whose members span `brand_id ∈ {ose, sp_other}` at one venue string (**new** fixture rows) | premium token on the `ose` member: every `headcount_trend.instances[].event_id` resolves to `brand_id = 'ose'`; the `sp_other` instance is absent, not nulled |
+
+Red today. Goes green with the read-time predicate. This is the first proof of the doc's own claim that adding a cell is a row, not a harness.
+
 ### 3.5 Cell count
 
 | | Today | Matrix |
@@ -152,7 +168,8 @@ The matrix is the **Newman collection the tickets describe, rebased onto Bruno a
 - `ttl_days: 1` on every mint; tokens live in process memory, never in `$GITHUB_ENV` or artifacts.
 - Playwright `request` failures echo headers. The matrix spec wraps every call so that a failure prints `Authorization: Bearer <redacted:len=N>`; a static unit test asserts the raw header never reaches `console`/reporter output (mutation-test candidate for G1).
 - Staging `ADMIN_KEY` ≠ prod `ADMIN_KEY` is an OSE-1191 Part 2 rotation item, owner boundary; the matrix does not run until it is confirmed.
-- Mint volume (~20/run) sits well under the admin rate limit but shares CI's egress IP; if 429 appears, the fix is a serialised mint with backoff, not a retry-until-green.
+- Mint rate limit is real, not noise: the mint key is `mint:<clientIp>:<eventId>` capped at `RATE_LIMIT_MINT_MAX = 10` per minute, and 7 of the 8 viewer cells mint against one event from CI's single egress IP. The setup **serialises mints per target event with backoff from the first PR**, never `Promise.all`. Side note, low severity: that limiter runs before `requireAdmin`, so an unauthenticated caller can pollute the bucket and lock a legitimate admin out of minting for one event for a minute (pre-auth DoS); record it, do not block on it.
+- The JSON reporter the guard extension parses does not exist yet: `playwright.e2e-smoke.config.ts` and `playwright.ui-smoke.config.ts` emit `html` + `line` only, and `retries: 2` on CI produces a `flaky` bucket the all-skipped rule must classify (a retried-then-passed test is a pass, and is counted). §6's extension is new infrastructure with a negative control, not a tweak.
 
 ## 5. Layer assignment — Security Ledger seed rows for SharedReport
 
@@ -174,7 +191,8 @@ Lowest honest layer per assertion. "Already" means an existing test proves it to
 | cross_product token fails closed | already | A12 | — | anonymity boundary; keep live |
 | object-level scope on mint-link | already (`admin-object-scope.invariant.spec.ts`, structural) | S1/S2 | — | only honest when run as scoped operator (F7) |
 | cache policy by phase | already (Q7 tests) | B1–B4 | — | |
-| **phase gate on full-report render** (post_event only) | — | not API-provable (F4) | **E1** | brain says render gate |
+| **`headcount_trend` members share the viewer's brand** (F10) | new unit test on the builder query | T1 (§3.6) | — | Invariant #9; red today |
+| **phase gate on full-report render** (post_event only) | — | not API-provable (F4) | **E1 — build, then test** | rule is not implemented anywhere (F13); owner ruling M-Q7 |
 | locked sections absent from LOCAL viewer DOM | — | — | **E1** | client-leak |
 | corridor-map SVG injection / exclusion list | — | — | **E1 + G2 DAST** | CCR must-fix #3 |
 | CSP / nonce on `/sharedReport` | — | — | **G2** | |
@@ -204,7 +222,7 @@ SKIP[precondition-unmet] scoped-operator identity — observed: ADMIN_BRAND_MEMB
 
 A bare `test.skip(cond, 'fixtures not seeded')` (the current spec, 8 times) is a defect under this contract.
 
-**`pw-guarded.sh` extension (A1, OSE-1176):** after the run, parse the JSON reporter; `passed === 0 && skipped > 0` exits 1 with "all-skipped ≠ green"; the step summary prints `passed / failed / skipped[precondition-unmet] / skipped[n/a-by-design] / skipped[covered-at]`, parsed from the skip-reason prefix. Unknown prefix counts as `precondition-unmet` (fail-closed).
+**`pw-guarded.sh` extension (A1, OSE-1176):** add a `json` reporter with file output to both Playwright configs; after the run, parse it; `passed + flaky === 0 && skipped > 0` exits 1 with "all-skipped ≠ green"; the step summary prints `passed / flaky / failed / skipped[precondition-unmet] / skipped[n/a-by-design] / skipped[covered-at]`, parsed from the skip-reason prefix. Unknown prefix counts as `precondition-unmet` (fail-closed). **Negative control before it gates anything** (per `OCR_STANDARD_artifactIntegrityChecks.md`): a synthetic all-skipped run must exit 1 and a one-real-pass run must exit 0, both asserted by a test in the T0 shard.
 
 ## 7. Prerequisites and who owns them
 
@@ -214,9 +232,10 @@ A bare `test.skip(cond, 'fixtures not seeded')` (the current spec, 8 times) is a
 | P2 | Confirm staging `ADMIN_KEY` rotated and ≠ prod (OSE-1191 Part 2) | owner | CCR must-fix #2 |
 | P3 | Scoped operator identity for CI (`ADMIN_BRAND_MEMBERSHIP` entry, email actor) | owner | F7; S1/S2 are vacuous otherwise |
 | P4 | Fixture SQL: `sp_test` sponsor_business + `sponsor_placement` on all four fixture events; `evt_smoke_archived`, `evt_smoke_nostart`, `evt_smoke_otherbrand`; `scan_aggregates` rows for B3/B4 with ≥ K distinct hashes plus one sub-K bucket; one second sponsor sharing a `campaign_id` on B3 | agent (C1 PR) | non-vacuous section and scope cells |
-| P5 | `Seed smoke fixtures` step loses `continue-on-error`; failure is a visible status | agent (A2 PR) | F6 |
-| P6 | Cells JSON + derivation test + matrix spec + Bruno mirror | agent (C2 PR) | §4 |
-| P7 | Named check wiring, after T1 deploy, before UI smoke | agent (B1 PR, after A) | honest-green-first ordering |
+| P5 | `Seed smoke fixtures` step loses `continue-on-error`; **T4f step loses `continue-on-error` and gains the T2-style `Fail check`** | agent (A2 PR, can land today) | F6, F11 |
+| P6 | Cells JSON + derivation test + matrix spec + Bruno mirror; matrix spec removes the `if (rows.length > 0)` pattern (F12) | agent (C2 PR) | §4 |
+| P7 | Named check `L1 API · sharedreport-matrix` lives in **`contract-staging` (T2)**, using its existing `continue-on-error` + `Fail check` idiom, with `needs: [security, gate, deploy-staging]`; T3/T4 gate on it. Not appended after the T4 browser journeys. Auth, scope and boundary cells (A1, A2, A4, A12, S1, S2) run against **live staging**, never miniflare: the CF Access edge and the Bearer check underneath are the property under test. Only pure depth/section cells are miniflare candidates, and only as a later cost phase. | agent (B1 PR, after A) | honest-green-first ordering; DevOps lens |
+| P8 | Read-time `brand_id` predicate on the trend instances query + detector predicate + data audit (`SELECT series_id, COUNT(DISTINCT brand_id) … HAVING > 1`) + T1 fixture | agent (own PR, Security-owned) | F10 |
 
 P1–P3 are the only things an agent cannot do. Everything else can be built and reviewed while they are pending, with the matrix reporting `precondition-unmet` in the meantime (which is the DoD-compliant state, not green).
 
@@ -228,7 +247,8 @@ P1–P3 are the only things an agent cannot do. Everything else can be built and
 | `bruno/ose-sharedreport/` | **retire**, replaced by generated `bruno/ose-sharedreport-matrix/` | GAS-era targets (F8) |
 | `bruno/ose-api/OSE-R-003 …/` (3 requests) | keep | already the A1/A2 contract in Bruno form; the matrix mirror can absorb them later |
 | `shared-reporting.spec.js`, `admin-surface-sharedreport.spec.js`, `shared-report-name-resolution.spec.js` | **verify against Invariant #10, then retire or rewrite** | drive `api_getSharedAnalytics` / Sheets export; not folded into event-mutations as the epic first proposed |
-| `shared-report-mobile.spec.js` | move to E1 (render-faithfulness) with the OSE-1070 device ladder | viewport/layout, never L1 |
+| `shared-report-mobile.spec.js` | **retire and rewrite** in E1 against the real page, with the OSE-1070 device ladder | navigates the GAS `?page=report` route, mocks `api_getSharedAnalytics`, asserts selectors the current template does not have; nothing to port (CCR Loop 1, frontend lens) |
+| `.claude/skills/frontend-integration.knowledge.md` | fix the "not yet ported" row for sharedReport | the page is ported and routed (`handleSharedReportPage`); the role's own knowledge base is stale |
 | `0-architecture/shared-report-schema.invariant.spec.ts` | keep (T0) | Invariant #21; the derivation test in §4 is its entitlement sibling |
 | `workers/.../tests/shared-report-*.spec.ts` (unit) | keep (T0) | the L0 column of §5 |
 
@@ -244,16 +264,23 @@ P1–P3 are the only things an agent cannot do. Everything else can be built and
 | **OCR-docs** | skip self-classification contract (§6) as a fleet standard (new `OCR_STANDARD_skipSelfClassification.md`, or a section in `OCR_STANDARD_testNaming.md`) | new OCR-docs ticket under OSE-1167 |
 | **OCR-docs** | `OCR_STANDARD_perStoryTestPyramid.md` still names Postman/Newman as the contract layer; update to Bruno per OSE-1191 | drift, fix with the above |
 | **OCR-docs** | brain Invariant #11 retirement (`architectural-invariants.yaml`) + `standards-index.md` | OSE-1194 item 4 |
-| **ourCommunityRituals** | remove `packages/runner-fleet`, root `_provision-runner-4.ps1` / `_reregister-runner-3.ps1`, `runner-fleet:*` scripts; update recon-fleet runbook | OSE-1194 scope addition (F9) |
+| **ourCommunityRituals** | remove `packages/runner-fleet`, root `_provision-runner-4.ps1` / `_reregister-runner-3.ps1`, `runner-fleet:*` scripts; update recon-fleet runbook. **No CI enforces ordering here** (the hub has no `brain-contract-check.yml`), so this needs its own explicit checklist item on OSE-1194 rather than inherited sequencing. | OSE-1194 scope addition (F9) |
 
-## 10. Owner ratification (shortest valid answer: "M: all yes" plus corrections)
+## 10. Owner ratification — tiered (CCR Loop 1, product lens: one packet, not eleven questions)
+
+**Must decide (owner only):**
 
 - **M-Q1** — Event-state axis = {pre, live, post, **archived**} with B5/B6 singletons, replacing "ended"? (F4)
-- **M-Q2** — System of record = Playwright `request` + `test.each` over a committed cells JSON, with a T0 derivation test; Bruno mirror non-gating? (CCR hybrid, applied)
-- **M-Q3** — `sharedreport-depth.spec.ts` retired outright rather than repaired, once the matrix gates? (F1)
-- **M-Q4** — GAS-era Event-POV specs go to Invariant #10 review rather than into `event-mutations`? (F8)
-- **M-Q5** — Add this hub repo's runner apparatus to OSE-1194 scope? (F9)
-- **M-Q6** — Skip-contract prefix format in §6 becomes the fleet standard (OCR-docs)?
+- **M-Q5** — Add this hub repo's runner apparatus to OSE-1194 scope (infra/cost call)? (F9)
+- **M-Q7** — Is a mid/premium signed link rendering real accrued data (poster scans, impressions) **before** an event ends acceptable product behaviour, or a gap to close? No phase gate exists in the template today (F13). The answer decides whether E1 is a one-day test ticket or a template-logic build with its own design questions (blank sections, banner, or the existing suppression-note pattern).
+
+**Team-decided, recorded here for the owner's veto, not approval:**
+
+- **M-Q2** — System of record = Playwright `request` + `test.each` over a committed cells JSON, with a T0 derivation test; Bruno mirror non-gating. Applies the ratified CCR hybrid decision.
+- **M-Q3** — `sharedreport-depth.spec.ts` retired outright, not repaired (F1, F2, F12 make it three-ways wrong).
+- **M-Q4** — GAS-era Event-POV specs go to Invariant #10 review, not into `event-mutations` (F8).
+- **M-Q6** — Skip-contract prefix format in §6 proposed as the fleet standard in OCR-docs.
+- **M-Q8** — The L1 check lives in `contract-staging` (T2), per P7.
 
 ## 11. OSE-1191 and OSE-1194 as of this doc
 
