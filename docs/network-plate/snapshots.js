@@ -11,6 +11,7 @@
    week     calendar rows (d when, w what (html), h hours label, c clash, g ghost/no-event)
    recon    reconciliation layers (id, name, pair, state open|clean|blind, items[{sev,t,body,fix,refs[]}])
 */
+const OSE="https://github.com/ourCommunityRituals/oursharedevents/blob/main/";
 window.PLATE_SNAPSHOTS=[
 {
  pulled:"2026-09-01",
@@ -86,10 +87,13 @@ window.PLATE_SNAPSHOTS=[
   {d:"End Sep",w:"Sawyer handoff. Named in two block descriptions; has no event of its own and no ticket.",h:"no event",g:true}
  ],
 tests:{
-  asOf:"hub ci.yml at this pull · OSE counts from the OSE-1070 risk map, 29 Aug 2026",
-  stages:["Local","PR gate","Main / nightly","Staging (live edge)","Production"],
+  asOf:"hub ci.yml and OSE oursharedevents-ci.yml at this pull; spec counts from the working trees",
   layers:["Static & security","Unit","Contract","Integration","Component / viewport","E2E"],
-  cells:[
+  runner:{specs:262,run:105,method:"a spec counts as run when a workflow names its file or directory, or the root vitest include covers it; tests/ only, archive excluded, worker tests counted separately"},
+  repos:[
+   {id:"hub",name:"ourcommunityrituals (hub)",
+    stages:["Local","PR gate","Main / nightly","Staging (live edge)","Production"],
+    cells:[
    {layer:"Static & security",stage:"Local",type:"lint · typecheck",count:"2 checks",result:"local",
     target:"hub workspace",flows:["pnpm lint (eslint .)","tsc --noEmit"],link:null,
     note:"Runs only on a developer machine until pushed."},
@@ -175,8 +179,127 @@ tests:{
     note:"Per-page and per-flow results arrive when GitHub is wired; the spoke repo is not attached to this plate."},
    {layer:"E2E",stage:"Production",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,
     note:"No post-deploy check runs against production."}
+  ]},
+   {id:"ose",name:"oursharedevents (OSE spoke)",
+    stages:["Local","PR gate · S0 + T0","Push to main · T1 T2 T3","Nightly · T2 T3","Dispatch · T4","Production · tag"],
+    cells:[
+     {layer:"Static & security",stage:"Local",type:"eslint · tsc · banned origins",count:"3 checks",result:"local",target:"config, scripts, tests, worker",flows:["eslint config/ scripts/ tests/unit/ tests/contract/","tsc --noEmit (workers/oursharedevents)","npm run check:banned-origins"],link:null,note:""},
+     {layer:"Static & security",stage:"PR gate · S0 + T0",type:"CodeQL · Semgrep · detect-secrets · npm audit · SBOM · lint · tsc",count:"7 checks",result:"unknown",target:"every PR, no paths filter",flows:["CodeQL SAST (JS/TS)","Semgrep p/nodejs + p/owasp-top-ten + p/r2c-security-audit","detect-secrets baseline","npm audit --omit=dev --audit-level=moderate","CycloneDX SBOM","T0 banned origins, eslint, tsc"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:"Gate and everything downstream need S0 green."},
+     {layer:"Static & security",stage:"Push to main · T1 T2 T3",type:"S0 + T0",count:"7 checks",result:"unknown",target:"paths-filtered on push",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"Static & security",stage:"Nightly · T2 T3",type:"S0 + T0",count:"7 checks",result:"unknown",target:"03:07 UTC, no deploy",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:"Nightly exists for environmental drift detection."},
+     {layer:"Static & security",stage:"Dispatch · T4",type:"S0 + T0",count:"7 checks",result:"unknown",target:"manual",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"Static & security",stage:"Production · tag",type:"S0 + T0",count:"7 checks",result:"unknown",target:"tag vX.Y.Z",flows:["same as PR gate, then T1 deploy to production"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+
+     {layer:"Unit",stage:"Local",type:"Vitest",count:"39 files · 1231 tests + worker 214 files · 2520",result:"local",target:"tests/unit and workers/oursharedevents/tests",flows:["npm test (root vitest: unit, contract, integration)","npm test in workers/oursharedevents (vitest-pool-workers)"],link:null,note:""},
+     {layer:"Unit",stage:"PR gate · S0 + T0",type:"Vitest · pool-workers",count:"~1064 root + ~2879 worker cases",result:"unknown",target:"T0 gate shards",flows:["sec-iac-03 adminOAuth, 04 public-read-only, 05 signed-mutations, 07 iac-smoke","root npm test","worker npm test through vitest-retry"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:"The tests shard is the long pole of the pipeline."},
+     {layer:"Unit",stage:"Push to main · T1 T2 T3",type:"T0 Vitest",count:"same as PR gate",result:"unknown",target:"T0",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"Unit",stage:"Nightly · T2 T3",type:"T0 Vitest",count:"same as PR gate",result:"unknown",target:"T0",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"Unit",stage:"Dispatch · T4",type:"T0 Vitest",count:"same as PR gate",result:"unknown",target:"T0",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"Unit",stage:"Production · tag",type:"T0 Vitest",count:"same as PR gate",result:"unknown",target:"T0 on tag",flows:["same as PR gate"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+
+     {layer:"Contract",stage:"Local",type:"Vitest MOCK contracts",count:"21 files · 811 tests",result:"local",target:"tests/contract",flows:["event-contract-v2_MOCK.matrix","sponsor-contract","shared-analytics-summary_MOCK","schema-sync_MOCK, bundles_MOCK"],link:null,note:""},
+     {layer:"Contract",stage:"PR gate · S0 + T0",type:"Vitest MOCK contracts",count:"21 files",result:"unknown",target:"inside root npm test",flows:["same files as Local"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:"Mocked. Nothing hits an API here."},
+     {layer:"Contract",stage:"Push to main · T1 T2 T3",type:"T2 Bruno against staging",count:"ose-api 11 folders + ose-pages",result:"unknown",target:"stg.oursharedevents.com after T1 deploy",flows:["1 Health & Status","2 Public Events API","3 Admin Events API","4 Forms public, 5 Forms admin","6 Feature Flags admin","7 CORS, 8 Errors","10 UEC Resolve","11 Sponsor Covenant","OSE-R-003 SharedReport signed-link"],link:OSE+"bruno/ose-api",note:"Contract-first: T3 and T4 only run if T2 passes. ose-sharedreport collection is not in the pipeline."},
+     {layer:"Contract",stage:"Nightly · T2 T3",type:"T2 Bruno against staging",count:"ose-api + ose-pages",result:"unknown",target:"live staging, no redeploy",flows:["same collections"],link:OSE+"bruno/ose-api",note:""},
+     {layer:"Contract",stage:"Dispatch · T4",type:"T2 Bruno (optional)",count:"ose-api + ose-pages",result:"unknown",target:"when checked",flows:["same collections"],link:OSE+"bruno/ose-api",note:""},
+     {layer:"Contract",stage:"Production · tag",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:"No contract collection runs against production."},
+
+     {layer:"Integration",stage:"Local",type:"Vitest",count:"2 files · 35 tests",result:"local",target:"tests/integration",flows:["infra-consistency"],link:null,note:""},
+     {layer:"Integration",stage:"PR gate · S0 + T0",type:"Vitest",count:"2 files",result:"unknown",target:"inside root npm test",flows:["infra-consistency"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"Integration",stage:"Push to main · T1 T2 T3",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:"No in-job miniflare or wrangler dev integration tier exists yet; the OSE-1070 map names it as the destination for 43 e2e specs."},
+     {layer:"Integration",stage:"Nightly · T2 T3",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:""},
+     {layer:"Integration",stage:"Dispatch · T4",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:""},
+     {layer:"Integration",stage:"Production · tag",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:""},
+
+     {layer:"Component / viewport",stage:"Local",type:"Playwright vs wrangler dev --local",count:"explicit file list",result:"local",target:"playwright.component.config.ts",flows:["any tests/e2e spec passed by path"],link:OSE+"playwright.component.config.ts",note:"No testMatch by design; batches are named on the CLI."},
+     {layer:"Component / viewport",stage:"PR gate · S0 + T0",type:"Playwright component · device audit",count:"1 spec + 1 audit spec",result:"unknown",target:"local worker, chromium; mobile ladder on WebKit",flows:["tests/e2e/2-pages/poster-print.spec.ts on chromium","mobile-workability-audit.yml: tests/playwright/mobile-workability.spec.ts, non-blocking on PR"],link:OSE+".github/workflows/mobile-workability-audit.yml",note:"The four-device WebKit ladder is quarantined behind one spec."},
+     {layer:"Component / viewport",stage:"Push to main · T1 T2 T3",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:""},
+     {layer:"Component / viewport",stage:"Nightly · T2 T3",type:"mobile workability audit",count:"1 spec · 4 devices",result:"unknown",target:"09:30 UTC, blocking",flows:["iPhone SE, iPhone 14 Pro Max, iPad Air, Desktop Safari"],link:OSE+".github/workflows/mobile-workability-audit.yml",note:"WebKit only. No Chromium column."},
+     {layer:"Component / viewport",stage:"Dispatch · T4",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:""},
+     {layer:"Component / viewport",stage:"Production · tag",type:"nothing",count:"",result:"none",target:"",flows:[],link:null,note:""},
+
+     {layer:"E2E",stage:"Local",type:"Playwright against staging",count:"135 e2e + 19 smoke + 9 ui + 22 playwright + 5 red-team files",result:"local",target:"STAGING_URL plus ADMIN_KEY or X-OCR-Internal",flows:["playwright.e2e.config.ts, e2e-smoke, smoke, ui-smoke, staging, red-team configs"],link:OSE+"playwright.e2e.config.ts",note:"Most of these files have no workflow. See the flow ledger."},
+     {layer:"E2E",stage:"PR gate · S0 + T0",type:"Architecture invariants",count:"20 specs",result:"unknown",target:"tests/e2e/0-architecture",flows:["aggregate-only, api-response-schema, cors-allowlist, cost-metric-never-who, deprecation-lock, migration-monotonicity, monetization-inert, oer-emission-boundary, pii-retention, runtime-llm-free, slug-permanence, shared-report-schema, tenant-isolation, tier-equity, sponsor-share-covenant, scan-path-split, sponsor-identity-split, edge-token-verification, sponsor-signal-never-who, worker-claude-md"],link:OSE+"tests/e2e/0-architecture",note:"Invariants run before deploy; most read files, not the edge."},
+     {layer:"E2E",stage:"Push to main · T1 T2 T3",type:"T3 smoke against staging",count:"4 specs",result:"unknown",target:"after T1 deploy and T2 contract",flows:["tests/e2e/1-smoke/security-smoke.spec.js","tests/api/smoke/api-health.spec.ts","tests/api/smoke/fail-fast-gates.spec.ts","tests/api/smoke/form-endpoints.spec.ts"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"E2E",stage:"Nightly · T2 T3",type:"T3 smoke against staging",count:"4 specs",result:"unknown",target:"live staging, no redeploy",flows:["same four specs"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:""},
+     {layer:"E2E",stage:"Dispatch · T4",type:"T4 functional journeys",count:"~14 specs",result:"unknown",target:"staging, only when the box is checked",flows:["T4a tests/e2e/0-architecture/","T4b sponsor-journey, cross-brand-isolation","T4c form-registration, form-checkin, form-email-signup, form-survey, form-submission-flows, form-validation","T4c-phase2 form-phase-gate","T4d tests/ui/smoke/tier1.spec.ts","T4e journey-attendee-arc","T4f sharedreport-depth"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:"Never runs on PR, push, or schedule."},
+     {layer:"E2E",stage:"Production · tag",type:"T2 smoke against production",count:"3 specs",result:"unknown",target:"after T1 deploy to production",flows:["security-smoke.spec.js","api-health.spec.ts","fail-fast-gates.spec.ts"],link:OSE+".github/workflows/oursharedevents-ci.yml",note:"The only thing that runs against production."}
+    ]}
+  ]
+ },
+ flows:{
+  asOf:"OSE working tree 45b1894 · router.ts, tier libraries, tests/ and bruno/ · product names from the owner, identifiers from code",
+  modes:[{id:"passive",name:"Passive",sub:"no scan, no click"},{id:"anon",name:"OSE anonymous",sub:"the base"},{id:"ow",name:"OW non-anonymous",sub:"plant my flag, this is me"}],
+  layers:[{id:"unit",name:"Unit"},{id:"contract",name:"Contract"},{id:"api",name:"API"},{id:"e2e",name:"E2E"},{id:"smoke",name:"Smoke / UI"}],
+  rollout:[
+   {step:1,name:"Local + Mid suites, both identity layers",gate:"stg.oursharedevents.com serves Events Local, Events Mid Anchor, Sponsor Local, Sponsor Mid Anchor at the API level, in OSE anonymous and in OW",state:"open",
+    status:"Anonymous: Bruno T2 exercises public and admin events and admin sponsors on staging every push, but the tier axis is exercised only by sponsor-lifecycle.matrix.spec.ts, which no workflow runs. OW: no test of any events or sponsors endpoint exists in any mode but anonymous."},
+   {step:2,name:"Deep Dive as its own flow",gate:"Deep Dive suite runs end to end in the pipeline before the Wizard is consolidated",state:"live",
+    status:"The best-covered flow: unit, two MOCK contracts, a Bruno collection of eight requests, an 18-test depth gate (T4f, dispatch only), a 44-test smoke spec with no runner, and the only OW-mode tests. npm run test:deepdive:all bundles it locally; no workflow calls it."},
+   {step:3,name:"Wizard consolidated into its own representation",gate:"Wizard flow tests execute in the pipeline",state:"queued",
+    status:"Wizard shipped in admin.html (wizard-progress). Thirteen E2E tests and two scenario specs exist; none is referenced by any workflow. The matrix spec still describes the wizard as born-red."},
+   {step:4,name:"Enterprise layer",gate:"Full tests for every flow above executing in CI/CD",state:"blocked",
+    status:"Blocked by steps 1 to 3. Wizard × enterprise is excluded on purpose in scenario-tier-matrix.ts: enterprise is provisioned, never self-serve."}
   ],
-  edge:{specs:133,tests:2094,needEdge:10,demotable:123}
+  rows:[
+   {id:"ev-local",group:"Events",name:"Events · Cheap Local",code:"flag tier free · report depth local · matrix local",modes:{passive:false,anon:true,ow:false},step:1,
+    routes:["GET /api/v2/events","GET /events/:id","GET/POST /api/v2/admin/events"],
+    staging:["GET /api/v2/events (Bruno 2)","GET /api/v2/events/{id} (Bruno 2)","GET/POST /api/v2/admin/events (Bruno 3)"],
+    layers:{unit:["tests/unit/mvp-template-flags.test.js"],contract:["tests/contract/event-contract-v2_MOCK.matrix.test.js","tests/contract/save-event_MOCK.contract.test.js"],api:["tests/api/smoke/events-v2.spec.ts","tests/api/smoke/storyC3-adminCreateEvent.spec.ts","tests/api/smoke/storyC4-adminUpdateEvent.spec.ts","tests/api/smoke/storyC5-createEventGate.spec.ts","tests/e2e/api/events-crud-api.spec.js"],e2e:["tests/e2e/3-flows/admin-event-management.spec.ts","tests/e2e/2-pages/public-events.spec.ts","tests/e2e/3-flows/sponsor-lifecycle.matrix.spec.ts"],smoke:["tests/smoke/admin-create-event.spec.ts","tests/smoke/admin-update-event.spec.ts","tests/smoke/admin-archive-event.spec.ts","tests/smoke/lifecycle.spec.ts"]},
+    inPipeline:["unit + contract via T0 npm test","Bruno 2 and 3 via T2 on staging"],
+    noRunner:["events-v2 and storyC3/C4/C5 api specs","events-crud-api","admin-event-management","sponsor-lifecycle.matrix","all four tests/smoke specs"],
+    note:"Tier is a property of the same endpoints; only the matrix spec varies it."},
+   {id:"ev-mid",group:"Events",name:"Events · Mid Anchor",code:"flag tier mid · report depth mid · matrix mid",modes:{passive:false,anon:true,ow:false},step:1,
+    routes:["same endpoints as Local"],staging:["same Bruno folders; no mid-tier fixture on staging"],
+    layers:{unit:["tests/unit/mvp-template-flags.test.js"],contract:["tests/contract/event-contract-v2_MOCK.matrix.test.js"],api:["tests/api/smoke/events-v2.spec.ts"],e2e:["tests/e2e/3-flows/sponsor-lifecycle.matrix.spec.ts (mid cells)"],smoke:[]},
+    inPipeline:["unit + contract via T0"],noRunner:["sponsor-lifecycle.matrix (the only spec that selects mid)"],note:"Nothing in the pipeline asserts mid-tier event behaviour on staging."},
+   {id:"ev-ent",group:"Events",name:"Events · Enterprise",code:"flag tier enterprise · report depth premium · matrix enterprise",modes:{passive:false,anon:true,ow:false},step:4,
+    routes:["same endpoints; enterprise is provisioned, not self-serve"],staging:["none"],
+    layers:{unit:[],contract:["tests/contract/event-contract-v2_MOCK.matrix.test.js"],api:[],e2e:["tests/e2e/3-flows/sponsor-lifecycle.matrix.spec.ts (enterprise × advanced only)"],smoke:[]},
+    inPipeline:["contract via T0"],noRunner:["sponsor-lifecycle.matrix"],note:"Gated behind rollout step 4 by the owner's plan."},
+   {id:"sp-local",group:"Sponsors",name:"Sponsors · Cheap Local",code:"SOV base · DB tier bronze | primary · is_local is geographic, never bought",modes:{passive:false,anon:true,ow:false},step:1,
+    routes:["GET/POST /api/v2/admin/sponsors","POST /api/v2/admin/sponsors/promote","POST /api/v2/sponsors/draft","GET /api/v2/events/:id/sponsors"],
+    staging:["GET/POST/DELETE /api/v2/admin/sponsors (Bruno 11)","GET /api/v2/events/test-event-001/sponsors ordering (Bruno 11, seeds local-bronze)"],
+    layers:{unit:["tests/unit/worker/sponsor-tier-normalization_MOCK.test.js","tests/unit/worker/sponsor-utils_MOCK.test.js","tests/unit/worker/sponsor-service_MOCK.test.js"],contract:["tests/contract/sponsor-contract.test.js","tests/contract/story-f1-sponsor-contract_MOCK.test.js","tests/contract/sponsor-brand-isolation_MOCK.smoke.test.js"],api:["tests/e2e/api/sponsors-crud-api.spec.js","bruno/ose-api/11. Sponsor Covenant"],e2e:["tests/e2e/3-flows/sponsor-journey.spec.ts","tests/e2e/3-flows/sponsor-flows.spec.js","tests/e2e/3-flows/sponsor-lifecycle.matrix.spec.ts","tests/e2e/0-architecture/sponsor-share-covenant.invariant.spec.ts","tests/e2e/0-architecture/tier-equity.invariant.spec.ts"],smoke:["tests/e2e/2-pages/sponsor-page.spec.js","tests/e2e/2-pages/display-sponsor-live.spec.ts","tests/e2e/2-pages/display-sponsor-overlay.spec.ts"]},
+    inPipeline:["unit + contract via T0","covenant and tier-equity invariants via T0 and T4a","Bruno 11 via T2 on staging","sponsor-journey via T4b (dispatch only)"],
+    noRunner:["sponsors-crud-api","sponsor-flows","sponsor-lifecycle.matrix","sponsor-page, display-sponsor-live, display-sponsor-overlay"],
+    note:"/sponsors/draft and /promote are never exercised against staging."},
+   {id:"sp-mid",group:"Sponsors",name:"Sponsors · Mid Anchor",code:"SOV mid · DB tier gold | silver · mid_cap_pct 20",modes:{passive:false,anon:true,ow:false},step:1,
+    routes:["same endpoints as Local"],staging:["Bruno 11 tier ordering"],
+    layers:{unit:["tests/unit/worker/sponsor-tier-normalization_MOCK.test.js","workers/oursharedevents/tests sponsor-share-rotation, sponsor-frequency-rotation"],contract:["tests/contract/sponsor-contract.test.js"],api:["bruno/ose-api/11. Sponsor Covenant"],e2e:["tests/e2e/3-flows/sponsor-lifecycle.matrix.spec.ts (mid cells)"],smoke:["tests/e2e/2-pages/sponsor-page-gating.spec.js"]},
+    inPipeline:["unit, worker rotation tests, contract via T0","Bruno 11 via T2"],noRunner:["sponsor-lifecycle.matrix","sponsor-page-gating"],note:"“anchor” appears nowhere in code."},
+   {id:"sp-nat",group:"Sponsors",name:"Sponsors · Regional / National",code:"SOV premium · DB tier title | platinum · premium_cap_pct 40",modes:{passive:false,anon:true,ow:false},step:4,
+    routes:["same endpoints; covenant caps non-local share"],staging:["Bruno 11 nonlocal-title adversarial seed"],
+    layers:{unit:["tests/unit/worker/sponsor-tier-normalization_MOCK.test.js","workers/oursharedevents/tests sponsor-share-covenant, sponsor-allocation-drift-check, sponsor-covenant-authoring, tier-equity-sort"],contract:["tests/contract/story-f3-sponsor-page-gating_MOCK.test.js"],api:["bruno/ose-api/11. Sponsor Covenant"],e2e:[],smoke:[]},
+    inPipeline:["worker and contract via T0","Bruno 11 via T2"],noRunner:[],note:"No spec uses the words regional or national; the code calls this premium."},
+   {id:"wizard",group:"Wizard",name:"Wizard",code:"GET /admin (+ /manage /dashboard /create) · admin.html wizard-progress",modes:{passive:false,anon:true,ow:false},step:3,
+    routes:["GET /admin","/manage","/dashboard","/create"],staging:["page GET /admin, /manage, /create, /dashboard (Bruno pages)"],
+    layers:{unit:["tests/unit/flow-tests-helper-wired.test.ts"],contract:[],api:[],e2e:["tests/e2e/3-flows/admin-wizard-journey.spec.ts","tests/e2e/3-flows/admin-wizard-flow.spec.js","tests/e2e/3-flows/sponsor-lifecycle.matrix.spec.ts (wizard × local, mid)"],smoke:["tests/e2e/scenarios/scenario-1-first-time-admin.spec.js","tests/e2e/scenarios/quick-start-10-min.spec.js"]},
+    inPipeline:["unit via T0","page reachability via T2 Bruno pages"],noRunner:["admin-wizard-journey","admin-wizard-flow","sponsor-lifecycle.matrix","both scenarios"],note:"Wizard × enterprise is a deliberate gap."},
+   {id:"deepdive",group:"Deep Dive",name:"Deep Dive / Advanced",code:"GET /sharedReport (+ /report /analytics /reports /insights /stats) · advanced-metrics-section",modes:{passive:false,anon:true,ow:true},step:2,
+    routes:["GET /api/v2/events/:id/shared-report","GET /api/v2/sharedreport","POST /api/v2/events/shared-reports/batch (OW, WKRP_SERVICE_TOKEN)"],
+    staging:["GET /api/v2/events/{id}/shared-report 401 cases (Bruno)","GET /api/v2/sharedreport negatives (Bruno)","OSE-R-003 signed-link (Bruno)","batch endpoint: never"],
+    layers:{unit:["tests/unit/shared-reporting.test.js","workers/oursharedevents/tests shared-report-read, shared-report-auth (OW token path)"],contract:["tests/contract/shared-analytics-summary_MOCK.contract.test.js","tests/contract/shared-report-top-sponsors_MOCK.contract.test.js"],api:["bruno/ose-sharedreport (8 requests)","bruno/ose-api/OSE-R-003 SharedReport signed-link"],e2e:["tests/e2e/3-flows/sharedreport-depth.spec.ts","tests/e2e/admin-surface-sharedreport.spec.js","tests/e2e/shared-reporting.spec.js","tests/e2e/0-architecture/shared-report-schema.invariant.spec.ts"],smoke:["tests/smoke/sharedreport-deepdive.spec.ts","tests/smoke/sharedreport-3pane.spec.ts","tests/playwright/flow-sharedreport-signed-link.spec.ts","tests/playwright/sharedReport-signed-link-ui.spec.ts","tests/red-team/shared-report-theft.spec.ts"]},
+    inPipeline:["unit, worker, contract via T0","schema invariant via T0 and T4a","signed-link via T2","sharedreport-depth via T4f (dispatch only)"],
+    noRunner:["bruno/ose-sharedreport","sharedreport-deepdive (44 tests)","sharedreport-3pane","both tests/playwright signed-link specs","red-team shared-report-theft"],
+    note:"npm run test:deepdive:all chains contract, ui, and bru locally. The only flow with any OW coverage."},
+   {id:"worship",group:"Worship",name:"Free Places of Worship",code:"no route · EligibilitySource free_tier · flags events.faith-free-marketing, events.faith-sponsor · templates church, church_club",modes:{passive:false,anon:false,ow:false},step:0,
+    routes:["none"],staging:["none"],
+    layers:{unit:["packages/flags/tests/invariants.test.ts (hub) asserts the two faith flags are declared"],contract:[],api:[],e2e:[],smoke:[]},
+    inPipeline:["flag declaration via hub Vision invariants job"],noRunner:[],note:"No flow exists to test. The free-forever promise lives in ADR-014 and the cost-metric contract, not in a route."},
+   {id:"mode-passive",group:"Identity",name:"Passive · no scan, no click",code:"/display /tv /kiosk /screen · /poster … /signage · /q/:token · /s/:code · poster-bundle no-scan context",modes:{passive:true,anon:false,ow:false},step:1,
+    routes:["/display","/poster","/q/:token","/s/:code"],staging:["pages /display, /poster (Bruno pages)"],
+    layers:{unit:["tests/unit/worker/privacy-*_MOCK.test.js"],contract:[],api:[],e2e:["tests/e2e/0-architecture/scan-path-split.invariant.spec.ts","tests/e2e/0-architecture/aggregate-only.invariant.spec.ts"],smoke:["tests/smoke/display-rotation.spec.ts","tests/smoke/display-safety.spec.ts","tests/smoke/qr-verification.spec.ts"]},
+    inPipeline:["invariants via T0 and T4a","pages via T2"],noRunner:["all three tests/smoke display specs"],note:"No named passive mode in code; briefing.ts lists it as aspirational."},
+   {id:"mode-anon",group:"Identity",name:"OSE anonymous · the base",code:"lib/anonymous-id.ts · lib/anon-id-hash.ts · DB vs FORMS_DB split (ADR-001)",modes:{passive:false,anon:true,ow:false},step:1,
+    routes:["every public route"],staging:["everything Bruno touches"],
+    layers:{unit:[],contract:[],api:[],e2e:["tests/e2e/0-architecture/anonymous-id.invariant.spec.ts","tests/e2e/0-architecture/aggregate-only.invariant.spec.ts","tests/e2e/0-architecture/pii-retention.invariant.spec.ts"],smoke:[]},
+    inPipeline:["invariants via T0 and T4a"],noRunner:[],note:"ADR-001 is the identity architecture. ADR-002 is static-invariant gates, not identity choice."},
+   {id:"mode-ow",group:"Identity",name:"OW non-anonymous · plant my flag",code:"POST /api/v2/events/shared-reports/batch · WKRP_SERVICE_TOKEN · fails closed at the handler (ADR-011)",modes:{passive:false,anon:false,ow:true},step:1,
+    routes:["POST /api/v2/events/shared-reports/batch"],staging:["never exercised"],
+    layers:{unit:["workers/oursharedevents/tests shared-report-read, shared-report-auth"],contract:[],api:[],e2e:[],smoke:["tests/red-team/shared-report-theft.spec.ts"]},
+    inPipeline:["worker tests via T0"],noRunner:["red-team shared-report-theft"],note:"One seam. No OW-mode test exists for events, sponsors, wizard, or display. “plant my flag” and “choice network” appear in no identifier."}
+  ]
  },
  recon:[
   {id:"code-deployed",name:"Code ↔ Deployed",pair:"repo migration floor vs Cloudflare D1 applied",state:"open",
@@ -238,11 +361,17 @@ tests:{
    ]},
   {id:"tested-deployed",name:"Tested ↔ Deployed",pair:"test pyramid vs where the pipeline runs it",state:"open",
    items:[
-    {sev:"gate",t:"Production has no post-deploy check.",
-     body:"Every column of the pyramid is empty at Production. A migration gap of twenty-six would be found by users before any test.",
-     fix:"OSE CI · one smoke spec against production after each deploy",refs:["prod"]},
-    {sev:"stale",t:"123 of 133 OSE specs run at the live edge and do not need it.",
-     body:"Ninety-two percent of the suite is classified unit, contract, integration, or component and still runs as E2E against staging.",
+    {sev:"gate",t:"Production is smoke-tested by OSE only on a tag, and never by the hub.",
+     body:"OSE runs security-smoke, api-health, and fail-fast against production after a tagged deploy. The hub pipeline runs nothing against production, and no contract collection runs there from either repo.",
+     fix:"OSE CI · add T2 contract to the production tag path; hub ci.yml · a production smoke",refs:["prod"]},
+    {sev:"stale",t:"About 105 of 262 OSE spec files are referenced by any workflow.",
+     body:"By path, roughly forty percent. Nothing runs events-v2, sponsors-crud-api, admin-event-management, the sponsor-lifecycle tier matrix, either wizard spec, the 44-test Deep Dive smoke, tests/smoke, tests/red-team, or the scenarios.",
+     fix:"OSE CI · a T4 batch per flow row in the ledger, then move batches to push and nightly as they hold",refs:["stg"]},
+    {sev:"gate",t:"Rollout step 1 is unmet on the OW side.",
+     body:"The owner's first gate is Events Local and Mid plus Sponsor Local and Mid at the staging API in both identity layers. Anonymous is exercised by Bruno T2. No events or sponsors test exists in OW mode, and the batch endpoint is never hit on staging.",
+     fix:"OSE tests · OW-mode Bruno folder against the batch seam, then events and sponsors under a WKRP token",refs:["stg","ow"]},
+    {sev:"stale",t:"123 of 133 OSE e2e-directory specs are classified below E2E and still live there.",
+     body:"Per the OSE-1070 map, a documentation read. The code read above shows most of them run nowhere at all, which makes demotion cheaper: they move without breaking a pipeline stage.",
      fix:"OSE repo · demotion batches per the OSE-1070 map, mutation score held per batch",refs:["stg"]},
     {sev:"dark",t:"Three hub packages test in no workflow.",
      body:"@ocr/ui, @ocr/tokens, and runner-fleet carry Vitest suites; only @ocr/flags runs in the Gate job. data-provider declares vitest and has no tests.",
@@ -250,6 +379,18 @@ tests:{
     {sev:"dark",t:"The shared-ui Playwright spec has no runner.",
      body:"It exists in @ocr/ui and no workflow executes it. It is coverage on paper.",
      fix:"Hub ci.yml · a Playwright job, or delete the spec",refs:[]}
+   ]},
+  {id:"product-code",name:"Product ↔ Code",pair:"the owner's flow and tier names vs identifiers in the OSE tree",state:"open",
+   items:[
+    {sev:"stale",t:"The product tier names exist nowhere in code.",
+     body:"Cheap Local, Mid Anchor, Regional/National, and Enterprise map onto five vocabularies: DB sponsor tier (title, platinum, gold, silver, bronze, primary), share-of-voice (base, mid, premium), flag tier (free, mid, enterprise), report depth (local, mid, premium), and the test matrix (local, mid, enterprise). The cross-walk lives in report-depth.ts and scenario-tier-matrix.ts.",
+     fix:"OCR-docs · one canonical tier table the flags contract and this plate both read",refs:["ose"]},
+    {sev:"dark",t:"Free Places of Worship has no flow.",
+     body:"There is no route, page, or test. What exists is a free_tier eligibility source, two faith flags, church event templates, and a faith_org business type. The promise is documented in ADR-014.",
+     fix:"Linear (OSE) · a project that turns the eligibility source into a flow, or a decision that it is a discount, not a flow",refs:["ose"]},
+    {sev:"dark",t:"“Plant my flag” and “choice network” name nothing in code.",
+     body:"OW integration is one endpoint behind a service token, described in ADR-011 as flag-planting. No identity-choice UI exists on the OSE side.",
+     fix:"Linear (OW) · the choice-network surface as a project, or retire the name",refs:["ow"]}
    ]},
   {id:"unwired",name:"Sources not wired",pair:"cannot be reconciled from this plate",state:"blind",
    items:[

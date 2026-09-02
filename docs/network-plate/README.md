@@ -9,9 +9,16 @@ files every disagreement between them under a reconciliation layer.
 | What is planned | Linear | Planned |
 | What is deployed | Cloudflare D1 | Deployed |
 | What is scheduled | Google Calendar, OCR blocks only | Scheduled |
-| What is tested | hub CI workflows + the OSE-1070 risk map | Tested (pyramid: stages left to right, layers bottom to top) |
+| What is tested | hub and OSE CI workflows, read from the workflow files | Tested (one pyramid per repo: stages left to right, layers bottom to top) |
+| Which flows are covered | OSE source tree: router, tier libraries, tests/, bruno/ | Flows (ledger by tier and identity mode, plus the rollout rail) |
 
 Anything no source returns is drawn hatched under **No source anywhere**.
+
+Code is the first reference for every cell; documentation fills in only where
+the code is silent, and the snapshot says which. Product names (Cheap Local,
+Mid Anchor, Regional/National, Enterprise, Free Places of Worship, plant my
+flag) are the owner's; the ledger pairs each with the identifiers the code
+actually uses.
 
 ## Files
 
@@ -29,7 +36,11 @@ is the point. The shape of a snapshot is documented at the top of that file.
 
 When GitHub runs are wired, fill each pyramid cell's `result` with `pass` or
 `fail` and point `link` at the run. Until then results read as unread and
-the pyramid shows shape only.
+the pyramids show shape only.
+
+The `tests.runner` count is computed, not observed: a spec counts as run
+when a workflow names its file or directory, or the root vitest include
+covers it. Recompute it on every pull from the OSE working tree.
 
 ## Controls
 

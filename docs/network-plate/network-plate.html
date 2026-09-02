@@ -202,6 +202,42 @@
     color:var(--ink-soft);margin:10px 0 0}
   .pyr-key span b{color:var(--ink);font-weight:600}
 
+  .repo-h{font-family:var(--cond);font-size:14px;font-weight:600;margin:16px 0 6px;color:var(--ink-soft)}
+  .repo-h:first-child{margin-top:0}
+
+  /* rollout rail + flow ledger */
+  .rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin:0 0 16px}
+  .rstep{border:1px solid var(--rule);background:var(--paper);padding:10px 12px;text-align:left;
+    cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative}
+  .rstep:hover,.rstep:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ink)}
+  .rstep[aria-expanded="true"]{box-shadow:0 0 0 3px var(--ink)}
+  .rstep .n{font-family:var(--cond);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
+  .rstep .t{font-family:var(--cond);font-size:14px;font-weight:600;line-height:1.2}
+  .rstep .g{font-size:13px;color:var(--ink-soft);line-height:1.35}
+  .rstep .st{font-family:var(--cond);font-size:11px;font-weight:600;padding:1px 8px;border-radius:10px;align-self:flex-start}
+  .rstep[data-state="open"] .st{background:var(--flag);color:#fff}
+  .rstep[data-state="live"] .st{background:var(--water);color:#fff}
+  .rstep[data-state="queued"] .st{background:var(--veg-pale);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--veg)}
+  .rstep[data-state="blocked"] .st{background:var(--paper-2);color:var(--flag);box-shadow:inset 0 0 0 1.5px var(--flag)}
+  .rstep.dim{opacity:.22}
+  table.ledger{border-collapse:collapse;width:100%;font-family:var(--cond);font-size:13px;min-width:860px}
+  .ledger th,.ledger td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+  .ledger th{font-weight:600;color:var(--ink-soft);font-size:11px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  .ledger th.c,.ledger td.c{text-align:center;white-space:nowrap}
+  .ledger td .code{font-size:11px;color:var(--ink-soft)}
+  .ledger tr.grp td{background:var(--paper-2);font-weight:600;font-size:12px;padding:5px 8px}
+  .ledger tr.frow{cursor:pointer}
+  .ledger tr.frow:hover td,.ledger tr.frow:focus-visible td{background:var(--paper-2)}
+  .ledger tr.frow:focus-visible{outline:none}
+  .ledger tr.frow[aria-expanded="true"] td{background:var(--paper-2);box-shadow:inset 3px 0 0 var(--ink)}
+  .ledger tr.frow[hidden]{display:none}
+  .ledger td.mode.yes{color:var(--ink);font-weight:600}
+  .ledger td.mode.no{color:var(--ink-soft)}
+  .ledger td.lc{font-weight:600}
+  .ledger td.lc.zero{color:var(--flag);font-weight:400;
+    background:repeating-linear-gradient(45deg,rgba(168,50,38,.10) 0 3px,transparent 3px 8px)}
+  .ledger td.lc.norun{color:var(--flag)}
+
   /* reconciliation */
   .reconcile{border-top:2px solid var(--ink);padding-top:18px;margin-top:50px}
   .reconcile>h2{font-family:var(--cond);font-size:20px;margin:0 0 6px;font-weight:600}
@@ -266,7 +302,7 @@
   <div class="stamp">
     <span><b>Pulled</b> <span id="st-pulled">–</span></span>
     <span><b>Scope</b> OCR hub + spokes (OSE, OW, OSG, OSR, OST)</span>
-    <span><b>Sources</b> Linear, Cloudflare D1, Google Calendar, hub CI</span>
+    <span><b>Sources</b> Linear, Cloudflare D1, Google Calendar, hub CI, OSE tree</span>
     <span><b>Not wired</b> GitHub runs, Stripe, PayPal</span>
     <span><b>History</b> <span id="st-hist">–</span></span>
   </div>
@@ -286,7 +322,7 @@
       <select id="snap"></select>
     </div>
     <div class="ctl grow">
-      <label for="q">Filter by text · cells, blocks, tests, reconciliation</label>
+      <label for="q">Filter by text · cells, blocks, tests, flows, reconciliation</label>
       <div class="row">
         <input id="q" type="search" placeholder="e.g. migration, Sawyer, OSE, E2E, staging" autocomplete="off">
         <span id="matches"></span>
@@ -332,10 +368,18 @@
 
   <section class="band" id="tested">
     <div class="band-head"><h2>Tested</h2><span class="src" id="pyr-src">–</span></div>
-    <p class="note">Stages run left to right as the pipeline executes. Layers stack bottom to top as the test pyramid does. Each cell says what runs there, how much, and with what result. Click a cell for the flows, the target, and a link. Results read as unread until GitHub runs are wired; the shape of the pyramid is readable now.</p>
-    <div class="pyr-wrap"><div class="pyr" id="pyr"></div></div>
+    <p class="note">One grid per repository. Stages run left to right as that pipeline executes. Layers stack bottom to top as the test pyramid does. Each cell says what runs there, how much, and with what result. Click a cell for the checks, the target, and a link. Results read as unread until GitHub runs are wired; the shape of each pyramid is readable now.</p>
+    <div id="pyr"></div>
     <div class="pyr-key" id="pyr-key"></div>
     <div class="detail" data-detail="tests" hidden></div>
+  </section>
+
+  <section class="band" id="flows">
+    <div class="band-head"><h2>Flows</h2><span class="src" id="flows-src">–</span></div>
+    <p class="note">Every product flow by tier and by identity mode, with what tests it at each layer, what the pipeline actually runs, and what has no runner. Names are the owner's; identifiers are the code's. The rollout rail carries the order and the gate for each step. Click a step or a row for the file list with links.</p>
+    <div class="rail" id="rail"></div>
+    <div class="hist-wrap"><table class="ledger" id="ledger"></table></div>
+    <div class="detail" data-detail="flows" hidden></div>
   </section>
 
   <section class="band">
@@ -388,7 +432,8 @@ const MEASURES=[
  {id:'recon',label:'Open reconciliation items',unit:'',get:reconCount,color:'#A83226'},
  {id:'cleanPct',label:'Layers clean',unit:'%',get:function(s){const l=reconLayers(s);return pct(l.clean,l.total)},color:'#1F72A0'},
  {id:'hours',label:'OCR hours booked',unit:'h',get:function(s){return s.gauges.hours},color:'#1F72A0'},
- {id:'edge',label:'Specs at the live edge',unit:'',get:function(s){return s.tests&&s.tests.edge?s.tests.edge.specs:null},color:'#A83226'},
+ {id:'runner',label:'OSE specs run by a workflow',unit:'%',get:function(s){return s.tests&&s.tests.runner?pct(s.tests.runner.run,s.tests.runner.specs):null},color:'#1F72A0'},
+ {id:'owFlows',label:'Product flows with OW coverage',unit:'',get:function(s){if(!s.flows)return null;return s.flows.rows.filter(function(r){return r.group!=='Identity'&&r.modes.ow}).length},color:'#A83226'},
  {id:'sourcedPct',label:'Cells with a source',unit:'%',get:function(s){const c=sourced(s);return pct(c.have,c.all)},color:'#1F72A0'}
 ];
 const M={};MEASURES.forEach(function(m){M[m.id]=m});
@@ -413,7 +458,8 @@ function delta(list,s,m){
 }
 function renderGauges(){
  const s=current(),list=inRange();
- const g=s.gauges,L=reconLayers(s),C=sourced(s),B=blocks(s),E=s.tests&&s.tests.edge;
+ const g=s.gauges,L=reconLayers(s),C=sourced(s),B=blocks(s),R=s.tests&&s.tests.runner;
+ const PF=s.flows?s.flows.rows.filter(function(r){return r.group!=='Identity'}):[];const OW=PF.filter(function(r){return r.modes.ow}).length;
  const behind=g.codeFloor-g.prodMig;
  const items=[
   {alarm:behind>0,lab:'Production D1 migration',val:g.prodMig,small:pct(g.prodMig,g.codeFloor)+'% of floor',
@@ -425,8 +471,10 @@ function renderGauges(){
    foot:B.clash+' of '+B.n+' blocks double-booked ('+pct(B.clash,B.n)+'%).',m:M.hours},
   {alarm:reconCount(s)>0,lab:'Open reconciliation',val:reconCount(s),small:pct(L.clean,L.total)+'% layers clean',
    foot:L.open+' of '+L.total+' layers open, '+L.blind+' blind, '+L.clean+' clean.',m:M.recon},
-  {alarm:E&&E.demotable>0,lab:'Specs at the live edge',val:E?E.specs:'–',small:E?pct(E.demotable,E.specs)+'% could run lower':'',
-   foot:E?E.needEdge+' need the edge. '+E.demotable+' do not.':'No pipeline read in this pull.',m:M.edge},
+  {alarm:R&&R.run<R.specs,lab:'OSE specs run by a workflow',val:R?R.run+' of '+R.specs:'–',small:R?pct(R.run,R.specs)+'%':'',
+   foot:R?(R.specs-R.run)+' spec files no workflow references.':'No pipeline read in this pull.',m:M.runner},
+  {alarm:PF.length>0&&OW<PF.length,lab:'Product flows with OW coverage',val:PF.length?OW+' of '+PF.length:'–',small:PF.length?pct(OW,PF.length)+'%':'',
+   foot:PF.length?(PF.length-OW)+' flows tested only in anonymous mode or not at all.':'No flow ledger in this pull.',m:M.owFlows},
   {alarm:false,lab:'Cells with a source',val:C.have+' of '+C.all,small:pct(C.have,C.all)+'%',
    foot:(C.all-C.have)+' cells hatched: no system returns them.',m:M.sourcedPct}
  ];
@@ -441,7 +489,8 @@ const CHARTS=[
  {title:'D1 migrations',sub:'production and staging, code floor dashed',series:['prodMig','stgMig'],ref:'codeFloor'},
  {title:'Open reconciliation items',sub:'all layers except blind',series:['recon']},
  {title:'OCR hours booked',sub:'in each pull’s calendar window',series:['hours']},
- {title:'Specs at the live edge',sub:'OSE suite running against staging',series:['edge']},
+ {title:'OSE specs run by a workflow',sub:'percent of spec files any workflow references',series:['runner'],max:100},
+ {title:'Product flows with OW coverage',sub:'of the product flows in the ledger, identity rows excluded',series:['owFlows']},
  {title:'Layers clean',sub:'percent of reconciliation layers with no open item',series:['cleanPct'],max:100},
  {title:'Cells with a source',sub:'percent of plate cells some system returns',series:['sourcedPct'],max:100}
 ];
@@ -559,43 +608,119 @@ const RESULT={
  notrun:{icon:'○',word:'no runner'},none:{icon:'—',word:'nothing runs'}
 };
 function renderPyramid(s){
- const host=$('#pyr'),detail=$('[data-detail="tests"]');detail.hidden=true;
- if(!s.tests){host.innerHTML='<p class="empty">No pipeline read in this pull.</p>';$('#pyr-src').textContent='no pipeline read';return}
+ const host=$('#pyr'),detail=$('[data-detail="tests"]');detail.hidden=true;host.innerHTML='';
+ if(!s.tests||!s.tests.repos){host.innerHTML='<p class="empty">No pipeline read in this pull.</p>';$('#pyr-src').textContent='no pipeline read';return}
  const T=s.tests;$('#pyr-src').textContent=T.asOf;
- host.style.gridTemplateColumns='150px repeat('+T.stages.length+',minmax(120px,1fr))';
- let h='<div class="corner">layers ↑<br>stages →</div>';
- T.stages.forEach(function(st,i){h+='<div class="stage">'+esc(st)+'<small>'+(i+1)+' of '+T.stages.length+'</small></div>'});
- const layers=T.layers.slice().reverse();
- const byKey={};T.cells.forEach(function(c){byKey[c.layer+'|'+c.stage]=c});
- layers.forEach(function(ly,li){
-  const depth=T.layers.length-li;
-  h+='<div class="layer-lab">'+esc(ly)+'<small>layer '+depth+' of '+T.layers.length+'</small></div>';
-  T.stages.forEach(function(st){
-   const c=byKey[ly+'|'+st]||{layer:ly,stage:st,type:'nothing',count:'',result:'none',flows:[],target:'',link:null,note:''};
-   const R=RESULT[c.result]||RESULT.unknown;
-   const text=[c.layer,c.stage,c.type,c.count,c.target,c.note,R.word].concat(c.flows||[]).join(' ').toLowerCase();
-   h+='<button type="button" class="tcell" data-result="'+esc(c.result)+'" data-key="'+esc(ly+'|'+st)+'" data-text="'+esc(text)+'" aria-expanded="false">'
-    +'<span class="ty">'+esc(c.type)+'</span>'+(c.count?'<span class="ct">'+esc(c.count)+'</span>':'')
-    +'<span class="rs">'+R.icon+' '+esc(R.word)+'</span></button>';
+ const byKey={};
+ T.repos.forEach(function(repo){
+  const hh=document.createElement('h3');hh.className='repo-h';hh.textContent=repo.name+' · '+repo.stages.length+' stages';host.appendChild(hh);
+  const wrap=document.createElement('div');wrap.className='pyr-wrap';
+  const grid=document.createElement('div');grid.className='pyr';
+  grid.style.gridTemplateColumns='150px repeat('+repo.stages.length+',minmax(118px,1fr))';
+  let h='<div class="corner">layers ↑<br>stages →</div>';
+  repo.stages.forEach(function(st,i){h+='<div class="stage">'+esc(st)+'<small>'+(i+1)+' of '+repo.stages.length+'</small></div>'});
+  const layers=T.layers.slice().reverse();
+  repo.cells.forEach(function(c){byKey[repo.id+'|'+c.layer+'|'+c.stage]=c});
+  layers.forEach(function(ly,li){
+   const depth=T.layers.length-li;
+   h+='<div class="layer-lab">'+esc(ly)+'<small>layer '+depth+' of '+T.layers.length+'</small></div>';
+   repo.stages.forEach(function(st){
+    const key=repo.id+'|'+ly+'|'+st;
+    const c=byKey[key]||(byKey[key]={layer:ly,stage:st,type:'nothing',count:'',result:'none',flows:[],target:'',link:null,note:''});
+    c.repo=repo.name;
+    const R=RESULT[c.result]||RESULT.unknown;
+    const text=[repo.name,c.layer,c.stage,c.type,c.count,c.target,c.note,R.word].concat(c.flows||[]).join(' ').toLowerCase();
+    h+='<button type="button" class="tcell" data-result="'+esc(c.result)+'" data-key="'+esc(key)+'" data-text="'+esc(text)+'" aria-expanded="false">'
+     +'<span class="ty">'+esc(c.type)+'</span>'+(c.count?'<span class="ct">'+esc(c.count)+'</span>':'')
+     +'<span class="rs">'+R.icon+' '+esc(R.word)+'</span></button>';
+   });
   });
+  grid.innerHTML=h;wrap.appendChild(grid);host.appendChild(wrap);
  });
- host.innerHTML=h;
  $('#pyr-key').innerHTML=Object.keys(RESULT).map(function(k){return '<span><b>'+RESULT[k].icon+'</b> '+esc(RESULT[k].word)+'</span>'}).join('');
- host.addEventListener('click',function(e){
+ host.onclick=function(e){
   const b=e.target.closest('.tcell');if(!b)return;
   const open=b.getAttribute('aria-expanded')==='true';
   $$('.tcell',host).forEach(function(x){x.setAttribute('aria-expanded','false')});
   if(open){detail.hidden=true;return}
   b.setAttribute('aria-expanded','true');
   const c=byKey[b.dataset.key]||{};const R=RESULT[c.result]||RESULT.unknown;
-  let d='<h3>'+esc(c.layer)+' · '+esc(c.stage)+'</h3><p class="meta">'+esc(c.type)+(c.count?' · '+esc(c.count):'')+' · result: '+R.icon+' '+esc(R.word)+'</p>';
+  let d='<h3>'+esc(c.layer)+' · '+esc(c.stage)+'</h3><p class="meta">'+esc(c.repo||'')+' · '+esc(c.type)+(c.count?' · '+esc(c.count):'')+' · result: '+R.icon+' '+esc(R.word)+'</p>';
   if(c.target)d+='<p><b>Target</b> '+esc(c.target)+'</p>';
   if(c.flows&&c.flows.length)d+='<ul>'+c.flows.map(function(f){return '<li>'+esc(f)+'</li>'}).join('')+'</ul>';
   if(c.note)d+='<p style="margin-top:10px">'+esc(c.note)+'</p>';
   if(c.link)d+='<a class="lnk" href="'+esc(c.link)+'" target="_blank" rel="noopener">Open the source of this cell ↗</a>';
   else d+='<p class="meta" style="margin:0">No link. Nothing addressable runs here.</p>';
   detail.innerHTML=d;detail.hidden=false;
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+ };
+}
+
+/* ---------- flow ledger ---------- */
+const OSE_BLOB='https://github.com/ourCommunityRituals/oursharedevents/blob/main/';
+const HUB_BLOB='https://github.com/ourcommunityrituals/ourcommunityrituals/blob/main/';
+function ghLink(text){
+ const m=/^([A-Za-z0-9_.\/-]+)/.exec(text);if(!m||m[1].indexOf('/')<0)return esc(text);
+ const path=m[1];const base=path.indexOf('packages/')===0?HUB_BLOB:OSE_BLOB;
+ return '<a class="lnk" href="'+esc(base+path)+'" target="_blank" rel="noopener">'+esc(path)+'</a>'+esc(text.slice(path.length));
+}
+const RSTATE={open:'open',live:'in progress',queued:'queued',blocked:'blocked'};
+function renderFlows(s){
+ const rail=$('#rail'),tbl=$('#ledger'),detail=$('[data-detail="flows"]');detail.hidden=true;
+ if(!s.flows){rail.innerHTML='';tbl.innerHTML='';$('#flows-src').textContent='no flow read in this pull';return}
+ const F=s.flows;$('#flows-src').textContent=F.asOf;
+ rail.innerHTML=F.rollout.map(function(r){
+  const text=[r.name,r.gate,r.status,r.state].join(' ').toLowerCase();
+  return '<button type="button" class="rstep" data-state="'+esc(r.state)+'" data-step="'+r.step+'" data-text="'+esc(text)+'" aria-expanded="false">'
+   +'<span class="n">step '+r.step+'</span><span class="t">'+esc(r.name)+'</span><span class="st">'+esc(RSTATE[r.state]||r.state)+'</span><span class="g">'+esc(r.gate)+'</span></button>';
+ }).join('');
+ rail.onclick=function(e){
+  const b=e.target.closest('.rstep');if(!b)return;
+  const open=b.getAttribute('aria-expanded')==='true';
+  $$('.rstep',rail).forEach(function(x){x.setAttribute('aria-expanded','false')});
+  $$('.frow',tbl).forEach(function(x){x.setAttribute('aria-expanded','false')});
+  if(open){detail.hidden=true;return}
+  b.setAttribute('aria-expanded','true');
+  const r=F.rollout.filter(function(x){return String(x.step)===b.dataset.step})[0];
+  const rows=F.rows.filter(function(x){return x.step===r.step});
+  detail.innerHTML='<h3>Step '+r.step+' · '+esc(r.name)+'</h3><p class="meta">'+esc(RSTATE[r.state]||r.state)+' · gate: '+esc(r.gate)+'</p><p>'+esc(r.status)+'</p>'
+   +(rows.length?'<p class="meta" style="margin:8px 0 2px">Flows in this step</p><ul>'+rows.map(function(x){return '<li>'+esc(x.name)+'</li>'}).join('')+'</ul>':'');
+  detail.hidden=false;
+ };
+ let h='<thead><tr><th>Flow</th>'+F.modes.map(function(m){return '<th class="c" title="'+esc(m.sub)+'">'+esc(m.name)+'</th>'}).join('')
+  +F.layers.map(function(l){return '<th class="c">'+esc(l.name)+'</th>'}).join('')+'<th class="c">In pipeline</th><th class="c">No runner</th><th class="c">Step</th></tr></thead><tbody>';
+ let grp='';
+ F.rows.forEach(function(r){
+  if(r.group!==grp){grp=r.group;h+='<tr class="grp"><td colspan="'+(1+F.modes.length+F.layers.length+3)+'">'+esc(grp)+'</td></tr>'}
+  const specs=[].concat.apply([],F.layers.map(function(l){return r.layers[l.id]||[]}));
+  const text=[r.name,r.code,r.group,r.note].concat(r.routes,r.staging,specs,r.inPipeline,r.noRunner).join(' ').toLowerCase();
+  h+='<tr class="frow" data-id="'+esc(r.id)+'" data-text="'+esc(text)+'" tabindex="0" aria-expanded="false"><td><b>'+esc(r.name)+'</b><br><span class="code">'+esc(r.code)+'</span></td>'
+   +F.modes.map(function(m){return '<td class="c mode '+(r.modes[m.id]?'yes':'no')+'">'+(r.modes[m.id]?'✓':'–')+'</td>'}).join('')
+   +F.layers.map(function(l){const n=(r.layers[l.id]||[]).length;return '<td class="c lc'+(n?'':' zero')+'">'+(n||'—')+'</td>'}).join('')
+   +'<td class="c lc'+(r.inPipeline.length?'':' zero')+'">'+(r.inPipeline.length||'—')+'</td>'
+   +'<td class="c lc'+(r.noRunner.length?' norun':' zero')+'">'+(r.noRunner.length||'—')+'</td>'
+   +'<td class="c">'+(r.step||'—')+'</td></tr>';
  });
+ tbl.innerHTML=h+'</tbody>';
+ function openRow(tr){
+  const open=tr.getAttribute('aria-expanded')==='true';
+  $$('.frow',tbl).forEach(function(x){x.setAttribute('aria-expanded','false')});
+  $$('.rstep',rail).forEach(function(x){x.setAttribute('aria-expanded','false')});
+  if(open){detail.hidden=true;return}
+  tr.setAttribute('aria-expanded','true');
+  const r=F.rows.filter(function(x){return x.id===tr.dataset.id})[0];
+  let d='<h3>'+esc(r.name)+'</h3><p class="meta">'+esc(r.group)+' · '+esc(r.code)+(r.step?' · rollout step '+r.step:' · not placed in the rollout')+'</p>';
+  d+='<p><b>Modes</b> '+F.modes.map(function(m){return (r.modes[m.id]?'✓ ':'– ')+m.name}).join(' · ')+'</p>';
+  d+='<p><b>Routes</b> '+r.routes.map(esc).join(' · ')+'</p>';
+  d+='<p><b>Exercised on staging</b> '+r.staging.map(esc).join(' · ')+'</p>';
+  F.layers.forEach(function(l){const list=r.layers[l.id]||[];if(!list.length)return;d+='<p class="meta" style="margin:8px 0 2px">'+esc(l.name)+' · '+list.length+'</p><ul>'+list.map(function(x){return '<li>'+ghLink(x)+'</li>'}).join('')+'</ul>'});
+  d+='<p class="meta" style="margin:8px 0 2px">In the pipeline · '+r.inPipeline.length+'</p>'+(r.inPipeline.length?'<ul>'+r.inPipeline.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'<p>Nothing.</p>');
+  d+='<p class="meta" style="margin:8px 0 2px;color:var(--flag)">No runner · '+r.noRunner.length+'</p>'+(r.noRunner.length?'<ul>'+r.noRunner.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'<p>Nothing left unrun.</p>');
+  if(r.note)d+='<p style="margin-top:10px">'+esc(r.note)+'</p>';
+  detail.innerHTML=d;detail.hidden=false;
+ }
+ tbl.onclick=function(e){const tr=e.target.closest('.frow');if(tr)openRow(tr)};
+ tbl.onkeydown=function(e){const tr=e.target.closest('.frow');if(tr&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openRow(tr)}};
 }
 
 /* ---------- reconciliation layers ---------- */
@@ -656,6 +781,9 @@ function applyFilter(){
  $$('.cell').forEach(function(c){c.hidden=!test(c)});
  $$('.slot').forEach(function(r){r.hidden=!test(r)});
  $$('.tcell').forEach(function(t){t.classList.toggle('dim',!test(t))});
+ $$('.rstep').forEach(function(t){t.classList.toggle('dim',!test(t))});
+ $$('.frow').forEach(function(r){r.hidden=!test(r)});
+ $$('.ledger tr.grp').forEach(function(g){let n=g.nextElementSibling,any=false;while(n&&!n.classList.contains('grp')){if(!n.hidden)any=true;n=n.nextElementSibling}g.hidden=!any});
  $$('.layer').forEach(function(L){
   const lis=$$('li[data-text]',L);let vis=0;
   lis.forEach(function(li){const ok=test(li);li.hidden=!ok;if(ok)vis++});
@@ -674,7 +802,7 @@ function applyFilter(){
 function renderPlate(){
  const s=current();
  $('#st-pulled').textContent=fmt(s.pulled);
- renderGauges();renderFields(s);renderWeek(s);renderPyramid(s);renderRecon(s);renderHistory();
+ renderGauges();renderFields(s);renderWeek(s);renderPyramid(s);renderFlows(s);renderRecon(s);renderHistory();
  applyFilter();
 }
 function renderSnapOptions(){
