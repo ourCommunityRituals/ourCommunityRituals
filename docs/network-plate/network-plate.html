@@ -205,6 +205,28 @@
   .repo-h{font-family:var(--cond);font-size:14px;font-weight:600;margin:16px 0 6px;color:var(--ink-soft)}
   .repo-h:first-child{margin-top:0}
 
+  .sub-h{font-family:var(--cond);font-size:14px;font-weight:600;margin:18px 0 6px;color:var(--ink-soft)}
+  .sub-h:first-of-type{margin-top:0}
+  table.journey{border-collapse:separate;border-spacing:4px;width:100%;font-family:var(--cond);font-size:12px;min-width:900px}
+  .journey th{font-weight:600;font-size:12px;text-align:center;padding:4px 6px 6px;border-bottom:1px solid var(--rule)}
+  .journey th small{display:block;font-weight:400;color:var(--ink-soft);font-size:11px}
+  .journey th.ph{text-align:right;vertical-align:middle;border-bottom:0;padding-right:8px;width:120px}
+  .journey th.ph small{font-size:10.5px;line-height:1.25}
+  .journey td{padding:0;vertical-align:top}
+  .jcell{width:100%;min-height:82px;border:1px solid var(--rule);background:var(--paper);text-align:left;
+    padding:7px 9px;cursor:pointer;display:flex;flex-direction:column;gap:4px;line-height:1.3}
+  .jcell:hover,.jcell:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ink)}
+  .jcell[aria-expanded="true"]{box-shadow:0 0 0 3px var(--ink)}
+  .jcell.dim{opacity:.22}
+  .jcell .w{font-size:12px}
+  .jcell .k{margin-top:auto;font-size:11px;font-weight:600;display:flex;gap:10px;flex-wrap:wrap}
+  .jcell .k .r{color:var(--ink)}
+  .jcell .k .n{color:var(--flag)}
+  .jcell[data-cov="none"]{background:repeating-linear-gradient(45deg,rgba(168,50,38,.10) 0 3px,transparent 3px 8px)}
+  .jcell[data-cov="none"] .k{color:var(--flag);font-weight:400}
+  .jcell[data-cov="norun"]{border-color:var(--flag)}
+  .jcell[data-cov="run"]{background:var(--veg-pale);border-color:var(--veg)}
+
   /* rollout rail + flow ledger */
   .rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin:0 0 16px}
   .rstep{border:1px solid var(--rule);background:var(--paper);padding:10px 12px;text-align:left;
@@ -377,8 +399,14 @@
 
   <section class="band" id="flows">
     <div class="band-head"><h2>Flows</h2><span class="src" id="flows-src">–</span></div>
-    <p class="note">Every product flow by tier and by identity mode, with what tests it at each layer, what the pipeline actually runs, and what has no runner. Names are the owner's; identifiers are the code's. The rollout rail carries the order and the gate for each step. Click a step or a row for the file list with links.</p>
+    <p class="note">Three views of the same flows. The journey matrix is the lifecycle: stations across, phases down. The rollout rail is the order and the gate for each step. The ledger is every flow by tier and identity mode with what tests it at each layer. Names are the owner's; identifiers are the code's. Click any cell, step, or row for the file list with links.</p>
+    <h3 class="sub-h">Journey · stations left to right, phases top to bottom</h3>
+    <p class="note">The DRY form of the lifecycle. The long form (cold start, sponsor load, sponsor config, event config, poster association, the SharedReport checks per phase, event, post-event) is the cell text. Counts are spec files mapped to the cell by name: run by a workflow, and with no runner.</p>
+    <div class="hist-wrap"><table class="journey" id="journey"></table></div>
+    <div class="detail" data-detail="journey" hidden></div>
+    <h3 class="sub-h">Rollout · the order and the gate for each step</h3>
     <div class="rail" id="rail"></div>
+    <h3 class="sub-h">Ledger · flows by tier and identity mode</h3>
     <div class="hist-wrap"><table class="ledger" id="ledger"></table></div>
     <div class="detail" data-detail="flows" hidden></div>
   </section>
@@ -665,6 +693,40 @@ function ghLink(text){
  const path=m[1];const base=path.indexOf('packages/')===0?HUB_BLOB:OSE_BLOB;
  return '<a class="lnk" href="'+esc(base+path)+'" target="_blank" rel="noopener">'+esc(path)+'</a>'+esc(text.slice(path.length));
 }
+function renderJourney(s){
+ const tbl=$('#journey'),detail=$('[data-detail="journey"]');detail.hidden=true;
+ if(!s.journey){tbl.innerHTML='';return}
+ const J=s.journey;const byKey={};
+ J.cells.forEach(function(c){byKey[c.station+'|'+c.phase]=c});
+ let h='<thead><tr><th class="ph"></th>'+J.stations.map(function(st){const a=J.anyPhase[st.id]||{run:[],norun:[]};
+  return '<th title="'+esc(st.code)+'">'+esc(st.name)+'<small>any phase · '+a.run.length+' run · '+a.norun.length+' no runner</small></th>'}).join('')+'</tr></thead><tbody>';
+ J.phases.forEach(function(ph){
+  h+='<tr><th class="ph">'+esc(ph.name)+'<small>'+esc(ph.code)+'</small></th>';
+  J.stations.forEach(function(st){
+   const c=byKey[st.id+'|'+ph.id]||{what:'',run:[],norun:[]};
+   const cov=c.run.length?'run':c.norun.length?'norun':'none';
+   const text=[st.name,ph.name,c.what].concat(c.run,c.norun).join(' ').toLowerCase();
+   h+='<td><button type="button" class="jcell" data-cov="'+cov+'" data-key="'+esc(st.id+'|'+ph.id)+'" data-text="'+esc(text)+'" aria-expanded="false"><span class="w">'+esc(c.what)+'</span>'
+    +'<span class="k">'+(cov==='none'?'— no spec':'<span class="r">'+c.run.length+' run</span>'+(c.norun.length?'<span class="n">'+c.norun.length+' no runner</span>':''))+'</span></button></td>';
+  });
+  h+='</tr>';
+ });
+ tbl.innerHTML=h+'</tbody>';
+ tbl.onclick=function(e){
+  const b=e.target.closest('.jcell');if(!b)return;
+  const open=b.getAttribute('aria-expanded')==='true';
+  $$('.jcell',tbl).forEach(function(x){x.setAttribute('aria-expanded','false')});
+  if(open){detail.hidden=true;return}
+  b.setAttribute('aria-expanded','true');
+  const parts=b.dataset.key.split('|');const st=J.stations.filter(function(x){return x.id===parts[0]})[0];const ph=J.phases.filter(function(x){return x.id===parts[1]})[0];
+  const c=byKey[b.dataset.key];const a=J.anyPhase[st.id]||{run:[],norun:[]};
+  let d='<h3>'+esc(st.name)+' · '+esc(ph.name)+'</h3><p class="meta">'+esc(st.code)+'</p><p class="meta">'+esc(ph.code)+'</p><p>'+esc(c.what)+'</p>';
+  d+='<p class="meta" style="margin:8px 0 2px">Run by a workflow · '+c.run.length+'</p>'+(c.run.length?'<ul>'+c.run.map(function(x){return '<li>'+ghLink(x)+'</li>'}).join('')+'</ul>':'<p>Nothing.</p>');
+  d+='<p class="meta" style="margin:8px 0 2px;color:var(--flag)">No runner · '+c.norun.length+'</p>'+(c.norun.length?'<ul>'+c.norun.map(function(x){return '<li>'+ghLink(x)+'</li>'}).join('')+'</ul>':'<p>Nothing.</p>');
+  d+='<p class="meta" style="margin:8px 0 2px">'+esc(st.name)+' specs with no phase in their name · '+(a.run.length+a.norun.length)+'</p>'+(a.run.length+a.norun.length?'<ul>'+a.run.concat(a.norun).slice(0,40).map(function(x){return '<li>'+ghLink(x)+(a.norun.indexOf(x)>=0?' <span class="st" style="color:var(--flag)">no runner</span>':'')+'</li>'}).join('')+((a.run.length+a.norun.length)>40?'<li>… and '+(a.run.length+a.norun.length-40)+' more</li>':'')+'</ul>':'<p>Nothing.</p>');
+  detail.innerHTML=d;detail.hidden=false;
+ };
+}
 const RSTATE={open:'open',live:'in progress',queued:'queued',blocked:'blocked'};
 function renderFlows(s){
  const rail=$('#rail'),tbl=$('#ledger'),detail=$('[data-detail="flows"]');detail.hidden=true;
@@ -783,6 +845,7 @@ function applyFilter(){
  $$('.slot').forEach(function(r){r.hidden=!test(r)});
  $$('.tcell').forEach(function(t){t.classList.toggle('dim',!test(t))});
  $$('.rstep').forEach(function(t){t.classList.toggle('dim',!test(t))});
+ $$('.jcell').forEach(function(t){t.classList.toggle('dim',!test(t))});
  $$('.frow').forEach(function(r){r.hidden=!test(r)});
  $$('.ledger tr.grp').forEach(function(g){let n=g.nextElementSibling,any=false;while(n&&!n.classList.contains('grp')){if(!n.hidden)any=true;n=n.nextElementSibling}g.hidden=!any});
  $$('.layer').forEach(function(L){
@@ -803,7 +866,7 @@ function applyFilter(){
 function renderPlate(){
  const s=current();
  $('#st-pulled').textContent=fmt(s.pulled);
- renderGauges();renderFields(s);renderWeek(s);renderPyramid(s);renderFlows(s);renderRecon(s);renderHistory();
+ renderGauges();renderFields(s);renderWeek(s);renderPyramid(s);renderJourney(s);renderFlows(s);renderRecon(s);renderHistory();
  applyFilter();
 }
 function renderSnapOptions(){
