@@ -1,0 +1,9 @@
+# Path-based PR labels for actions/labeler@v4 (read by .github/workflows/label.yml).
+# The labeler runs on pull_request_target and reads this file from the base branch,
+# so a change here takes effect for PRs opened after it lands on main.
+docs:
+  - 'docs/**'
+packages:
+  - 'packages/**'
+ci:
+  - '.github/**'
