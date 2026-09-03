@@ -1,0 +1,263 @@
+{
+ "generated": "2026-09-03T01:30:00Z",
+ "sample": false,
+ "method": "GitHub Actions read for every org repo; OSE test totals counted from the tree, ran = tests in specs a workflow references; latest OSE main run green; Linear = OSE team",
+ "pyramid": [
+  {
+   "tier": "End to end",
+   "total": 2833,
+   "ran": 431,
+   "failed": 0
+  },
+  {
+   "tier": "Integration",
+   "total": 1055,
+   "ran": 877,
+   "failed": 0
+  },
+  {
+   "tier": "Unit",
+   "total": 3787,
+   "ran": 3787,
+   "failed": 0
+  }
+ ],
+ "failures": [],
+ "pages": [
+  {
+   "name": "Sponsor",
+   "total": 772,
+   "ran": 653,
+   "failed": 0
+  },
+  {
+   "name": "Event",
+   "total": 2404,
+   "ran": 1794,
+   "failed": 0
+  },
+  {
+   "name": "Poster",
+   "total": 299,
+   "ran": 181,
+   "failed": 0
+  },
+  {
+   "name": "Display",
+   "total": 361,
+   "ran": 78,
+   "failed": 0
+  },
+  {
+   "name": "Public",
+   "total": 926,
+   "ran": 652,
+   "failed": 0
+  },
+  {
+   "name": "Share report",
+   "total": 741,
+   "ran": 539,
+   "failed": 0
+  }
+ ],
+ "deployments": [
+  {
+   "env": "staging \u00b7 OSE",
+   "status": "success",
+   "branch": "main",
+   "sha": "45b1894",
+   "workflow": "T1 Deploy \u2192 Staging",
+   "when": "2026-09-02T22:11:35Z"
+  },
+  {
+   "env": "production \u00b7 OSE",
+   "status": "never",
+   "branch": "tag v*",
+   "sha": "\u2014",
+   "workflow": "T1 Deploy \u2192 Production \u00b7 no tagged deploy in the last 600 runs (since 22 Aug)",
+   "when": null
+  },
+  {
+   "env": "packages \u00b7 @ocr/flags",
+   "status": "success",
+   "branch": "main",
+   "sha": "82244b6",
+   "workflow": "Publish @ocr/flags",
+   "when": "2026-08-26T17:19:13Z"
+  }
+ ],
+ "repos": [
+  {
+   "name": "ourCommunityRituals",
+   "ci": "success",
+   "workflow": "OCR Workspace CI \u00b7 main",
+   "pushedAt": "2026-09-03T01:13:11Z",
+   "note": "PR #42 open, Gate green"
+  },
+  {
+   "name": "ourSharedEvents",
+   "ci": "success",
+   "workflow": "OurSharedEvents CI/CD \u00b7 main 45b1894",
+   "pushedAt": "2026-09-02T21:59:39Z",
+   "note": "S0, T0, T1, T2, T3, T4 green"
+  },
+  {
+   "name": "OCR-docs",
+   "ci": "success",
+   "workflow": "Brain validate \u00b7 main 4c97f92",
+   "pushedAt": "2026-09-02T21:57:36Z",
+   "note": "Propagate Standards fanned out 2 Sep"
+  },
+  {
+   "name": "ourWKRP",
+   "ci": "failure",
+   "workflow": "CI \u00b7 main 367ec40",
+   "pushedAt": "2026-09-02T21:23:16Z",
+   "note": "CI red since 30 Aug; Mobile Workability nightly red 2 Sep"
+  },
+  {
+   "name": "ourSharedRecords",
+   "ci": "success",
+   "workflow": "Docs CI \u00b7 main 623d6f0",
+   "pushedAt": "2026-09-02T21:23:50Z",
+   "note": "standards propagation PR open"
+  },
+  {
+   "name": "ourSharedGames",
+   "ci": "success",
+   "workflow": "Docs CI \u00b7 main b7fefc3",
+   "pushedAt": "2026-09-02T21:23:16Z",
+   "note": "standards propagation PR open"
+  },
+  {
+   "name": "ourSharedPulse",
+   "ci": "success",
+   "workflow": "Docs CI \u00b7 main 5438120",
+   "pushedAt": "2026-09-02T21:23:16Z",
+   "note": "2 Sep PR runs still queued"
+  },
+  {
+   "name": "ourAirwaves",
+   "ci": "success",
+   "workflow": "Docs CI \u00b7 main 5eb8877",
+   "pushedAt": "2026-09-02T21:23:15Z",
+   "note": "standards propagation PR open"
+  },
+  {
+   "name": "ourSharedMagnets",
+   "ci": "success",
+   "workflow": "Docs CI \u00b7 main bbc460d",
+   "pushedAt": "2026-09-02T21:23:13Z",
+   "note": "standards propagation PR open"
+  },
+  {
+   "name": "ourEventRings",
+   "ci": "none",
+   "workflow": "",
+   "pushedAt": "2026-04-20T01:50:33Z",
+   "note": "no workflows"
+  },
+  {
+   "name": "demo-repository",
+   "ci": "none",
+   "workflow": "",
+   "pushedAt": "2026-04-06T04:21:31Z",
+   "note": "no workflows"
+  }
+ ],
+ "linear": {
+  "scope": "OSE team",
+  "backlog": 684,
+  "todo": 39,
+  "inProgress": 14,
+  "blocked": 5,
+  "blockedLabel": "Release-blocking open",
+  "items": [
+   {
+    "id": "OSE-217",
+    "title": "[BE-21] Google Maps venue display \u2014 Static Maps embed in SharedReports",
+    "ageDays": 111,
+    "stale": true
+   },
+   {
+    "id": "OSE-807",
+    "title": "A8 \u2014 PR traceability gate + monorepo source map + real definition of done",
+    "ageDays": 17,
+    "stale": true
+   },
+   {
+    "id": "OSE-538",
+    "title": "AS-2: @ocr/ui React component layer \u2014 Phase 3 component bridge",
+    "ageDays": 16,
+    "stale": true
+   },
+   {
+    "id": "OSE-557",
+    "title": "Admin mutation audit trail + report access log",
+    "ageDays": 16,
+    "stale": true
+   },
+   {
+    "id": "OSE-564",
+    "title": "Threat ledger + born-red harness",
+    "ageDays": 10,
+    "stale": true
+   },
+   {
+    "id": "OSE-790",
+    "title": "Triage 44 open Dependabot alerts (1 critical / 19 high / 21 moderate / 3 low)",
+    "ageDays": 7,
+    "stale": false
+   },
+   {
+    "id": "OSE-462",
+    "title": "S-3.2.1 \u2014 Land tier-equity.invariant.spec.ts",
+    "ageDays": 6,
+    "stale": false
+   },
+   {
+    "id": "OSE-1018",
+    "title": "detect-secrets: 58 unbaselined detections surfaced on managed runner",
+    "ageDays": 3,
+    "stale": false
+   },
+   {
+    "id": "OSE-556",
+    "title": "Export provenance manifest: per-run audit record for the D1 \u2192 OCR boundary",
+    "ageDays": 3,
+    "stale": false
+   },
+   {
+    "id": "OSE-953",
+    "title": "EPIC: CI Runner Strategy \u2014 reshape the suite, migrate to managed runners, retire self-hosted",
+    "ageDays": 1,
+    "stale": false
+   },
+   {
+    "id": "OSE-984",
+    "title": "GOAL: Flywheel UI E2E \u2014 traverse the ritual screen-to-screen on staging \u2192 prod",
+    "ageDays": 1,
+    "stale": false
+   },
+   {
+    "id": "OSE-897",
+    "title": "Feature G \u2014 GAS\u2192native-JS front-end port",
+    "ageDays": 1,
+    "stale": false
+   },
+   {
+    "id": "OSE-563",
+    "title": "Attendee anti-logging proof: provably unlogged anonymous path + red team on absence",
+    "ageDays": 1,
+    "stale": false
+   },
+   {
+    "id": "OSE-1155",
+    "title": "run_all.py swallows non-gated level stderr",
+    "ageDays": 1,
+    "stale": false
+   }
+  ]
+ }
+}

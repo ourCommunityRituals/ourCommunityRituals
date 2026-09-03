@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;
+    --ground:#000000;
+    --card:#1e2c2f;
+    --card2:#26383c;
+    --text:#ffffff;
+    --soft:#cfe0de;
+    --pass:#4ec97f;
+    --fail:#ff6a55;
+    --watch:#ffc44d;
+    --dark:#0a1214;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  html{font-size:24px;}
+  body{
+    background:var(--ground);
+    color:var(--text);
+    font-family:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:1rem;line-height:1.35;font-weight:500;
+    font-variant-numeric:tabular-nums;
+    -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%;
+    padding:0 0 3rem;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 12px;}
+
+  /* every text block sits on its own filled panel so contrast survives
+     whatever the phone does to the page background */
+  .card{background:var(--card);padding:16px 18px;margin-bottom:8px;}
+
+  .verdict{background:var(--card);padding:26px 18px 22px;margin-bottom:8px;}
+  .state{font-size:clamp(3.4rem,21vw,4.6rem);font-weight:700;letter-spacing:-.035em;line-height:.9;margin:0;}
+  .state.green{color:var(--pass);} .state.red{color:var(--fail);}
+  .state.watch{color:var(--watch);} .state.idle{color:var(--soft);}
+  .why{margin:14px 0 0;font-size:1.05rem;color:var(--text);max-width:24ch;}
+  .stamp{margin:12px 0 0;font-size:.85rem;color:var(--soft);font-weight:500;}
+  .sample{display:inline-block;margin-top:14px;padding:6px 12px;
+    background:var(--watch);color:var(--dark);font-size:.85rem;font-weight:700;}
+
+  h2{background:var(--card2);color:var(--text);
+    font-size:1.15rem;font-weight:700;margin:22px 0 8px;padding:12px 18px;
+    display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
+  h2 .aside{font-weight:500;font-size:.82rem;color:var(--soft);}
+
+  .pyramid{margin:0 0 8px;}
+  .tier{height:70px;display:flex;align-items:center;justify-content:center;
+    color:var(--dark);font-weight:700;font-size:1.05rem;margin-bottom:4px;}
+
+  .row{display:flex;align-items:center;gap:14px;width:100%;
+    background:var(--card);padding:18px;margin-bottom:8px;border:0;
+    font:inherit;font-weight:600;color:var(--text);text-align:left;cursor:pointer;}
+  .row:focus-visible{outline:4px solid var(--watch);outline-offset:-4px;}
+  .row .name{flex:1;}
+  .row .num{font-size:.88rem;color:var(--soft);font-weight:500;}
+  .row .rate{font-weight:700;font-size:1.1rem;min-width:3.6em;text-align:right;}
+  .row .caret{font-size:1.2rem;font-weight:700;width:.9em;color:var(--soft);}
+
+  .fail{background:var(--card2);border-left:8px solid var(--fail);
+    padding:14px 16px;margin-bottom:8px;}
+  .fail .t{font-weight:700;font-size:.95rem;color:var(--text);}
+  .fail .f{font-size:.85rem;color:var(--soft);margin-top:4px;font-weight:500;}
+  .fail .e{font-size:.9rem;color:var(--fail);margin-top:6px;font-weight:600;word-break:break-word;}
+
+  .page{display:flex;align-items:center;gap:14px;background:var(--card);
+    padding:18px;margin-bottom:8px;}
+  .page .name{flex:1;font-weight:700;}
+  .page .meta{display:block;font-size:.82rem;color:var(--soft);font-weight:500;margin-top:2px;}
+  .page .rate{font-weight:700;font-size:1.25rem;min-width:3.6em;text-align:right;}
+
+  .dep{display:flex;gap:14px;align-items:flex-start;background:var(--card);
+    padding:18px;margin-bottom:8px;}
+  .dep .dot{width:16px;height:16px;border-radius:50%;margin-top:6px;flex:0 0 16px;}
+  .dep .body{flex:1;min-width:0;}
+  .dep .env{font-weight:700;display:block;}
+  .dep .sub{font-size:.82rem;color:var(--soft);font-weight:500;word-break:break-word;}
+  .dep .when{font-size:.85rem;color:var(--soft);font-weight:600;white-space:nowrap;}
+
+  .counts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+  .count{background:var(--card);padding:18px 10px;text-align:center;}
+  .count b{display:block;font-size:2.4rem;font-weight:700;line-height:1;color:var(--text);}
+  .count span{font-size:.88rem;color:var(--soft);font-weight:500;}
+  .count.flag b{color:var(--fail);}
+
+  .item{background:var(--card);padding:18px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start;}
+  .item .id{font-weight:700;font-size:.88rem;color:var(--soft);flex:0 0 auto;padding-top:2px;}
+  .item .title{flex:1;font-size:1rem;font-weight:600;color:var(--text);}
+  .item .age{font-size:.95rem;color:var(--soft);font-weight:700;white-space:nowrap;}
+  .item.stale .age{color:var(--fail);}
+
+  .empty{background:var(--card);padding:18px;color:var(--soft);font-size:.9rem;}
+  footer{background:var(--card2);padding:16px 18px;margin-top:20px;
+    font-size:.82rem;color:var(--soft);font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="verdict">
+    <p class="state idle" id="state">Loading</p>
+    <p class="why" id="why">Reading the latest run.</p>
+    <p class="stamp" id="stamp"></p>
+    <div id="sampleflag"></div>
+  </div>
+
+  <h2>Test pyramid <span class="aside" id="totalTests"></span></h2>
+  <div class="pyramid" id="pyramid"></div>
+  <div id="tierlist"></div>
+
+  <h2>Pages <span class="aside">pass rate</span></h2>
+  <div id="pages"></div>
+
+  <h2>Deployments <span class="aside">GitHub</span></h2>
+  <div id="deploys"></div>
+
+  <h2>Repositories <span class="aside" id="repoCount">GitHub</span></h2>
+  <div id="repos"></div>
+
+  <h2>Linear <span class="aside" id="linearScope"></span></h2>
+  <div class="counts" id="linearCounts"></div>
+  <div id="linearItems"></div>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const SAMPLE = {
+  generated: new Date(Date.now() - 41*60*1000).toISOString(),
+  sample: true,
+  pyramid: [
+    {tier:"End to end", total:148, failed:3},
+    {tier:"Integration", total:604, failed:0},
+    {tier:"Unit", total:2265, failed:0}
+  ],
+  failures: [
+    {tier:"End to end", page:"Share report", test:"renders totals for a multi-sponsor event",
+     file:"e2e/share-report.spec.ts:88", error:"Timed out waiting for [data-testid=totals]"},
+    {tier:"End to end", page:"Share report", test:"exports PDF without clipping the footer",
+     file:"e2e/share-report.spec.ts:141", error:"Expected 1 page, received 2"},
+    {tier:"End to end", page:"Display", test:"rotates through queued posters",
+     file:"e2e/display.spec.ts:52", error:"Expected poster-2 to equal poster-3"}
+  ],
+  pages: [
+    {name:"Sponsor", total:512, failed:0}, {name:"Event", total:734, failed:0},
+    {name:"Poster", total:388, failed:0},  {name:"Display", total:341, failed:1},
+    {name:"Public", total:497, failed:0},  {name:"Share report", total:345, failed:2}
+  ],
+  deployments: [
+    {env:"production", status:"success", branch:"main", sha:"4c19af2",
+     workflow:"deploy-ose", when:"2026-09-02T11:04:00Z"},
+    {env:"preview", status:"success", branch:"share-report-totals", sha:"9be0713",
+     workflow:"deploy-preview", when:"2026-09-02T09:31:00Z"},
+    {env:"production", status:"failure", branch:"main", sha:"1a77d40",
+     workflow:"deploy-ose", when:"2026-09-01T22:12:00Z"}
+  ],
+  linear: {
+    backlog:23, todo:6, inProgress:2, blocked:1,
+    items:[
+      {id:"OSE-204", title:"Share report totals mismatch on multi-sponsor events", ageDays:2},
+      {id:"OSE-198", title:"Display rotation drops the last queued poster", ageDays:9, stale:true},
+      {id:"OSE-171", title:"Public page meta tags for shared links", ageDays:24, stale:true},
+      {id:"OSE-160", title:"Sponsor tier copy pass", ageDays:31, stale:true}
+    ]
+  }
+};
+
+const $ = id => document.getElementById(id);
+// A tier or page may carry `ran` (tests the pipeline actually executed) beside
+// `total` (tests that exist). Rate is over what ran; nothing ran reads as unread.
+const ranOf = x => (x.ran == null ? x.total : x.ran);
+const pct = (t,f) => t ? ((t-f)/t)*100 : null;
+const fmtPct = v => v == null ? "unread" : (v >= 99.95 ? "100" : v.toFixed(1)) + "%";
+const rateColor = v => v == null ? "var(--watch)" : v === 100 ? "var(--pass)" : v >= 99 ? "var(--watch)" : "var(--fail)";
+const fmtRan = x => x.ran != null && x.ran !== x.total
+  ? `${x.ran.toLocaleString()} of ${x.total.toLocaleString()} ran`
+  : `${x.total.toLocaleString()} tests`;
+
+function ago(iso){
+  const m = Math.round((Date.now() - new Date(iso).getTime())/60000);
+  if (isNaN(m)) return "";
+  if (m < 60) return Math.max(m,1) + "m ago";
+  const h = Math.round(m/60);
+  return h < 24 ? h + "h ago" : Math.round(h/24) + "d ago";
+}
+
+function tierClip(i, n){
+  const topW = 24 + (76*i/n), botW = 24 + (76*(i+1)/n);
+  const tl = (100-topW)/2, bl = (100-botW)/2;
+  return `polygon(${tl}% 0, ${100-tl}% 0, ${100-bl}% 100%, ${bl}% 100%)`;
+}
+
+function render(d){
+  const pyr = d.pyramid || [], failures = d.failures || [];
+  const totalTests = pyr.reduce((a,t)=>a+(t.total||0),0);
+  const totalFailed = pyr.reduce((a,t)=>a+(t.failed||0),0);
+  const badDeploy = (d.deployments||[]).slice(0,1).some(x=>x.status==="failure");
+  const stale = ((d.linear&&d.linear.items)||[]).filter(i=>i.stale).length;
+
+  let state="Green", cls="green", why="Suite is clean and the last deploy landed.";
+  if (totalFailed>0 || badDeploy){
+    state="Red"; cls="red";
+    why = totalFailed>0
+      ? `${totalFailed} test${totalFailed>1?"s":""} failing. Stop and look before you push.`
+      : "Last production deploy failed.";
+  } else if (pyr.some(t=>ranOf(t)===0)){
+    state="Watch"; cls="watch";
+    why = "A pyramid tier has no run to read.";
+  } else if (stale>0){
+    state="Watch"; cls="watch";
+    why = `Suite is clean. ${stale} Linear item${stale>1?"s have":" has"} gone quiet.`;
+  }
+  const unrun = pyr.reduce((a,t)=>a+(t.total-ranOf(t)),0);
+  if (state==="Green" && unrun>0){
+    why = `Everything that ran passed. ${unrun.toLocaleString()} tests exist that no workflow runs.`;
+  }
+  $("state").textContent = state;
+  $("state").className = "state " + cls;
+  $("why").textContent = why;
+  $("stamp").textContent = "Last run " + ago(d.generated);
+  if (d.sample) $("sampleflag").innerHTML = '<span class="sample">Sample data</span>';
+
+  $("totalTests").textContent = totalTests.toLocaleString() + " tests";
+  $("pyramid").innerHTML = pyr.map((t,i)=>{
+    const r = pct(ranOf(t),t.failed);
+    return `<div class="tier" style="clip-path:${tierClip(i,pyr.length)};background:${rateColor(r)}">${t.tier}</div>`;
+  }).join("");
+
+  $("tierlist").innerHTML = pyr.map((t,i)=>{
+    const r = pct(ranOf(t),t.failed);
+    const mine = failures.filter(f=>f.tier===t.tier);
+    return `<button class="row" data-tier="${i}" aria-expanded="false">
+        <span class="name">${t.tier}</span>
+        <span class="num">${fmtRan(t)}</span>
+        <span class="rate" style="color:${rateColor(r)}">${fmtPct(r)}</span>
+        <span class="caret">${mine.length ? "+" : ""}</span>
+      </button>
+      <div id="d${i}" hidden>${mine.length ? mine.map(f=>`<div class="fail">
+            <div class="t">${f.test}</div>
+            <div class="f">${f.page ? f.page+" · " : ""}${f.file||""}</div>
+            <div class="e">${f.error||""}</div></div>`).join("")
+        : '<div class="empty">Everything in this tier passed.</div>'}</div>`;
+  }).join("");
+
+  $("tierlist").querySelectorAll(".row").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const p = $("d"+btn.dataset.tier), open = !p.hidden;
+      p.hidden = open;
+      btn.setAttribute("aria-expanded", String(!open));
+      btn.querySelector(".caret").textContent = open ? (p.querySelector(".fail")?"+":"") : "–";
+    });
+  });
+
+  $("pages").innerHTML = (d.pages||[]).map(p=>{
+    const r = pct(ranOf(p),p.failed);
+    return `<div class="page">
+      <span class="name">${p.name}
+        <span class="meta">${fmtRan(p)}${p.failed ? " · "+p.failed+" failing" : ""}</span>
+      </span>
+      <span class="rate" style="color:${rateColor(r)}">${fmtPct(r)}</span></div>`;
+  }).join("") || '<div class="empty">No page data in this run.</div>';
+
+  const dcol = s => s==="success" ? "var(--pass)" : s==="failure" ? "var(--fail)" : "var(--watch)";
+  $("deploys").innerHTML = (d.deployments||[]).map(x=>`<div class="dep">
+      <i class="dot" style="background:${dcol(x.status)}"></i>
+      <span class="body"><span class="env">${x.env}</span>
+        <span class="sub">${x.workflow||""} · ${x.branch||""} @ ${x.sha||""}</span></span>
+      <span class="when">${ago(x.when)}</span></div>`).join("")
+    || '<div class="empty">No deploys recorded yet.</div>';
+
+  const rcol = s => s==="success" ? "var(--pass)" : s==="failure" ? "var(--fail)" : s==="none" ? "var(--soft)" : "var(--watch)";
+  const repos = d.repos || [];
+  $("repoCount").textContent = repos.length ? repos.length + " in the org" : "GitHub";
+  $("repos").innerHTML = repos.map(r=>`<div class="dep">
+      <i class="dot" style="background:${rcol(r.ci)}"></i>
+      <span class="body"><span class="env">${r.name}</span>
+        <span class="sub">${r.ci==="none" ? "no workflow runs" : (r.workflow||"") + " · " + (r.ci||"")}${r.note ? " · " + r.note : ""}</span></span>
+      <span class="when">${ago(r.pushedAt)}</span></div>`).join("")
+    || '<div class="empty">No repository read in this run.</div>';
+
+  const L = d.linear || {};
+  $("linearScope").textContent = L.scope || "";
+  $("linearCounts").innerHTML = [
+    ["In progress", L.inProgress], ["Todo", L.todo],
+    ["Backlog", L.backlog], [L.blockedLabel || "Blocked", L.blocked, true]
+  ].map(([label,n,flag]) =>
+    `<div class="count${flag&&n?" flag":""}"><b>${n ?? "–"}</b><span>${label}</span></div>`
+  ).join("");
+
+  $("linearItems").innerHTML = (L.items||[]).map(i=>`<div class="item${i.stale?" stale":""}">
+      <span class="id">${i.id}</span>
+      <span class="title">${i.title}</span>
+      <span class="age">${i.ageDays}d</span></div>`).join("")
+    || '<div class="empty">Nothing waiting on you.</div>';
+
+  $("footer").textContent = d.sample
+    ? "Sample data. Publish dashboard-data.json beside this file for real numbers."
+    : "Reading dashboard-data.json" + (d.method ? " · " + d.method : ".");
+}
+
+fetch("./dashboard-data.json",{cache:"no-store"})
+  .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(render)
+  .catch(()=>render(SAMPLE));
+</script>
+</body>
+</html>
