@@ -23,6 +23,13 @@ actually uses.
 ## Files
 
 - `network-plate.html` renders the plate. It holds no data.
+- `status.html` is the phone-sized status page: one verdict, the three-tier
+  pyramid, the six stations as pages, deployments, every repository in the
+  org, and Linear. It reads `dashboard-data.json` beside it and falls back
+  to sample data when that file is missing.
+- `dashboard-data.json` is the status page's data. Regenerate it on every
+  pull; it is a snapshot, not a live feed. `ran` beside `total` separates
+  tests a workflow executes from tests that merely exist.
 - `snapshots.js` holds one entry per pull. The plate draws the latest pull
   in the selected time frame and trends every pull in that frame.
 
