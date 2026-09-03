@@ -1,3 +1,4 @@
+/* global window */
 /* Network plate snapshots.
    One entry per pull. Append a new entry for each re-render; never edit an old one.
    The plate draws the latest snapshot in the selected time frame and trends every
