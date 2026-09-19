@@ -18,7 +18,7 @@
  * directly, so drift between the intended CI shape and the actual workflow fails
  * here rather than silently reintroducing the double-run or a cold install.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
@@ -221,5 +221,153 @@ describe('L1 lint — the base static-quality tier exists and executes', () => {
   it('an eslint flat config exists at the workspace root', () => {
     const cfg = resolve(__dirname, '../../../eslint.config.js');
     expect(existsSync(cfg), 'eslint.config.js must exist — without it eslint exits on a config error before reading a single file').toBe(true);
+  });
+});
+
+/**
+ * THE ABSENT-TIER ANTIBODY — generalised.
+ *
+ * This repo has met the same failure three times and fixed it three times in
+ * isolation:
+ *
+ *   1. L1 lint  — "never red and never green; it was absent" (eslint.config.js header)
+ *   2. COST-201 — a sibling-directory probe that `exit 0`'d when the brain was
+ *                 missing, so brain-parity passed without running (ci.yml comments)
+ *   3. @ocr/ui  — five suites, ~130 assertions, and NO `ui:*` script existed for CI
+ *                 to call, so no workflow ever invoked them
+ *
+ * Each fix locked its own instance. None of them stopped the fourth. The shape is
+ * always the same: a package declares real checks, nothing calls them, and the gap
+ * is invisible from every tier above — a passing CI is indistinguishable from a CI
+ * that never ran the thing.
+ *
+ * So this suite asserts the RULE rather than the instances: every workspace package
+ * that declares a `test` script must be reachable from the gate. Adding a package
+ * with tests and forgetting to wire it now fails here, at the moment it is added,
+ * instead of years later during a recon.
+ *
+ * Deliberately NOT asserted: that a package HAS tests. That is a coverage argument
+ * and belongs elsewhere. This asserts only that declared checks are actually run —
+ * the difference between an absent tier and a thin one.
+ */
+describe('absent-tier antibody — declared checks must be invoked by CI', () => {
+  const ROOT = resolve(__dirname, '../../..');
+  const rootPkg = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8')) as {
+    scripts?: Record<string, string>;
+  };
+  const rootScripts = rootPkg.scripts ?? {};
+
+  /**
+   * Named residuals — NOT a bypass, and this list must only ever SHRINK.
+   * Same convention as eslint.config.js's residual-TS list: the honest statement
+   * of what is not covered, kept visible instead of silently excluded.
+   */
+  const NAMED_RESIDUALS: Record<string, string> = {
+    '@ocr/data-provider':
+      'Declares a `test` script but ships ZERO test files, so `vitest run` exits 1 on an ' +
+      'empty run. Wiring it would add a permanently-red gate. This is the same disease one ' +
+      'step earlier — a declared check with nothing behind it. Fix by adding tests or by ' +
+      'removing the phantom script; do not fix by widening this list.',
+  };
+
+  /** Every workspace package that declares the given script. */
+  const packagesDeclaring = (script: string): { dir: string; name: string }[] => {
+    const out: { dir: string; name: string }[] = [];
+    for (const dir of readdirSync(resolve(ROOT, 'packages'))) {
+      const pkgPath = resolve(ROOT, 'packages', dir, 'package.json');
+      if (!existsSync(pkgPath)) continue;
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as {
+        name?: string;
+        scripts?: Record<string, string>;
+      };
+      const name = pkg.name ?? dir;
+      if (pkg.scripts?.[script] && !(name in NAMED_RESIDUALS)) out.push({ dir, name });
+    }
+    return out;
+  };
+
+  /**
+   * Every command CI can actually execute, with root scripts expanded one level and the
+   * step's `working-directory` carried along.
+   *
+   * The first version of this matched the package NAME anywhere in the surface, which was
+   * itself a false green: removing the `pnpm ui:test` step still left `pnpm ui:check:generated`
+   * mentioning @ocr/ui, so the rule passed while the tests had gone dark. Verified by
+   * deleting the step and watching this suite stay green — exactly the failure it exists to
+   * catch, committed by the check itself. Match the SCRIPT, never the package.
+   */
+  const gateCommands = (): { cmd: string; cwd: string }[] => {
+    const out: { cmd: string; cwd: string }[] = [];
+    for (const job of Object.values(jobs)) {
+      for (const step of job.steps ?? []) {
+        const run = step.run ?? '';
+        if (!run) continue;
+        const cwd = (step as { 'working-directory'?: string })['working-directory'] ?? '';
+        const m = /pnpm\s+([A-Za-z0-9:_-]+)/.exec(run);
+        const key = m?.[1];
+        const expanded = key ? rootScripts[key] : undefined;
+        out.push({ cmd: expanded ? `${run}\n${expanded}` : run, cwd });
+      }
+    }
+    return out;
+  };
+
+  /** True only if some CI step invokes THIS script for THIS package. */
+  const reaches = (pkgName: string, dir: string, script: string): boolean =>
+    gateCommands().some(({ cmd, cwd }) => {
+      // `pnpm --filter @ocr/x <script>` — the root-script convention
+      if (new RegExp(`--filter\\s+${pkgName.replace('/', '\\/')}\\s+${script}\\b`).test(cmd)) return true;
+      // or a step that cd's into the package and runs it directly
+      if (cwd === `packages/${dir}` && new RegExp(`\\b${script}\\b`).test(cmd)) return true;
+      return false;
+    });
+
+  it('every package declaring a `test` script is invoked by some CI job', () => {
+    const orphans = packagesDeclaring('test')
+      .filter((p) => !reaches(p.name, p.dir, 'test'))
+      .map((p) => `${p.name} (packages/${p.dir}) declares \`test\` and no CI job runs it`);
+    expect(
+      orphans,
+      `A package's tests are worth nothing if no job calls them — that is the absent tier,
+and it is invisible from every layer above. Add a root script (e.g. "<pkg>:test":
+"pnpm --filter <name> test") and a step in the gate job.
+Orphans:\n  ${orphans.join('\n  ')}\n`,
+    ).toEqual([]);
+  });
+
+  it('every package declaring a `check:generated` script is invoked by some CI job', () => {
+    const orphans = packagesDeclaring('check:generated')
+      .filter((p) => !reaches(p.name, p.dir, 'check:generated'))
+      .map((p) => `${p.name} (packages/${p.dir}) declares \`check:generated\` and no CI job runs it`);
+    expect(
+      orphans,
+      `A committed generator with committed output and no drift gate diverges silently
+the first time someone hand-edits the output.
+Orphans:\n  ${orphans.join('\n  ')}\n`,
+    ).toEqual([]);
+  });
+
+  it('@ocr/ui specifically is wired — it was the third recurrence', () => {
+    expect(reaches('@ocr/ui', 'ui', 'test'), '@ocr/ui tests must be invoked by CI').toBe(true);
+    expect(rootScripts['ui:test'], 'root `ui:test` must exist — CI calls root scripts').toBeDefined();
+  });
+});
+
+describe('named residuals stay honest', () => {
+  it('every named residual still exists and still declares the script it is excused from', () => {
+    const ROOT = resolve(__dirname, '../../..');
+    for (const name of Object.keys({ '@ocr/data-provider': 1 })) {
+      const dir = name.replace('@ocr/', '');
+      const pkgPath = resolve(ROOT, 'packages', dir, 'package.json');
+      expect(
+        existsSync(pkgPath),
+        `${name} is excused in NAMED_RESIDUALS but no longer exists — remove the entry`,
+      ).toBe(true);
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { scripts?: Record<string, string> };
+      expect(
+        pkg.scripts?.test,
+        `${name} no longer declares a \`test\` script — remove it from NAMED_RESIDUALS and let the rule apply`,
+      ).toBeDefined();
+    }
   });
 });

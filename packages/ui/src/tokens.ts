@@ -35,6 +35,9 @@
 // ── Tier 1: Primitive colour scale ───────────────────────────────────────────
 
 export const primitives = {
+  // Pure ink — the only correct --on-accent for the dark theme's accent fill.
+  '--ocr-ink-000': '#000000',    // 5.78:1 on --ocr-blue-600; white is only 3.63:1
+
   // CARTO blue scale
   '--ocr-blue-600': '#1785FB',   // CARTO signature blue
   '--ocr-blue-500': '#3D9BFF',   // hover / lighter
@@ -89,7 +92,11 @@ export const semanticDark = {
   '--text-muted':    'var(--ocr-navy-500)',
   '--accent':        'var(--ocr-blue-600)',
   '--accent-hover':  'var(--ocr-blue-500)',
-  '--on-accent':     'var(--ocr-light-100)',  // fg for labels/icons ON --accent (AA >=3:1 large); brands with a light accent override this
+  // fg for labels/icons ON --accent or --danger. The right answer FLIPS per theme and
+  // white was wrong here: white on #1785FB is 3.63:1, black is 5.78:1 (and 5.50:1 on
+  // --danger). The literal `color:#000` in styles.ts was masking this — reading the token
+  // without fixing it would have made dark mode worse. Brands with a light accent override.
+  '--on-accent':     'var(--ocr-ink-000)',
   '--live':          'var(--ocr-teal-400)',   // on-air / active — teal, not green
   '--live-hover':    'var(--ocr-teal-300)',
   '--surface-hover':  'var(--ocr-navy-800)',
@@ -115,7 +122,7 @@ export const semanticLight = {
   '--text-muted':    'var(--ocr-slate-600)',   // 4.6:1 — full AA
   '--accent':        'var(--ocr-blue-700)',    // 4.7:1 — full AA
   '--accent-hover':  'var(--ocr-blue-600l)',
-  '--on-accent':     'var(--ocr-light-100)',   // white on the dark-blue light-mode accent (~7:1)
+  '--on-accent':     'var(--ocr-light-100)',   // 6.30:1 on --accent, 6.34:1 on --danger — white is correct HERE
   '--live':          'var(--ocr-teal-700)',    // 4.9:1 — full AA
   '--live-hover':    'var(--ocr-teal-600)',
   '--surface-hover':  'var(--ocr-light-200)',
