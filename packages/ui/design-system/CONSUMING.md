@@ -24,13 +24,27 @@ The live, browsable version is the Design System artifact it was published from.
 
 **`components/bundle.js` was not built from this repo.** It came from an external handoff
 bundle. There is no build script in `packages/ui` that produces it (`scripts` are `test`,
-`scan`, `typecheck` — no `build`), so it cannot be regenerated or verified. It is known to
-diverge from `src`: `AccessDenied` renders "This area is for DJs" in
-`src/react/EmptyState.tsx:38-40` and "…is organizer-only" in the bundle. That divergence was
-found only because it happened to be readable prose; a changed class name, a dropped
-`aria-*` or a different handler would not have surfaced the same way.
-**Do not wire any component from this bundle or its previews.** It exists to render the
-live component cards in the design-system artifact, nothing else.
+`scan`, `typecheck` — no `build`), so it cannot be regenerated or verified. `scripts/bundle-divergence.mjs` now answers precisely how far it diverges, and the answer
+is narrower than feared. Of the 13 declared components, **11 are literal-identical to
+`src/react`** — same class names, same `aria-*`, same defaults, same copy. Two are not:
+
+| Component | Divergence |
+|---|---|
+| `AccessDenied` | bundle has `icon=🔒` and "Ask the event organizer for an invite link"; src has `🎧` and "This area is for DJs" |
+| `FormGroup` | src accepts `className` and `data-testid`; the bundle's signature has neither |
+
+Both are consistent with the bundle being a **stale build of `src`**, not a rogue fork.
+
+The larger finding is what the header does not declare: the file defines **42 functions**,
+not the 15 it claims. The other 29 are the handoff's demo-kit layer — `AdminDashboard`,
+`PublicPre`, `ReportPost`, the sponsor steps, plus helpers like `PhoneShell`, `QRBlock`,
+`HexMap`, `UecChip`. They have no `src` counterpart to verify against at all.
+
+So: **the previews are trustworthy for the 11, and the bundle is not a component library.**
+Still do not adopt it wholesale — there is no build script here that can regenerate it, so
+it can only be replaced, not refreshed. `pnpm ui:check:bundle` pins today's drift in a
+committed baseline and fails on anything new, and on anything fixed, so the baseline
+shrinks rather than rots.
 
 **`components/bundle.css` is a SUBSET of `src/styles.ts`** — 122 classes against 134.
 The 34 it lacks are almost all ourWKRP surfaces (`.genre-link*`, `.genre-popup*`,

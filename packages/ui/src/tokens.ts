@@ -38,6 +38,31 @@ export const primitives = {
   // Pure ink — the only correct --on-accent for the dark theme's accent fill.
   '--ocr-ink-000': '#000000',    // 5.78:1 on --ocr-blue-600; white is only 3.63:1
 
+  // ── INK primitives ──────────────────────────────────────────────────────
+  // A token is either a ground or something you read, never both. A FILL needs 3:1
+  // against its surroundings; text needs 7:1 for a reader whose contrast sensitivity
+  // has declined with age, and this product is used outdoors on cheap phones. One
+  // token cannot satisfy both without either washing out the brand or failing the
+  // reader — which is exactly how --accent came to read 4.11:1 on a card.
+  // Each value below is solved to AAA against BOTH --bg and --surface in its theme.
+  '--ocr-slate-350': '#A1B4C7',  // dark  secondary text  — 8.39 on bg, 7.01 on surface
+  '--ocr-slate-650': '#3E576D',  // light secondary text  — 7.01 on bg, 7.53 on surface
+  '--ocr-blue-300':  '#75B6FD',  // dark  accent AS TEXT  — 8.39 / 7.01
+  '--ocr-blue-800':  '#004DBC',  // light accent AS TEXT  — 7.02 / 7.53
+  '--ocr-red-300':   '#ED9D9D',  // dark  error text      — 8.42 / 7.04
+  '--ocr-red-800':   '#9C2A2A',  // light error text      — 7.04 / 7.56
+  '--ocr-teal-350':  '#00C8B7',  // dark  live/success text — 8.45 / 7.06
+  '--ocr-teal-800':  '#005F54',  // light live/success text — 7.07 / 7.60
+  '--ocr-amber-350': '#F5B32E',  // dark  warning text    — 9.66 / 8.07
+  '--ocr-amber-800': '#754C00',  // light warning text    — 7.01 / 7.53
+
+  // ── LINE primitives ─────────────────────────────────────────────────────
+  // WCAG 1.4.11 wants 3:1 on anything that identifies a control. Every neutral step
+  // in the dark theme measures between 1.15:1 and 1.63:1, and this system has no
+  // shadows — so --border alone could never mark a control.
+  '--ocr-slate-450': '#4E71A6',  // dark  component boundary — 3.60 on bg, 3.01 on surface
+  '--ocr-slate-550': '#6892C0',  // light component boundary — 3.03 on bg, 3.25 on surface
+
   // CARTO blue scale
   '--ocr-blue-600': '#1785FB',   // CARTO signature blue
   '--ocr-blue-500': '#3D9BFF',   // hover / lighter
@@ -89,7 +114,7 @@ export const semanticDark = {
   '--surface':       'var(--ocr-navy-900)',
   '--border':        'var(--ocr-navy-700)',
   '--text':          'var(--ocr-navy-100)',
-  '--text-muted':    'var(--ocr-navy-500)',
+  '--text-muted':    'var(--ocr-slate-350)',  // was --ocr-navy-500: 4.75 on surface, 4.04 hovered — under AA
   '--accent':        'var(--ocr-blue-600)',
   '--accent-hover':  'var(--ocr-blue-500)',
   // fg for labels/icons ON --accent or --danger. The right answer FLIPS per theme and
@@ -97,12 +122,20 @@ export const semanticDark = {
   // --danger). The literal `color:#000` in styles.ts was masking this — reading the token
   // without fixing it would have made dark mode worse. Brands with a light accent override.
   '--on-accent':     'var(--ocr-ink-000)',
+  '--border-strong': 'var(--ocr-slate-450)',  // WCAG 1.4.11 — inputs, toggles, map cells, focus
+  '--accent-text':   'var(--ocr-blue-300)',   // accent as TEXT; --accent stays the FILL
+  '--live-text':     'var(--ocr-teal-350)',
+  '--warn-text':     'var(--ocr-amber-350)',
+  '--focus-ring':    'var(--ocr-blue-300)',
   '--live':          'var(--ocr-teal-400)',   // on-air / active — teal, not green
   '--live-hover':    'var(--ocr-teal-300)',
   '--surface-hover':  'var(--ocr-navy-800)',
   '--danger':         'var(--ocr-red-500)',    // destructive actions only
   '--danger-hover':   'var(--ocr-red-400)',
-  '--error':          'var(--ocr-red-500)',    // alias — form validation / error banners
+  // ERROR IS INK, --danger IS A FILL. They were the same primitive, which meant error
+  // text inherited a button ground: 3.90:1 on --surface, under AA, on the one string a
+  // person reads when they have already made a mistake. Same hue family, different role.
+  '--error':          'var(--ocr-red-300)',    // form validation / error banners — 8.42 bg, 7.04 surface
   // OSE-654 role vocabulary — the swap seam every OSE-653 surface consumes.
   '--card':           'var(--ocr-navy-900)',   // card surface (= surface by default; brands may differ)
   '--text-primary':   'var(--ocr-navy-100)',   // alias of --text (explicit role name)
@@ -119,16 +152,21 @@ export const semanticLight = {
   '--surface':       'var(--ocr-light-100)',
   '--border':        'var(--ocr-light-200)',
   '--text':          'var(--ocr-dark-900)',
-  '--text-muted':    'var(--ocr-slate-600)',   // 4.6:1 — full AA
-  '--accent':        'var(--ocr-blue-700)',    // 4.7:1 — full AA
+  '--text-muted':    'var(--ocr-slate-650)',   // was --ocr-slate-600 (4.6 AA); now 7.01/7.53 AAA
+  '--accent':        'var(--ocr-blue-700)',    // FILL role — 3:1 is its bar, not 4.5
   '--accent-hover':  'var(--ocr-blue-600l)',
   '--on-accent':     'var(--ocr-light-100)',   // 6.30:1 on --accent, 6.34:1 on --danger — white is correct HERE
+  '--border-strong': 'var(--ocr-slate-550)',
+  '--accent-text':   'var(--ocr-blue-800)',
+  '--live-text':     'var(--ocr-teal-800)',
+  '--warn-text':     'var(--ocr-amber-800)',
+  '--focus-ring':    'var(--ocr-blue-800)',
   '--live':          'var(--ocr-teal-700)',    // 4.9:1 — full AA
   '--live-hover':    'var(--ocr-teal-600)',
   '--surface-hover':  'var(--ocr-light-200)',
   '--danger':         'var(--ocr-red-700)',     // 5.2:1 — full AA
   '--danger-hover':   'var(--ocr-red-600)',
-  '--error':          'var(--ocr-red-700)',     // alias — form validation / error banners
+  '--error':          'var(--ocr-red-800)',     // form validation / error banners — 7.04 bg, 7.56 surface
   // OSE-654 role vocabulary — light-mode values (each AA-validated).
   '--card':           'var(--ocr-light-100)',
   '--text-primary':   'var(--ocr-dark-900)',

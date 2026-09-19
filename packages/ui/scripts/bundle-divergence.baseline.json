@@ -1,0 +1,43 @@
+{
+  "divergent": {
+    "AccessDenied": [
+      "default: bundle only   \"icon=🔒\"",
+      "default: bundle only   \"message=Want in? Ask the event organizer for an invite link.\"",
+      "text: bundle only   \"Want in? Ask the event organizer for an invite link.\""
+    ],
+    "FormGroup": [
+      "default: src only      \"className=\""
+    ]
+  },
+  "undeclared": [
+    "AdminCreate",
+    "AdminDashboard",
+    "AdminMap",
+    "AdminPoster",
+    "Bars",
+    "DisplayActive",
+    "DisplayFrame",
+    "DisplayPost",
+    "DisplayPre",
+    "HexMap",
+    "Note",
+    "PhaseToggle",
+    "PhoneShell",
+    "PublicActive",
+    "PublicPost",
+    "PublicPre",
+    "QRBlock",
+    "ReportActive",
+    "ReportPost",
+    "ReportPre",
+    "SAssets",
+    "SBusiness",
+    "SCategories",
+    "SReview",
+    "SponsorSlot",
+    "Stats",
+    "StepRail",
+    "UecChip",
+    "W"
+  ]
+}

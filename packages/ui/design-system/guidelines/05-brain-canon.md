@@ -117,5 +117,16 @@ a planned thing render as though it were counted.
 2. "Primary CTA above the fold at 375px" is unspecified here.
 3. The canonical copy strings are not yet wired into the component defaults.
 4. `ouroboros-ds` vs `@ocr/ui` must be reconciled in invariant #14.
-5. Nothing here is covered by `brain-parity` or `shared-gate-drift`, which exist precisely to
-   hold hub state against brain canon.
+5. **There is no design contract in the brain to be held against.** This was previously
+   written here as "brain-parity and shared-gate-drift don't cover it", which was wrong:
+   `brain-parity` runs the brain's own pyramid against `flags-contract.yaml` and is
+   flags-specific; `shared-gate-drift` checks vendored Python modules. Neither is a
+   generic canon hook, and `flags-contract.yaml` has no design counterpart. The fix is a
+   brain PR proposing `design-contract.yaml` — see
+   `docs/decisions/ADR-design-system-brain-canon.md` in the hub.
+
+   Meanwhile the floors ARE enforced, hub-locally: `packages/ui/tests/contrast-matrix.test.ts`
+   runs 48 assertions across every ink role × ground × theme and is in the gate, and
+   `stylesheet-tokens.test.ts` fails on any literal colour in the stylesheet. Real
+   enforcement — but the brain does not know the contract exists, so a spoke can diverge
+   without anything going red.

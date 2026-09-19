@@ -40,9 +40,21 @@ describe('palette identity (CARTO, Ember-free)', () => {
     expect(P['--ocr-teal-700']).toBe('#00796B');
   });
 
-  it('error aliases danger — same primitive, different semantic name', () => {
-    expect(semanticDark['--error']).toBe(semanticDark['--danger']);
-    expect(semanticLight['--error']).toBe(semanticLight['--danger']);
+  // CHANGED, and deliberately not weakened. This previously asserted that --error and
+  // --danger were the SAME primitive. That encoded a model the palette has since rejected:
+  // --danger is a button GROUND and needs 3:1, --error is TEXT and needs 7:1. Sharing one
+  // primitive meant error text inherited a fill colour and read 3.90:1 on --surface —
+  // under AA, on the one string someone reads after they have already made a mistake.
+  // The replacement asserts more than the original did: same hue family, different role,
+  // and the ink is actually readable. See tests/contrast-matrix.test.ts for the ratios.
+  it('error and danger share a hue family but are DIFFERENT roles — ink vs fill', () => {
+    for (const map of [semanticDark, semanticLight]) {
+      const err = map['--error'];
+      const dang = map['--danger'];
+      expect(err, 'an ink role must not reuse a fill primitive').not.toBe(dang);
+      expect(err, '--error must still be red — the hue carries the meaning').toMatch(/red/);
+      expect(dang, '--danger must still be red').toMatch(/red/);
+    }
   });
 
   it('surface-hover is between surface and border (navy-800)', () => {

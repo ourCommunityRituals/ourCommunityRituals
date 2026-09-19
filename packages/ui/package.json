@@ -27,7 +27,8 @@
     "scan": "tsx scripts/scan.ts",
     "typecheck": "tsc --noEmit",
     "compile-tokens": "node design-system/compile-tokens.mjs",
-    "check:generated": "node design-system/compile-tokens.mjs --check"
+    "check:generated": "node design-system/compile-tokens.mjs --check",
+    "check:bundle": "node scripts/bundle-divergence.mjs --check"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

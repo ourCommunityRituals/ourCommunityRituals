@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { componentStyles } from '../src/styles';
 import { semanticDark, semanticLight, primitives } from '../src/tokens';
 import { contrastRatio } from '../src/contrast';
+import { parseRules, rulesFor } from './_css';
 
 /**
  * The gap this suite closes.
@@ -23,23 +24,12 @@ const LITERAL_ALLOWLIST: Record<string, string> = {
     'unscannable QR. Physical requirement, not a styling choice.',
 };
 
-/** Split the sheet into `selector{body}` pairs. */
-function rules(css: string): { selector: string; body: string }[] {
-  const out: { selector: string; body: string }[] = [];
-  const re = /([^{}]+)\{([^{}]*)\}/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(css)) !== null) {
-    out.push({ selector: (m[1] ?? '').trim().replace(/\s+/g, ' '), body: m[2] ?? '' });
-  }
-  return out;
-}
-
 const HEX = /(?:color|background|background-color|border-color|fill|stroke)\s*:\s*(#[0-9a-fA-F]{3,8})/g;
 
 describe('stylesheet uses tokens, not literal colours', () => {
   it('no rule hardcodes a colour except the documented allowlist', () => {
     const offenders: string[] = [];
-    for (const { selector, body } of rules(componentStyles)) {
+    for (const { selector, body } of parseRules(componentStyles)) {
       if (Object.keys(LITERAL_ALLOWLIST).some((a) => selector.includes(a))) continue;
       for (const hit of body.matchAll(HEX)) {
         offenders.push(`${selector} -> ${hit[0]}`);
@@ -51,10 +41,11 @@ Offenders:\n  ${offenders.join('\n  ')}\n`).toEqual([]);
   });
 
   it('.btn-primary reads --on-accent rather than a literal', () => {
-    const rule = rules(componentStyles).find((r) => r.selector === '.btn-primary');
-    expect(rule, '.btn-primary must exist in componentStyles').toBeDefined();
-    expect(rule!.body).toContain('var(--on-accent)');
-    expect(rule!.body).not.toMatch(/color\s*:\s*#/);
+    const matched = rulesFor(componentStyles, '.btn-primary');
+    expect(matched.length, '.btn-primary must exist in componentStyles').toBeGreaterThan(0);
+    const body = matched.map((r) => r.body).join(';');
+    expect(body).toContain('var(--on-accent)');
+    expect(body).not.toMatch(/color\s*:\s*#/);
   });
 });
 
