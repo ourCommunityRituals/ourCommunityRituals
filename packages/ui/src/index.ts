@@ -38,16 +38,13 @@ export {
 export { checkTemplate, checkAll, type DriftFinding } from './contract';
 export { ocrTailwindPreset } from './tailwind';
 
-// React component layer — Phase 3 bridge (OSE-538)
-export {
-  Button, Card, Loading, EmptyState, AccessDenied,
-  Header, BottomNav, FormInput, Textarea, FormSelect,
-  Checkbox, RadioGroup, FormGroup,
-} from './react/index';
-export type {
-  ButtonProps, CardProps, LoadingProps,
-  EmptyStateProps, AccessDeniedProps,
-  HeaderProps, BottomNavProps,
-  FormInputProps, TextareaProps, FormSelectProps, SelectOption,
-  CheckboxProps, RadioGroupProps, RadioOption, FormGroupProps,
-} from './react/index';
+// There is no React layer. The FE is built with native JS: `partials.ts` renders the
+// same thirteen components as HTML strings, and `styles.ts` styles them.
+//
+// The React layer was removed 2026-09-19. It had zero consumers (referenced only by this
+// barrel and the package's own `./react` export), react-dom was never installed so it
+// could not be rendered, and its 23 "tests" asserted `typeof X === 'function'` and
+// nothing else — deferring behaviour to a Playwright spec that has no runner and has
+// never executed. Net behavioural coverage was zero. `partials.ts` has 32 tests that
+// assert real rendered HTML including XSS escaping, because a string is trivially
+// assertable with no renderer, no DOM and no browser.
