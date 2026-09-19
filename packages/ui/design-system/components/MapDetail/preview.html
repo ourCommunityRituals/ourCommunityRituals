@@ -1,18 +1,39 @@
 <!-- @dsCard group="Map" height=560 subtitle="Tap a map point: the poster's routes, one armed code at a time" -->
-<div id="root" style="padding:24px"></div>
-<script>
-const { MapDetail } = window.OurSharedEvents;
-const h = React.createElement;
-const routes=[
- {path:'/s/TRV24', label:'See the details', sub:'Times, place, what to bring', uec:'enter'},
- {path:'/s/TRV24D', label:'Chip in', sub:'Helps cover the permit and the stage', uec:'shop'},
- {path:'/s/TRV24S', label:"Who's backing this", sub:'Same size, same spots for everyone', uec:'sponsor'},
- {path:'/s/TRV24F', label:'Tell them how it went', sub:'Opens after the event', uec:'feedback'}];
-function Demo(){
-  const [armed,setArmed]=React.useState('/donate');
-  return h(MapDetail,{name:'Maple Street Fair',when:'Saturday 4 October · 6pm–10pm',
-    where:'Maple & 3rd · 8 minutes from here',routes,armed,onArm:setArmed,
-    onClose:()=>{},sponsor:'Corner Bakery'});
-}
-ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
-</script>
+<!-- STATIC SPECIMEN — designed, not built. No component ships for this yet; the markup
+     below is the contract a native-JS implementation must produce. -->
+<div style="padding:24px">
+  <div class="map-detail">
+    <div class="map-detail-head">
+      <div class="map-detail-id">
+        <h2 class="map-detail-name">Maple Street Fair</h2>
+        <p class="map-detail-meta">Saturday 4 October · 6pm–10pm</p>
+        <p class="map-detail-meta">Maple &amp; 3rd · 8 minutes from here</p>
+      </div>
+      <button type="button" class="btn btn-secondary">Close</button>
+    </div>
+    <p class="section-title">What you can do here</p>
+    <ul class="route-list">
+      <li><button type="button" class="route-row">
+        <span class="route-glyph" aria-hidden="true" style="background:var(--uec-enter-ui)">🚪</span>
+        <span class="route-text"><span class="route-label">See the details</span>
+        <span class="route-sub">Times, place, what to bring</span></span>
+        <span class="route-state">Show code</span></button></li>
+      <li><button type="button" class="route-row is-armed" aria-pressed="true">
+        <span class="route-glyph" aria-hidden="true" style="background:var(--uec-shop-ui)">🛍️</span>
+        <span class="route-text"><span class="route-label">Chip in</span>
+        <span class="route-sub">Helps cover the permit and the stage</span></span>
+        <span class="route-state">Ready to scan</span></button></li>
+      <li><button type="button" class="route-row">
+        <span class="route-glyph" aria-hidden="true" style="background:var(--uec-sponsor-ui)">🤝</span>
+        <span class="route-text"><span class="route-label">Who&rsquo;s backing this</span>
+        <span class="route-sub">Same size, same spots for everyone</span></span>
+        <span class="route-state">Show code</span></button></li>
+    </ul>
+    <div class="route-scan">
+      <div class="qr-frame qr-physical qr-armed"><div class="qr-placeholder">/s/TRV24D</div></div>
+      <p class="route-scan-label">Scan for: <strong>Chip in</strong></p>
+    </div>
+    <div class="sponsor-slot">Backed by <span class="sponsor-name">Corner Bakery</span>.
+      Same size, same spots for every sponsor.</div>
+  </div>
+</div>

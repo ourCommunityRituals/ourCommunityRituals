@@ -1,10 +1,6 @@
-<!-- @dsCard group="Feedback" height=320 subtitle="Title, reason, next step — no screen dead-ends" -->
-<div id="root" style="padding:24px"></div>
-<script>
-const { EmptyState } = window.OurSharedEvents;
-const h = React.createElement;
-function Demo(){ return h('div',{style:{display:'flex',flexDirection:'column',gap:16}},h(EmptyState,{icon:'📅',title:'No events yet',
- message:'When you make your first event, it will show up here with its poster and short links.',
- action:{label:'Make your first event',href:'/admin/new'}})); }
-ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
-</script>
+<!-- @dsCard group="Feedback" height=300 subtitle="Title, reason, next step — no screen dead-ends" -->
+<!-- GENERATED from src/partials.ts by scripts/build-previews.mjs — do not edit.
+     This is the product's own renderer output, not a re-creation of it. -->
+<div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+<div class="empty-state"><div class="es-icon">📅</div><h3>No events yet</h3><p>When you make your first event, it will show up here with its poster and short links.</p><a class="btn btn-primary" href="/admin/new">Make your first event</a></div>
+</div>

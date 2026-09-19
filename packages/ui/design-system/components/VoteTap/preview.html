@@ -1,15 +1,29 @@
-<!-- @dsCard group="Fist of Five" height=560 subtitle="One tap, anonymous, attributed to a named team" -->
-<div id="root" style="padding:24px;display:flex;flex-direction:column;gap:20px"></div>
-<script>
-const { VoteTap } = window.OurSharedEvents;
-const h = React.createElement;
-function Demo(){
-  const [voted,setVoted] = React.useState(false);
-  return h('div',{style:{display:'flex',flexDirection:'column',gap:20}},
-    h(VoteTap,{ nowPlaying:'Harbour Lights — The Sunday Stable', team:'The Sunday Stable',
-      tally: 47 + (voted?1:0), floor: 10, voted, onVote:()=>setVoted(true), belt:'Holds the belt' }),
-    h(VoteTap,{ nowPlaying:'Backroom Blues — Triple A challenger', team:'Open challenge',
-      tally: 3, floor: 10 }));
-}
-ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
-</script>
+<!-- @dsCard group="Fist of Five" height=520 subtitle="One tap, anonymous, attributed to a named team" -->
+<!-- STATIC SPECIMEN — designed, not built. The FOF engine is on the "designed, not built"
+     row of the hybrid brief's status legend. This markup is the contract. -->
+<div style="padding:24px;display:flex;flex-direction:column;gap:20px">
+  <div class="card is-counted">
+    <p class="now-playing-label">Now playing</p>
+    <p class="now-playing-track">Harbour Lights — The Sunday Stable</p>
+    <p class="item-sub">for The Sunday Stable</p>
+    <p style="margin-top:8px"><span class="belt">🏆 Holds the belt</span></p>
+    <div style="margin-top:16px">
+      <button type="button" class="vote-tap" aria-pressed="false">+1 for this</button>
+    </div>
+    <p class="vote-promise">No account · nothing stored. We count the room, never the person.</p>
+    <div class="tally" style="margin-top:16px">
+      <span class="tally-value">47</span><span class="tally-label">votes in the room</span>
+    </div>
+  </div>
+  <div class="card is-held">
+    <p class="now-playing-label">Now playing</p>
+    <p class="now-playing-track">Backroom Blues — Triple A challenger</p>
+    <div style="margin-top:16px">
+      <button type="button" class="vote-tap" aria-pressed="false">+1 for this</button>
+    </div>
+    <p class="vote-promise">No account · nothing stored. We count the room, never the person.</p>
+    <div class="tally" style="margin-top:16px"><span class="tally-label">Held</span></div>
+    <p class="held-reason">Below the count floor, so the number is held. It appears once enough
+      of the room has voted that no single person can be picked out of it.</p>
+  </div>
+</div>

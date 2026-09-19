@@ -6,17 +6,8 @@
     "at": "2026-09-19T17:36:50Z"
   },
   "title": "ourSharedEvents Design System",
-  "namespace": "OurSharedEvents",
-  "libraries": [
-    {
-      "name": "react",
-      "version": "18"
-    },
-    {
-      "name": "react-dom",
-      "version": "18"
-    }
-  ],
+  "namespace": "",
+  "libraries": [],
   "sections": {},
   "groups": [
     "Posters",
@@ -43,8 +34,8 @@
   },
   "lastChange": {
     "by": "Claude",
-    "at": "2026-09-19T17:36:50Z",
+    "at": "2026-09-19T21:20:00Z",
     "via": "Claude Code",
-    "note": "Extracted from @ocr/ui and refined: fill/ink roles split, text raised to AAA, --border-strong added, UEC given a -ui variant, type rebased for the 50-75 reader, map and display tiers added."
+    "note": "Native JS: React layer removed from @ocr/ui, previews regenerated from partials.ts, bundle.js retired."
   }
 }

@@ -19,7 +19,7 @@ brought to you by OurCommunityRituals
 - Set in the system stack at 700 weight. No webfont, no letterspacing, no effects.
 - `.brand` is the other form — 13px uppercase with 0.12em tracking in `--accent-text` — used for a section label like ADMIN, never as the product name itself.
 
-The JavaScript global is `window.OurSharedEvents`. That is an identifier, not the wordmark, and it keeps its capital O.
+There is no JavaScript global: the system ships no bundle and no framework.
 
 ## What goes here when it exists
 

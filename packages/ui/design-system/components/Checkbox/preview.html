@@ -1,8 +1,13 @@
-<!-- @dsCard group="Forms" height=250 subtitle="Whole row is the target, 48px tall" -->
-<div id="root" style="padding:24px"></div>
-<script>
-const { Checkbox } = window.OurSharedEvents;
-const h = React.createElement;
-function Demo(){ return h('div',{style:{display:'flex',flexDirection:'column',gap:16}},h(Checkbox,{id:'notify',label:'Email me when someone scans a poster.',checked:true}),h(Checkbox,{id:'listed',label:'List this event on the neighbourhood map.'}),h(Checkbox,{id:'locked',label:'Repeat this event every month.',disabled:true})); }
-ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
-</script>
+<!-- @dsCard group="Forms" height=220 subtitle="Whole row is the target, 48px tall" -->
+<!-- GENERATED from src/partials.ts by scripts/build-previews.mjs — do not edit.
+     This is the product's own renderer output, not a re-creation of it. -->
+<div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+<label class="checkbox-label">
+  <input type="checkbox" id="notify" name="notify" value="on" checked />
+  Email me when someone scans a poster.
+</label>
+<label class="checkbox-label">
+  <input type="checkbox" id="listed" name="listed" value="on" />
+  List this event on the neighbourhood map.
+</label>
+</div>

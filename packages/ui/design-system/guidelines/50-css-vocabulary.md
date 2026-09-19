@@ -4,7 +4,7 @@
 
 ## When to use a class instead of a component
 
-The React layer covers the thirteen primitives that carry props and behaviour. Everything else — chips, bars, stat tiles, the QR frame, map cells — is presentational and ships as classes, because a component that only sets a `className` earns nothing. Use the class directly and keep the markup semantic.
+`partials.ts` covers the thirteen components that carry props. Everything else — chips, bars, stat tiles, the QR frame, map cells — is presentational and ships as classes, because a component that only sets a `className` earns nothing. Use the class directly and keep the markup semantic.
 
 ## Layout and chrome
 

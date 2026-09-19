@@ -1,12 +1,6 @@
-<!-- @dsCard group="Navigation" height=190 subtitle="Fixed thumb-zone nav — every glyph carries its word" -->
-<div id="root" style="padding:24px"></div>
-<script>
-const { BottomNav } = window.OurSharedEvents;
-const h = React.createElement;
-const items=[{href:'/events',label:'Events',icon:'📅',active:true},
- {href:'/map',label:'Map',icon:'🗺️'},{href:'/posters',label:'Posters',icon:'🖼️'},
- {href:'/reports',label:'Reports',icon:'📊'}];
-function Demo(){return h('div',{style:{position:'relative',height:120}},
-  h('div',{style:{position:'absolute',left:0,right:0,bottom:0}},h(BottomNav,{items})));}
-ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
-</script>
+<!-- @dsCard group="Navigation" height=160 subtitle="Fixed thumb-zone nav — every glyph carries its word" -->
+<!-- GENERATED from src/partials.ts by scripts/build-previews.mjs — do not edit.
+     This is the product's own renderer output, not a re-creation of it. -->
+<div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+<nav class="bottom-nav"><a class="nav-item active" href="/events">📅<span>Events</span></a><a class="nav-item" href="/map">🗺️<span>Map</span></a><a class="nav-item" href="/posters">🖼️<span>Posters</span></a><a class="nav-item" href="/reports">📊<span>Reports</span></a></nav>
+</div>

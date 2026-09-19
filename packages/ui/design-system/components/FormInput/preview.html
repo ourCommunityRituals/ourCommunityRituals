@@ -1,8 +1,15 @@
 <!-- @dsCard group="Forms" height=300 subtitle="Label, hint, error — 16px, and the error is never the smallest text" -->
-<div id="root" style="padding:24px"></div>
-<script>
-const { FormInput } = window.OurSharedEvents;
-const h = React.createElement;
-function Demo(){ return h('div',{style:{display:'flex',flexDirection:'column',gap:16}},h(FormInput,{id:'name',label:'What is the event called?',placeholder:'Maple Street Fair',required:true,hint:'This is the name people will see on the poster.'}),h(FormInput,{id:'email',label:'Your email',type:'email',value:'hello@maplefair',error:'That email is missing its ending — try hello@maplefair.org'})); }
-ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
-</script>
+<!-- GENERATED from src/partials.ts by scripts/build-previews.mjs — do not edit.
+     This is the product's own renderer output, not a re-creation of it. -->
+<div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+<div class="form-field">
+  <label for="name">What is the event called?<span aria-hidden="true" class="required-mark">*</span></label>
+  <input id="name" name="name" type="text" class="input" placeholder="Maple Street Fair" required aria-describedby="name-hint" />
+  <div id="name-hint" class="form-hint">This is the name people will see on the poster.</div>
+</div>
+<div class="form-field">
+  <label for="email">Your email</label>
+  <input id="email" name="email" type="email" class="input input-error" value="hello@maplefair" aria-describedby="email-error" aria-invalid="true" />
+  <div id="email-error" class="form-error" role="alert">That email is missing its ending — try hello@maplefair.org</div>
+</div>
+</div>

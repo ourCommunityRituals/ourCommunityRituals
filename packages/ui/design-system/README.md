@@ -100,15 +100,21 @@ conformance table, including which floors this system exceeds and where it still
 
 ## Components
 
-Named from `@ocr/ui`'s React layer. **The shipped bundle is a fork, not a build of it** —
-see the warning in `CONSUMING.md`. These are the component *contracts* this system
-specifies; `packages/ui/src/react/*` is the implementation of record.
+**Native JS. There is no framework layer.** Every component is a function in
+`packages/ui/src/partials.ts` that returns an HTML string, styled by the class vocabulary.
 
-- **Actions** — `Button`
-- **Surfaces** — `Card`
-- **Navigation** — `Header`, `BottomNav`
-- **Forms** — `FormInput`, `Textarea`, `FormSelect`, `Checkbox`, `RadioGroup`, `FormGroup`
-- **Feedback** — `Loading`, `EmptyState`, `AccessDenied`
+The React layer was removed on 2026-09-19. It had no consumers, `react-dom` was never
+installed so it could not be rendered, and its tests asserted `typeof X === 'function'` and
+nothing else — deferring behaviour to a Playwright spec with no runner. `partials.ts` has 32
+tests asserting real rendered HTML including XSS escaping, because a string is assertable
+with no renderer, no DOM and no browser. See `docs/decisions/ADR-native-js-no-framework.md`.
+
+- **Actions** — `button()`
+- **Surfaces** — `card()`
+- **Navigation** — `header()`, `bottomNav()`
+- **Forms** — `formInput()`, `textarea()`, `formSelect()`, `checkbox()`, `radioGroup()`, `formGroup()`
+- **Feedback** — `loading()`, `emptyState()`, `accessDenied()`
+- **Document** — `page()`, the full shell
 
 `components/bundle.css` also ships the wider CSS-class vocabulary (`.filter-chip`, `.stat-card`, `.bar-chart`, `.toggle`, `.live-indicator`, `.qr-frame`, `.display-card`, `.sponsor-slot`, `.drop-zone`, `.list-item`, the `.hex-*` map classes). Use those classes directly for patterns that have no React component.
 
