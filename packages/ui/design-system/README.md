@@ -1,6 +1,6 @@
-# OurSharedEvents
+# ourSharedEvents
 
-**OurSharedEvents (OSE)** is a hyperlocal community-event platform: a free event-and-sponsorship vehicle for public–private partnerships. Organizers create events, generate posters with QR codes and short links, plan poster canvassing on an H3 corridor map, and publish honest SharedReports. Local businesses sponsor events under a strict fairness covenant — **same size, same spots for every sponsor** — so sponsors buy frequency, never prominence. The runtime is deterministic and LLM-free, which is what lets the platform promise free-forever.
+**ourSharedEvents (OSE)** is a hyperlocal community-event platform: a free event-and-sponsorship vehicle for public–private partnerships. Organizers create events, generate posters with QR codes and short links, plan poster canvassing on an H3 corridor map, and publish honest SharedReports. Local businesses sponsor events under a strict fairness covenant — **same size, same spots for every sponsor** — so sponsors buy frequency, never prominence. The runtime is deterministic and LLM-free, which is what lets the platform promise free-forever.
 
 This system is extracted from `packages/ui` (`@ocr/ui`) in [ourCommunityRituals/ourCommunityRituals](https://github.com/ourCommunityRituals/ourCommunityRituals) — `tokens.ts`, `styles.ts`, `partials.ts`, `src/react/*` — and then refined. What changed and why is in **Where this differs from @ocr/ui** at the end.
 
@@ -24,7 +24,7 @@ Five rules follow, and they are checkable:
 
 The product is one structure repeated at six scales — region, corridor, event, site, kiosk, route — and every node in it has the same five things: a public page, a code, a category, a phase, and a map of its children. That is why this component set is small: one `MapDetail` serves every layer because every layer has the same shape.
 
-It is also where the hybrid model lands. **OurSharedEvents** is the anonymous side — any node is reachable by scanning, with no account. **OurWKRP** is the plant-your-flag side — any node can be claimed and spoken from under a chosen name. This system serves both: `@ocr/ui`'s shared stylesheet already carries WKRP's surfaces (`.track-card`, `.now-playing`, `.attr-btn`) alongside the event ones, which is the clearest evidence that one design system was always the intent. Hence the rule that governs every surface here: **every screen works with zero identity, and gets better when identity is present — never the reverse.** An account wall is the most common place a 50–75 reader stops, and the architecture is built so there never has to be one. See `guidelines/80-the-recursive-web.md`.
+It is also where the hybrid model lands. **ourSharedEvents** is the anonymous side — any node is reachable by scanning, with no account. **OurWKRP** is the plant-your-flag side — any node can be claimed and spoken from under a chosen name. This system serves both: `@ocr/ui`'s shared stylesheet already carries WKRP's surfaces (`.track-card`, `.now-playing`, `.attr-btn`) alongside the event ones, which is the clearest evidence that one design system was always the intent. Hence the rule that governs every surface here: **every screen works with zero identity, and gets better when identity is present — never the reverse.** An account wall is the most common place a 50–75 reader stops, and the architecture is built so there never has to be one. See `guidelines/80-the-recursive-web.md`.
 
 ## Content fundamentals
 
@@ -77,7 +77,20 @@ Animation is minimal and functional: a 2s pulse on live indicators, a 0.8s spinn
 
 ### Imagery
 
-None in the product. The QR code (white `.qr-frame`, module fill from `--uec-*-scan`) and the H3 hex corridor map are the visual signatures. There is no logo asset: render "OurSharedEvents" in plain type at 700 weight, or use the `.brand` uppercase label. Never draw a mark.
+**The product surfaces carry none.** Flat `--bg`, no gradients, no textures, no photography. The QR code (white `.qr-frame`, module fill from `--uec-*-scan`) and the H3 hex corridor map are the visual signatures.
+
+**The poster is the one exception**, and it is a real one: a poster is artwork with the event's details laid over it, because a poster has to stop someone walking past. That brings a rule the rest of the system never needs — type is never set directly on an image, since you cannot know what is behind any given pixel. Either an opaque tinted panel, or a scrim at **75% minimum**, which is where `--text` clears AAA against a worst-case white pixel. See `assets/Posters/README.md`.
+
+There is no logo asset. Render the wordmark in plain type at 700 weight, or use the `.brand` uppercase label. Never draw a mark.
+
+### The wordmark
+
+```
+ourSharedEvents
+brought to you by OurCommunityRituals
+```
+
+Casing is literal — lowercase leading "o" on `ourSharedEvents`, capital O on `OurCommunityRituals`. They are cased differently on purpose. The JavaScript global `window.OurSharedEvents` is an identifier, not the wordmark, and keeps its capital O. Full rules in `assets/Brand/README.md`.
 
 ## Components
 

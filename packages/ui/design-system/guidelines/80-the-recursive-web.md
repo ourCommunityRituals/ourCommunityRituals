@@ -33,7 +33,7 @@ A route is a leaf. A kiosk is a node whose children are routes. A site is a node
 
 The two sides meet at the node.
 
-**OurSharedEvents** is the anonymous side — events and magnets. Anyone reaches any node by scanning: no account, no trace, nothing to sign.
+**ourSharedEvents** is the anonymous side — events and magnets. Anyone reaches any node by scanning: no account, no trace, nothing to sign.
 
 **OurWKRP** (ourSharedMosaics, with OurAirwaves) is the plant-your-flag side. An organizer, a vendor, a venue or a listener **claims** a node and speaks from it under a name they chose.
 

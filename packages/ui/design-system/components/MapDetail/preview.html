@@ -4,10 +4,10 @@
 const { MapDetail } = window.OurSharedEvents;
 const h = React.createElement;
 const routes=[
- {path:'/public',label:'See the details',sub:'Times, place, what to bring',uec:'enter'},
- {path:'/donate',label:'Chip in',sub:'Helps cover the permit and the stage',uec:'shop'},
- {path:'/sponsors',label:"Who's backing this",sub:'Same size, same spots for everyone',uec:'sponsor'},
- {path:'/feedback',label:'Tell them how it went',sub:'Opens after the event',uec:'feedback'}];
+ {path:'/s/TRV24', label:'See the details', sub:'Times, place, what to bring', uec:'enter'},
+ {path:'/s/TRV24D', label:'Chip in', sub:'Helps cover the permit and the stage', uec:'shop'},
+ {path:'/s/TRV24S', label:"Who's backing this", sub:'Same size, same spots for everyone', uec:'sponsor'},
+ {path:'/s/TRV24F', label:'Tell them how it went', sub:'Opens after the event', uec:'feedback'}];
 function Demo(){
   const [armed,setArmed]=React.useState('/donate');
   return h(MapDetail,{name:'Maple Street Fair',when:'Saturday 4 October · 6pm–10pm',

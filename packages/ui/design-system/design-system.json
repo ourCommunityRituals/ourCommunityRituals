@@ -5,7 +5,7 @@
     "v": 1,
     "at": "2026-09-19T17:36:50Z"
   },
-  "title": "OurSharedEvents Design System",
+  "title": "ourSharedEvents Design System",
   "namespace": "OurSharedEvents",
   "libraries": [
     {
@@ -18,8 +18,24 @@
     }
   ],
   "sections": {},
-  "groups": [],
-  "assetGroups": {},
+  "groups": [
+    "Posters",
+    "Brand"
+  ],
+  "assetGroups": {
+    "Posters": {
+      "name": "Posters",
+      "tile": "l",
+      "order": [],
+      "files": {}
+    },
+    "Brand": {
+      "name": "Brand",
+      "tile": "m",
+      "order": [],
+      "files": {}
+    }
+  },
   "blobs": {},
   "docs": {
     "readme": "project/README.md",

@@ -28,7 +28,7 @@ Read `README.md` first — it is the brand book and it names everything else. Th
 
 ```css
 @import '@ocr/ui/design-system/tokens.css';
-@import '@ocr/ui/design-system/bundle.css';  /* optional: the class vocabulary */
+@import '@ocr/ui/design-system/components/bundle.css';  /* optional: the class vocabulary */
 ```
 
 `tokens.css` puts the dark roles on bare `:root`, so dark is the default exactly as `@ocr/ui` has it. Light arrives via `prefers-color-scheme`, and `data-theme="light"` or `data-theme="dark"` forces either one.
