@@ -1,0 +1,313 @@
+/* OurSharedEvents — compiled design tokens.
+ * GENERATED from tokens.json. Do not edit by hand — run: node compile-tokens.mjs
+ *
+ * Dark is the default theme, matching @ocr/ui: the dark roles sit on bare :root.
+ * Light applies via prefers-color-scheme, or an explicit [data-theme="light"]
+ * which wins over the OS preference in both directions.
+ */
+
+:root,
+:root[data-theme="dark"] {
+  --ocr-ink-black: #000000;
+  --ocr-blue-600: #1785fb;
+  --ocr-blue-500: #3d9bff;
+  --ocr-blue-700: #0057d6;
+  --ocr-blue-600l: #2e6fdf;
+  --ocr-teal-400: #00c4b4;
+  --ocr-teal-700: #00796b;
+  --ocr-red-500: #e05252;
+  --ocr-red-700: #b03030;
+  --ocr-amber-400: #f5b32e;
+  --ocr-amber-700: #8a5a00;
+  --ocr-navy-950: #0f1824;
+  --ocr-navy-900: #1a2740;
+  --ocr-navy-800: #223350;
+  --ocr-navy-700: #2a3d5a;
+  --ocr-light-050: #f4f7fc;
+  --ocr-light-100: #ffffff;
+  --ocr-light-200: #d4e0ed;
+  --ocr-navy-100: #f0f4f8;
+  --ocr-dark-900: #162945;
+  --ocr-slate-350: #a1b4c7;
+  --ocr-slate-650: #3e576d;
+  --ocr-blue-300: #75b6fd;
+  --ocr-blue-800: #004dbc;
+  --ocr-red-300: #ed9d9d;
+  --ocr-red-800: #9c2a2a;
+  --ocr-teal-350: #00c8b7;
+  --ocr-teal-800: #005f54;
+  --ocr-amber-350: #f5b32e;
+  --ocr-amber-800: #754c00;
+  --ocr-slate-450: #4e71a6;
+  --ocr-slate-550: #6892c0;
+  --bg: var(--ocr-navy-950);
+  --surface: var(--ocr-navy-900);
+  --surface-hover: var(--ocr-navy-800);
+  --border: var(--ocr-navy-700);
+  --border-strong: var(--ocr-slate-450);
+  --text: var(--ocr-navy-100);
+  --text-muted: var(--ocr-slate-350);
+  --text-primary: var(--ocr-navy-100);
+  --text-secondary: var(--ocr-slate-350);
+  --accent: var(--ocr-blue-600);
+  --accent-hover: var(--ocr-blue-500);
+  --accent-text: var(--ocr-blue-300);
+  --on-accent: var(--ocr-ink-black);
+  --live: var(--ocr-teal-400);
+  --live-text: var(--ocr-teal-350);
+  --success: var(--ocr-teal-400);
+  --danger: var(--ocr-red-500);
+  --danger-hover: var(--ocr-red-400);
+  --error: var(--ocr-red-300);
+  --warn: var(--ocr-amber-400);
+  --warn-text: var(--ocr-amber-350);
+  --info: var(--ocr-blue-300);
+  --card: var(--ocr-navy-900);
+  --focus-ring: var(--ocr-blue-300);
+  --ocr-red-400: #e87272;
+  --ocr-red-600: #c03838;
+  --uec-enter: #006b6b;
+  --uec-live: #e07a5f;
+  --uec-sponsor: #1d3557;
+  --uec-archive: #6c3483;
+  --uec-help: #d4668e;
+  --uec-feedback: #c4930a;
+  --uec-utility: #4a4a4a;
+  --uec-alert: #b8960a;
+  --uec-staff: #a00020;
+  --uec-shop: #1a4a48;
+  --uec-enter-scan: #006b6b;
+  --uec-live-scan: #c04048;
+  --uec-sponsor-scan: #1a3a8a;
+  --uec-archive-scan: #5e1a9a;
+  --uec-help-scan: #b01468;
+  --uec-feedback-scan: #8a5a00;
+  --uec-utility-scan: #2a2a3a;
+  --uec-alert-scan: #b8960a;
+  --uec-staff-scan: #a00020;
+  --uec-shop-scan: #1a4a48;
+  --uec-enter-ui: #009e9e;
+  --uec-live-ui: #e07a5f;
+  --uec-sponsor-ui: #658fcc;
+  --uec-archive-ui: #b177c9;
+  --uec-help-ui: #d56b92;
+  --uec-feedback-ui: #c4930a;
+  --uec-utility-ui: #8e8e8e;
+  --uec-alert-ui: #b8960a;
+  --uec-staff-ui: #ff466b;
+  --uec-shop-ui: #379c97;
+  --map-ground: var(--ocr-navy-950);
+  --map-cell-line: var(--ocr-slate-450);
+  --map-halo: #0b1017;
+  --map-halo-light: #ffffff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: var(--ocr-light-050);
+    --surface: var(--ocr-light-100);
+    --surface-hover: var(--ocr-light-200);
+    --border: var(--ocr-light-200);
+    --border-strong: var(--ocr-slate-550);
+    --text: var(--ocr-dark-900);
+    --text-muted: var(--ocr-slate-650);
+    --text-primary: var(--ocr-dark-900);
+    --text-secondary: var(--ocr-slate-650);
+    --accent: var(--ocr-blue-700);
+    --accent-hover: var(--ocr-blue-600l);
+    --accent-text: var(--ocr-blue-800);
+    --on-accent: var(--ocr-light-100);
+    --live: var(--ocr-teal-700);
+    --live-text: var(--ocr-teal-800);
+    --success: var(--ocr-teal-700);
+    --danger: var(--ocr-red-700);
+    --danger-hover: var(--ocr-red-600);
+    --error: var(--ocr-red-800);
+    --warn: var(--ocr-amber-700);
+    --warn-text: var(--ocr-amber-800);
+    --info: var(--ocr-blue-800);
+    --card: var(--ocr-light-100);
+    --focus-ring: var(--ocr-blue-800);
+    --uec-enter-ui: #006b6b;
+    --uec-live-ui: #c54726;
+    --uec-sponsor-ui: #1d3557;
+    --uec-archive-ui: #6c3483;
+    --uec-help-ui: #c83c6f;
+    --uec-feedback-ui: #906c07;
+    --uec-utility-ui: #4a4a4a;
+    --uec-alert-ui: #896f07;
+    --uec-staff-ui: #a00020;
+    --uec-shop-ui: #1a4a48;
+    --map-ground: var(--ocr-light-050);
+    --map-cell-line: var(--ocr-slate-550);
+  }
+}
+
+:root[data-theme="light"] {
+  --bg: var(--ocr-light-050);
+  --surface: var(--ocr-light-100);
+  --surface-hover: var(--ocr-light-200);
+  --border: var(--ocr-light-200);
+  --border-strong: var(--ocr-slate-550);
+  --text: var(--ocr-dark-900);
+  --text-muted: var(--ocr-slate-650);
+  --text-primary: var(--ocr-dark-900);
+  --text-secondary: var(--ocr-slate-650);
+  --accent: var(--ocr-blue-700);
+  --accent-hover: var(--ocr-blue-600l);
+  --accent-text: var(--ocr-blue-800);
+  --on-accent: var(--ocr-light-100);
+  --live: var(--ocr-teal-700);
+  --live-text: var(--ocr-teal-800);
+  --success: var(--ocr-teal-700);
+  --danger: var(--ocr-red-700);
+  --danger-hover: var(--ocr-red-600);
+  --error: var(--ocr-red-800);
+  --warn: var(--ocr-amber-700);
+  --warn-text: var(--ocr-amber-800);
+  --info: var(--ocr-blue-800);
+  --card: var(--ocr-light-100);
+  --focus-ring: var(--ocr-blue-800);
+  --uec-enter-ui: #006b6b;
+  --uec-live-ui: #c54726;
+  --uec-sponsor-ui: #1d3557;
+  --uec-archive-ui: #6c3483;
+  --uec-help-ui: #c83c6f;
+  --uec-feedback-ui: #906c07;
+  --uec-utility-ui: #4a4a4a;
+  --uec-alert-ui: #896f07;
+  --uec-staff-ui: #a00020;
+  --uec-shop-ui: #1a4a48;
+  --map-ground: var(--ocr-light-050);
+  --map-cell-line: var(--ocr-slate-550);
+}
+
+:root {
+  --tap-min: 48px;
+  --tap-min-primary: 56px;
+  --tap-gap: 12px;
+  --page-pad-x: 20px;
+  --page-pad-y: 16px;
+  --section-gap: 24px;
+  --card-pad: 16px;
+  --stack-gap: 12px;
+  --inline-gap: 8px;
+  --field-gap: 8px;
+  --content-bottom: 104px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-pill: 20px;
+  --radius-xs: 4px;
+  --radius-control: 6px;
+  --radius-round: 50%;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font: var(--font-sans);
+}
+
+.stat-value {
+  font-family: var(--font-sans);
+  font-size: 1.75rem;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.page-title {
+  font-family: var(--font-sans);
+  font-size: 1.375rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.section-heading {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.cta {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.button {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.input {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.error {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.hint {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.section-title {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.meta {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.nav-label {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.status-pill {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.brand {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}

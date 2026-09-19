@@ -1,0 +1,18 @@
+<!-- @dsCard group="Map" height=560 subtitle="Tap a map point: the poster's routes, one armed code at a time" -->
+<div id="root" style="padding:24px"></div>
+<script>
+const { MapDetail } = window.OurSharedEvents;
+const h = React.createElement;
+const routes=[
+ {path:'/s/TRV24', label:'See the details', sub:'Times, place, what to bring', uec:'enter'},
+ {path:'/s/TRV24D', label:'Chip in', sub:'Helps cover the permit and the stage', uec:'shop'},
+ {path:'/s/TRV24S', label:"Who's backing this", sub:'Same size, same spots for everyone', uec:'sponsor'},
+ {path:'/s/TRV24F', label:'Tell them how it went', sub:'Opens after the event', uec:'feedback'}];
+function Demo(){
+  const [armed,setArmed]=React.useState('/donate');
+  return h(MapDetail,{name:'Maple Street Fair',when:'Saturday 4 October · 6pm–10pm',
+    where:'Maple & 3rd · 8 minutes from here',routes,armed,onArm:setArmed,
+    onClose:()=>{},sponsor:'Corner Bakery'});
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
+</script>

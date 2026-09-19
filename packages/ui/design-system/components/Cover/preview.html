@@ -1,0 +1,90 @@
+<!-- @dsCard height=264 -->
+<style>
+  .cover{display:block;width:100%;height:auto}
+  .band-tint {fill:var(--ocr-navy-700)}
+  .band-brand{fill:var(--ocr-blue-600)}
+  .band-live {fill:var(--ocr-teal-400)}
+  .band-now  {fill:var(--uec-live)}
+  .band-voice{fill:var(--ocr-amber-400)}
+  .clipbox   {rx:var(--radius)}
+  .hex-line  {fill:none;stroke:var(--bg);stroke-width:2.5}
+  .hex-fill  {fill:var(--bg);stroke:none}
+  .cover-name{fill:var(--text);font-family:var(--font-sans);font-size:64px;font-weight:700;letter-spacing:-0.01em}
+  .cover-tag {fill:var(--text-muted);font-family:var(--font-sans);font-size:14px}
+</style>
+<svg class="cover" viewBox="0 0 960 264" width="960" height="264" role="img"
+     aria-label="ourSharedEvents — same size, same spots for every sponsor">
+  <!-- DERIVATION
+       blocks:      five unequal full-bleed bands across the top, --ocr-blue-600 widest (296px, the
+                    brand), then --ocr-teal-400 live 184, --uec-live now 152, --ocr-amber-400 voice 128,
+                    --ocr-navy-700 tint 200; band height 112px, bottom corners at --radius (12px).
+       arrangement: top-band skeleton — "ourSharedEvents" is 15 characters and exceeds the 440px name
+                    zone at every size down to 64px, so the blocks take a full-width strip and the
+                    name sits beneath it at 64px.
+       pattern:     literal motif. The H3 corridor map IS the product's signature surface, so the band
+                    is cut by a flat-top hex tessellation in the page ground — 37 outlined cells and 5
+                    filled, the filled ones reading as a chosen canvassing corridor.
+       scales:      hex column pitch 48px = --tap-min, so circumradius R = 32; row pitch sqrt(3)R;
+                    name inset 48px; band corner radius --radius. -->
+  <rect x="0" y="0" width="960" height="264" fill="var(--bg)"/>
+  <defs>
+    <clipPath id="bandclip">
+      <rect class="clipbox" x="0" y="-12" width="960" height="124"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#bandclip)">
+      <rect class="band-tint" x="0" y="0" width="200" height="112"/>
+      <rect class="band-brand" x="200" y="0" width="296" height="112"/>
+      <rect class="band-live" x="496" y="0" width="184" height="112"/>
+      <rect class="band-now" x="680" y="0" width="152" height="112"/>
+      <rect class="band-voice" x="832" y="0" width="128" height="112"/>
+    <g class="hex-line">
+      <polygon points="32.0,28.0 16.0,55.7 -16.0,55.7 -32.0,28.0 -16.0,0.3 16.0,0.3"/>
+      <polygon points="32.0,83.4 16.0,111.1 -16.0,111.1 -32.0,83.4 -16.0,55.7 16.0,55.7"/>
+      <polygon points="80.0,55.7 64.0,83.4 32.0,83.4 16.0,55.7 32.0,28.0 64.0,28.0"/>
+      <polygon points="80.0,111.1 64.0,138.9 32.0,138.9 16.0,111.1 32.0,83.4 64.0,83.4"/>
+      <polygon points="128.0,28.0 112.0,55.7 80.0,55.7 64.0,28.0 80.0,0.3 112.0,0.3"/>
+      <polygon points="128.0,83.4 112.0,111.1 80.0,111.1 64.0,83.4 80.0,55.7 112.0,55.7"/>
+      <polygon points="176.0,111.1 160.0,138.9 128.0,138.9 112.0,111.1 128.0,83.4 160.0,83.4"/>
+      <polygon points="224.0,28.0 208.0,55.7 176.0,55.7 160.0,28.0 176.0,0.3 208.0,0.3"/>
+      <polygon points="224.0,83.4 208.0,111.1 176.0,111.1 160.0,83.4 176.0,55.7 208.0,55.7"/>
+      <polygon points="272.0,55.7 256.0,83.4 224.0,83.4 208.0,55.7 224.0,28.0 256.0,28.0"/>
+      <polygon points="272.0,111.1 256.0,138.9 224.0,138.9 208.0,111.1 224.0,83.4 256.0,83.4"/>
+      <polygon points="320.0,28.0 304.0,55.7 272.0,55.7 256.0,28.0 272.0,0.3 304.0,0.3"/>
+      <polygon points="368.0,55.7 352.0,83.4 320.0,83.4 304.0,55.7 320.0,28.0 352.0,28.0"/>
+      <polygon points="368.0,111.1 352.0,138.9 320.0,138.9 304.0,111.1 320.0,83.4 352.0,83.4"/>
+      <polygon points="416.0,28.0 400.0,55.7 368.0,55.7 352.0,28.0 368.0,0.3 400.0,0.3"/>
+      <polygon points="416.0,83.4 400.0,111.1 368.0,111.1 352.0,83.4 368.0,55.7 400.0,55.7"/>
+      <polygon points="464.0,55.7 448.0,83.4 416.0,83.4 400.0,55.7 416.0,28.0 448.0,28.0"/>
+      <polygon points="464.0,111.1 448.0,138.9 416.0,138.9 400.0,111.1 416.0,83.4 448.0,83.4"/>
+      <polygon points="512.0,83.4 496.0,111.1 464.0,111.1 448.0,83.4 464.0,55.7 496.0,55.7"/>
+      <polygon points="560.0,55.7 544.0,83.4 512.0,83.4 496.0,55.7 512.0,28.0 544.0,28.0"/>
+      <polygon points="560.0,111.1 544.0,138.9 512.0,138.9 496.0,111.1 512.0,83.4 544.0,83.4"/>
+      <polygon points="608.0,28.0 592.0,55.7 560.0,55.7 544.0,28.0 560.0,0.3 592.0,0.3"/>
+      <polygon points="608.0,83.4 592.0,111.1 560.0,111.1 544.0,83.4 560.0,55.7 592.0,55.7"/>
+      <polygon points="656.0,55.7 640.0,83.4 608.0,83.4 592.0,55.7 608.0,28.0 640.0,28.0"/>
+      <polygon points="704.0,28.0 688.0,55.7 656.0,55.7 640.0,28.0 656.0,0.3 688.0,0.3"/>
+      <polygon points="704.0,83.4 688.0,111.1 656.0,111.1 640.0,83.4 656.0,55.7 688.0,55.7"/>
+      <polygon points="752.0,55.7 736.0,83.4 704.0,83.4 688.0,55.7 704.0,28.0 736.0,28.0"/>
+      <polygon points="752.0,111.1 736.0,138.9 704.0,138.9 688.0,111.1 704.0,83.4 736.0,83.4"/>
+      <polygon points="800.0,28.0 784.0,55.7 752.0,55.7 736.0,28.0 752.0,0.3 784.0,0.3"/>
+      <polygon points="800.0,83.4 784.0,111.1 752.0,111.1 736.0,83.4 752.0,55.7 784.0,55.7"/>
+      <polygon points="848.0,111.1 832.0,138.9 800.0,138.9 784.0,111.1 800.0,83.4 832.0,83.4"/>
+      <polygon points="896.0,28.0 880.0,55.7 848.0,55.7 832.0,28.0 848.0,0.3 880.0,0.3"/>
+      <polygon points="896.0,83.4 880.0,111.1 848.0,111.1 832.0,83.4 848.0,55.7 880.0,55.7"/>
+      <polygon points="944.0,55.7 928.0,83.4 896.0,83.4 880.0,55.7 896.0,28.0 928.0,28.0"/>
+      <polygon points="944.0,111.1 928.0,138.9 896.0,138.9 880.0,111.1 896.0,83.4 928.0,83.4"/>
+      <polygon points="992.0,28.0 976.0,55.7 944.0,55.7 928.0,28.0 944.0,0.3 976.0,0.3"/>
+      <polygon points="992.0,83.4 976.0,111.1 944.0,111.1 928.0,83.4 944.0,55.7 976.0,55.7"/>
+    </g>
+    <g class="hex-fill">
+      <polygon points="176.0,55.7 160.0,83.4 128.0,83.4 112.0,55.7 128.0,28.0 160.0,28.0"/>
+      <polygon points="320.0,83.4 304.0,111.1 272.0,111.1 256.0,83.4 272.0,55.7 304.0,55.7"/>
+      <polygon points="512.0,28.0 496.0,55.7 464.0,55.7 448.0,28.0 464.0,0.3 496.0,0.3"/>
+      <polygon points="656.0,111.1 640.0,138.9 608.0,138.9 592.0,111.1 608.0,83.4 640.0,83.4"/>
+      <polygon points="848.0,55.7 832.0,83.4 800.0,83.4 784.0,55.7 800.0,28.0 832.0,28.0"/>
+    </g>
+  </g>
+  <text class="cover-name" x="48" y="186">ourSharedEvents</text>
+  <text class="cover-tag"  x="48" y="214">Same size, same spots for every sponsor.</text>
+</svg>

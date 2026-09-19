@@ -1,0 +1,12 @@
+<!-- @dsCard group="Navigation" height=190 subtitle="Fixed thumb-zone nav — every glyph carries its word" -->
+<div id="root" style="padding:24px"></div>
+<script>
+const { BottomNav } = window.OurSharedEvents;
+const h = React.createElement;
+const items=[{href:'/events',label:'Events',icon:'📅',active:true},
+ {href:'/map',label:'Map',icon:'🗺️'},{href:'/posters',label:'Posters',icon:'🖼️'},
+ {href:'/reports',label:'Reports',icon:'📊'}];
+function Demo(){return h('div',{style:{position:'relative',height:120}},
+  h('div',{style:{position:'absolute',left:0,right:0,bottom:0}},h(BottomNav,{items})));}
+ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
+</script>
