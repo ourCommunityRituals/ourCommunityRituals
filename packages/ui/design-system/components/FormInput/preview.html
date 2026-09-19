@@ -1,0 +1,8 @@
+<!-- @dsCard group="Forms" height=300 subtitle="Label, hint, error — 16px, and the error is never the smallest text" -->
+<div id="root" style="padding:24px"></div>
+<script>
+const { FormInput } = window.OurSharedEvents;
+const h = React.createElement;
+function Demo(){ return h('div',{style:{display:'flex',flexDirection:'column',gap:16}},h(FormInput,{id:'name',label:'What is the event called?',placeholder:'Maple Street Fair',required:true,hint:'This is the name people will see on the poster.'}),h(FormInput,{id:'email',label:'Your email',type:'email',value:'hello@maplefair',error:'That email is missing its ending — try hello@maplefair.org'})); }
+ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
+</script>

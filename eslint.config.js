@@ -27,6 +27,12 @@ export default tseslint.config(
       '**/dist/**',
       'packages/flags/src/generated/**',
       'OCR-docs/**',
+      // The published design system: a specification, not source. `tokens.css` and
+      // `components/bundle.js` are generated (by `compile-tokens.mjs` and by the
+      // @ocr/ui React build respectively), the previews are documents the artifact
+      // renders, and `components/index.d.ts` is documentation outside any tsconfig
+      // project. Linting it would police generators and prose, not anyone's code.
+      'packages/ui/design-system/**',
     ],
   },
   js.configs.recommended,

@@ -1,0 +1,298 @@
+/* OurSharedEvents — shared component vocabulary.
+   Derived from @ocr/ui packages/ui/src/styles.ts, refined for AAA text,
+   WCAG 1.4.11 boundaries and the 50-75 reader. Nothing hard-codes a colour.
+
+   Compatibility shim: tokens.css emits the type family as --font-sans.
+   @ocr/ui's vocabulary references --font, so map it once here. */
+:root{
+  --font: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  --display-ppmm: 3.78;           /* MEASURE PER PANEL. 3.78 is the CSS default and is wrong on most displays. */
+  --qr-mm: 50;                    /* 50mm browsing, 90mm once armed for scanning */
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased;font-size:1rem;line-height:1.5}
+
+/* ---------- chrome ---------- */
+.header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb, var(--bg) 90%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.header h1{font-size:1.375rem;font-weight:700;line-height:1.2}
+.page-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb, var(--bg) 90%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 20px;text-align:center}
+.page-header h1{font-size:1.375rem;font-weight:700;line-height:1.2}
+.page-header p{font-size:.875rem;color:var(--text-muted);margin-top:4px}
+.content{padding:20px 20px 104px}
+.content-wrap{padding-bottom:104px}
+.section{margin-bottom:24px}
+.section-title{font-size:.875rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.brand{font-size:.8125rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--accent-text)}
+.body-centered{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hidden,[hidden]{display:none!important}
+a{color:var(--accent-text)}
+a:hover{color:var(--accent-text);text-decoration-thickness:2px}
+
+/* ---------- buttons ----------
+   Primary is 18px/700 so black on the CARTO fill counts as large text (5.78:1, AAA-large).
+   color comes from --on-accent, which flips per theme. */
+.btn{padding:14px 20px;border:none;border-radius:var(--radius-sm);font-size:1.125rem;font-weight:700;cursor:pointer;font-family:var(--font);min-height:var(--tap-min);transition:background .2s,outline-color .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;line-height:1.2;outline:2px solid transparent;outline-offset:2px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--accent);color:var(--on-accent);min-height:var(--tap-min-primary)}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border-strong);font-size:1rem;font-weight:600}
+.btn-secondary:hover{background:var(--surface);outline-color:var(--border-strong)}
+.btn-danger{background:var(--danger);color:var(--on-accent)}
+.btn-danger:hover{background:var(--danger-hover)}
+.btn-block{width:100%}
+/* destructive controls keep 24px of clear space and never sit beside a primary action */
+.btn-danger{margin-inline:0;margin-block:24px}
+.btn-link{background:none;border:none;color:var(--accent-text);cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--font);min-height:var(--tap-min);padding:8px;font-size:1rem}
+
+/* ---------- surfaces ---------- */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;transition:outline-color .15s;outline:2px solid transparent;outline-offset:-1px}
+.card:hover{outline-color:var(--border-strong)}
+.list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:var(--radius-sm);min-height:var(--tap-min);transition:outline-color .15s;outline:2px solid transparent;outline-offset:-2px}
+.list-item:hover{outline-color:var(--border-strong)}
+.list-name{font-size:1rem;font-weight:600}
+.list-sub{font-size:.9375rem;color:var(--text-muted)}
+.list-count{font-size:1rem;color:var(--accent-text);font-weight:700;font-variant-numeric:tabular-nums}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:1rem;font-weight:600}
+.item-sub{font-size:.9375rem;color:var(--text-muted)}
+.item-action{flex-shrink:0}
+.profile-header{padding:32px 20px 20px;text-align:center;border-bottom:1px solid var(--border)}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;color:var(--on-accent);margin:0 auto 12px}
+
+/* ---------- forms ----------
+   Labels, hints and errors reserve their space so nothing shifts under a reader's finger. */
+label{display:block;font-size:1rem;color:var(--text-muted);margin-bottom:8px;line-height:1.4}
+.form-field{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.input{width:100%;padding:14px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text);font-size:1rem;font-family:var(--font);outline:none;min-height:var(--tap-min);line-height:1.4}
+.input:focus{border-color:var(--accent-text);box-shadow:inset 0 0 0 1px var(--accent-text)}
+.input::placeholder{color:var(--text-muted);opacity:1}
+.form-hint{font-size:.9375rem;color:var(--text-muted);line-height:1.45}
+.form-error{font-size:1rem;font-weight:600;color:var(--error);line-height:1.45;min-height:1.45em}
+.required-mark{color:var(--error);font-weight:700;margin-left:2px}
+.input-error{border-color:var(--error);box-shadow:inset 0 0 0 1px var(--error)}
+.input-error:focus,.input-error:focus-visible{border-color:var(--error);outline-color:var(--error)}
+.form-group{border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px}
+.form-group legend{font-size:.875rem;font-weight:600;color:var(--text-muted);padding:0 6px;text-transform:uppercase;letter-spacing:.05em}
+/* the whole row is the target, never just the box */
+.checkbox-label{display:flex;align-items:center;gap:12px;cursor:pointer;min-height:var(--tap-min);font-size:1rem;font-weight:400;color:var(--text);padding:4px 0}
+.checkbox-label input[type=checkbox]{width:24px;height:24px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.radio-option{display:flex;align-items:center;gap:12px;min-height:var(--tap-min);cursor:pointer;font-size:1rem;color:var(--text);padding:4px 0}
+.radio-option input[type=radio]{width:24px;height:24px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.radio-group-error{font-size:1rem;font-weight:600;color:var(--error);margin-top:8px}
+.search-bar{width:100%;padding:12px 14px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text);font-size:1rem;font-family:var(--font);outline:none;min-height:var(--tap-min)}
+.search-bar::placeholder{color:var(--text-muted);opacity:1}
+.sort-select{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-control);color:var(--text);font-size:1rem;padding:10px 12px;font-family:var(--font);outline:none;min-height:var(--tap-min);-webkit-appearance:none}
+.file-input{display:none}
+.file-name{font-size:1rem;color:var(--accent-text);margin-top:8px;word-break:break-all}
+.drop-zone{border:2px dashed var(--border-strong);border-radius:var(--radius);padding:40px 20px;text-align:center;transition:border-color .2s,background .2s;cursor:pointer;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.drop-zone.dragover{border-color:var(--accent-text);background:color-mix(in srgb, var(--accent) 8%, transparent)}
+.drop-zone-icon{font-size:2rem}
+.drop-zone-text{font-size:1rem;color:var(--text)}
+.drop-zone-hint{font-size:.9375rem;color:var(--text-muted)}
+.range-group{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.range-group label{font-size:1rem;color:var(--text-muted);min-width:110px;margin-bottom:0}
+.range-group input[type=range]{flex:1;accent-color:var(--accent);height:var(--tap-min)}
+.range-value{font-size:1rem;color:var(--text);min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;min-height:var(--tap-min)}
+.toggle-label{font-size:1rem}
+.toggle{position:relative;width:52px;height:30px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;background:var(--surface);border:2px solid var(--border-strong);border-radius:15px;cursor:pointer;transition:background .2s,border-color .2s}
+.toggle-track::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:var(--text);top:3px;left:3px;transition:transform .2s}
+.toggle input:checked+.toggle-track{background:var(--accent);border-color:var(--accent)}
+.toggle input:checked+.toggle-track::after{transform:translateX(22px);background:var(--on-accent)}
+
+/* ---------- status and feedback ---------- */
+.live-indicator{font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:6px 12px;border-radius:var(--radius-pill);min-height:32px;display:inline-flex;align-items:center;gap:6px}
+.live-indicator.on{color:var(--live-text);background:color-mix(in srgb, var(--live) 18%, transparent);border:1px solid var(--live-text);animation:pulse 2s ease-in-out infinite}
+.live-indicator.off{color:var(--text-muted);background:var(--surface);border:1px solid var(--border-strong)}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--live-text);background:color-mix(in srgb, var(--live) 18%, transparent);border:1px solid var(--live-text);padding:6px 12px;border-radius:var(--radius-pill);margin-top:8px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.error-banner{background:color-mix(in srgb, var(--danger) 12%, transparent);border:1px solid var(--error);color:var(--error);padding:14px 16px;border-radius:var(--radius-sm);font-size:1rem;font-weight:600;margin-bottom:20px;display:none}
+.error-banner.visible{display:block}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:20px}
+.loading-text{font-size:1rem;color:var(--text-muted)}
+.spinner{width:40px;height:40px;border:3px solid var(--border-strong);border-top-color:var(--accent-text);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:50vh;padding:40px 24px;gap:12px}
+.empty-state .es-icon{font-size:2.5rem;line-height:1;margin-bottom:4px}
+.empty-state h3{font-size:1.25rem;font-weight:700;line-height:1.3}
+.empty-state p{color:var(--text-muted);font-size:1rem;max-width:34ch;line-height:1.5}
+.empty-state .btn{margin-top:12px}
+.access-denied{text-align:center;padding:60px 20px}
+.access-denied h3{margin-bottom:8px;font-size:1.25rem}
+.access-denied p{color:var(--text-muted);font-size:1rem}
+.not-found{text-align:center;padding:80px 20px}
+.not-found h2{margin-bottom:8px}
+.not-found p{color:var(--text-muted);font-size:1rem}
+.offline-msg{text-align:center;padding:60px 20px}
+.offline-msg h2{margin-bottom:8px}
+.offline-msg p{color:var(--text-muted);font-size:1rem}
+
+/* ---------- navigation ---------- */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:color-mix(in srgb, var(--bg) 95%, transparent);backdrop-filter:blur(12px);border-top:1px solid var(--border-strong);display:flex;justify-content:space-around;padding:8px 0 env(safe-area-inset-bottom,8px);z-index:10}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.8125rem;font-weight:600;color:var(--text-muted);text-decoration:none;padding:6px 12px;min-height:var(--tap-min);justify-content:center;border-radius:var(--radius-sm)}
+.nav-item.active{color:var(--accent-text)}
+.nav-item svg{width:24px;height:24px}
+.nav-item span[aria-hidden]{font-size:1.25rem;line-height:1}
+
+/* ---------- data ---------- */
+.stats-row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+.stats-row::-webkit-scrollbar{display:none}
+.stat-card{flex:1;min-width:96px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
+.stat-value{font-size:1.75rem;font-weight:700;color:var(--accent-text);font-variant-numeric:tabular-nums;line-height:1.15}
+.stat-label{font-size:.875rem;color:var(--text-muted);margin-top:4px}
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:12px}
+.bar-label{font-size:1rem;min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:28px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-xs);overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:var(--radius-xs);transition:width .5s ease}
+.bar-count{font-size:1rem;color:var(--text);min-width:44px;text-align:right;font-variant-numeric:tabular-nums}
+.preview-count{text-align:center;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:1rem}
+.preview-count strong{color:var(--accent-text);font-size:1.75rem;display:block;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 20px;font-size:.9375rem;color:var(--text-muted)}
+.view-toggle{display:flex;gap:8px}
+.view-btn{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-control);color:var(--text-muted);cursor:pointer;font-size:1rem;font-family:var(--font);min-height:var(--tap-min);min-width:var(--tap-min);padding:8px 12px;transition:outline-color .15s}
+.view-btn.active{border-color:var(--accent-text);color:var(--accent-text)}
+
+/* ---------- chips and badges ---------- */
+.filter-chip{flex-shrink:0;padding:10px 16px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-pill);color:var(--text);font-size:1rem;cursor:pointer;transition:border-color .2s,background .2s;min-height:var(--tap-min);display:inline-flex;align-items:center;gap:8px}
+.filter-chip.active{border-color:var(--accent-text);color:var(--accent-text);background:color-mix(in srgb, var(--accent) 12%, transparent);border-width:2px}
+.meta-badge{font-size:.875rem;padding:4px 8px;border-radius:var(--radius-xs);background:var(--surface);border:1px solid var(--border);color:var(--text-muted)}
+.meta-badge.high{color:var(--accent-text);border-color:var(--accent-text);background:color-mix(in srgb, var(--accent) 12%, transparent)}
+.user-badge{font-size:.875rem;color:var(--accent-text);background:color-mix(in srgb, var(--accent) 12%, transparent);border:1px solid var(--accent-text);padding:4px 10px;border-radius:var(--radius-pill)}
+.source-list{display:flex;flex-wrap:wrap;gap:12px}
+.source-badge{font-size:1rem;padding:10px 16px;border-radius:var(--radius-pill);background:var(--surface);border:1px solid var(--border-strong);color:var(--text);min-height:var(--tap-min);display:inline-flex;align-items:center}
+.genre-tag{display:inline-flex;align-items:center;font-size:.875rem;padding:4px 10px;border-radius:var(--radius-pill);background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--accent-text);border:1px solid var(--accent-text)}
+
+/* ---------- event surfaces ---------- */
+.display-card{width:100%;max-width:360px;text-align:center}
+.qr-frame{background:var(--ocr-light-100);border-radius:16px;padding:24px;margin:0 auto 32px;display:inline-block}
+.qr-frame canvas,.qr-frame img{display:block;width:200px;height:200px}
+.qr-placeholder{width:200px;height:200px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ocr-navy-950);background:var(--ocr-light-100)}
+/* On a venue panel, size the code in MILLIMETRES. Measure --display-ppmm per install:
+   CSS mm assumes 96dpi and is 2.4x wrong on a 55" 1080p panel. */
+.qr-frame.qr-physical canvas,.qr-frame.qr-physical img,.qr-frame.qr-physical .qr-placeholder{
+  width:calc(var(--qr-mm) * var(--display-ppmm) * 1px);
+  height:calc(var(--qr-mm) * var(--display-ppmm) * 1px)}
+.qr-frame.qr-armed{--qr-mm:90}
+.cta{font-size:1.25rem;font-weight:600;margin-bottom:8px}
+.cta-sub{font-size:.875rem;color:var(--text-muted);margin-bottom:32px}
+.sponsor-slot{margin-top:32px;padding:16px;border-top:1px solid var(--border);font-size:.875rem;color:var(--text-muted)}
+.sponsor-slot .sponsor-name{color:var(--text);font-weight:600}
+.footer-cta{text-align:center;padding:24px 20px;border-top:1px solid var(--border);margin-top:20px}
+.footer-cta a{color:var(--accent-text);text-decoration:none;font-size:1rem;min-height:var(--tap-min);display:inline-flex;align-items:center}
+.live-view-header{text-align:center;padding:32px 20px 20px;border-bottom:1px solid var(--border)}
+@media(min-width:768px){.display-card{max-width:480px}.qr-frame{padding:32px}.qr-frame canvas,.qr-frame img,.qr-placeholder{width:260px;height:260px}}
+
+/* ---------- H3 corridor map ----------
+   An empty cell is stroke-only: a --surface fill on --bg is 1.20:1 and never reads.
+   Every label and overlay stroke gets a --map-halo casing so it survives over basemap imagery. */
+.hex-map{background:var(--map-ground);border:1px solid var(--border-strong);border-radius:var(--radius);padding:12px;display:block;width:100%}
+.hex-cell{stroke:var(--map-cell-line);stroke-width:1.5;paint-order:stroke fill}
+.hex-cell-empty{fill:none;stroke:var(--map-cell-line);stroke-width:1.5}
+.hex-cell-selected{stroke:var(--focus-ring);stroke-width:3}
+.hex-glyph{font-size:14px;text-anchor:middle;dominant-baseline:central;paint-order:stroke fill;stroke:var(--map-halo);stroke-width:2px;stroke-linejoin:round}
+.hex-label{fill:var(--text);font-size:14px;paint-order:stroke fill;stroke:var(--map-halo);stroke-width:2px;stroke-linejoin:round}
+.hex-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.9375rem;color:var(--text);padding:12px 2px 2px}
+.hex-legend span{display:inline-flex;align-items:center;gap:6px}
+.hex-legend i{width:16px;height:16px;border-radius:var(--radius-xs);display:inline-block;font-style:normal}
+
+/* ---------- focus: 3px, :focus-visible only ---------- */
+.btn:focus-visible,.btn-link:focus-visible,.filter-chip:focus-visible,.view-btn:focus-visible,
+.card:focus-visible,.list-item:focus-visible,.source-badge:focus-visible,.drop-zone:focus-visible,
+.input:focus-visible,.search-bar:focus-visible,.sort-select:focus-visible,.nav-item:focus-visible,
+.checkbox-label:focus-within,.radio-option:focus-within,.toggle input:focus-visible+.toggle-track{
+  outline:3px solid var(--focus-ring);outline-offset:2px}
+.nav-item:focus-visible{outline-offset:-3px}
+
+@media(prefers-reduced-motion:reduce){
+  .live-indicator.on,.live-badge{animation:none}
+  .spinner{animation:none;border-top-color:var(--accent-text)}
+  *,*::before,*::after{transition:none!important}
+}
+
+/* ---------- SURFACE TIERS ----------
+   A phone is held at ~400mm. A bar panel is glanced at from ~1000mm and touched at ~600mm,
+   so the phone scale does not transfer: on a 40" 4K panel (4.34 px/mm) body text needs
+   ~46px to subtend the same angle it does on a phone. Everything here is in rem, so one
+   root font-size carries the whole scale. Set both properties per installation. */
+[data-surface="display"]{
+  --view-mm:1000;                  /* browse distance: bar stool, standing at a rail */
+  --display-ppmm:4.34;             /* MEASURE THIS. 40" 4K = 4.34, 40" 1080p = 2.17 */
+  --ui-scale:calc(var(--view-mm) / 400);
+  font-size:calc(16px * var(--ui-scale));
+  --tap-min:calc(20 * var(--display-ppmm) * 1px);          /* 20mm: reaching across a bar */
+  --tap-min-primary:calc(24 * var(--display-ppmm) * 1px);  /* 24mm */
+  --tap-gap:calc(12 * var(--display-ppmm) * 1px);
+  --qr-mm:50;
+}
+[data-surface="display"] .qr-frame.qr-armed{--qr-mm:100}   /* 100mm reads from ~1000mm */
+[data-surface="display"] .content{padding:32px 32px 32px}
+
+/* ---------- MAP POINTS ----------
+   Points are sized in millimetres because a finger is. 20mm across with 12mm between
+   centres means a 40" panel holds about 400 non-colliding points — so clustering is a
+   capacity rule, not a nicety. Past roughly 200 visible points they collide. */
+.map-point{width:calc(20 * var(--display-ppmm) * 1px);height:calc(20 * var(--display-ppmm) * 1px);
+  border-radius:50%;border:2px solid var(--map-halo);display:inline-flex;align-items:center;
+  justify-content:center;font-size:.9em;cursor:pointer;padding:0;line-height:1}
+.map-point:focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px}
+.map-point.is-selected{border-color:var(--focus-ring);border-width:4px}
+.map-cluster{background:var(--surface);color:var(--text);border:2px solid var(--border-strong);
+  font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- MapDetail: the poster minus its art ---------- */
+.map-detail{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);
+  padding:20px;display:flex;flex-direction:column;gap:16px;max-width:52ch}
+.map-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.map-detail-id{min-width:0}
+.map-detail-name{font-size:1.375rem;font-weight:700;line-height:1.2}
+.map-detail-meta{font-size:1rem;color:var(--text-muted);line-height:1.45}
+.route-list{list-style:none;display:flex;flex-direction:column;gap:var(--tap-gap);margin:0;padding:0}
+.route-row{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:var(--bg);
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:12px;
+  min-height:var(--tap-min);cursor:pointer;font-family:var(--font);color:var(--text);
+  transition:border-color .15s}
+.route-row.is-armed{border-color:var(--focus-ring);border-width:2px;
+  background:color-mix(in srgb, var(--accent) 10%, var(--bg))}
+.route-row:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+.route-glyph{flex-shrink:0;width:2.25em;height:2.25em;border-radius:var(--radius-sm);
+  display:inline-flex;align-items:center;justify-content:center;font-size:1rem;line-height:1}
+.route-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.route-label{font-size:1rem;font-weight:600}
+.route-sub{font-size:.9375rem;color:var(--text-muted)}
+.route-state{flex-shrink:0;font-size:.875rem;font-weight:600;color:var(--text-muted)}
+.route-row.is-armed .route-state{color:var(--accent-text)}
+.route-scan{display:flex;flex-direction:column;align-items:center;gap:12px;
+  padding-top:16px;border-top:1px solid var(--border)}
+.route-scan .qr-frame{margin:0}
+.route-scan-label{font-size:1rem;color:var(--text-muted);text-align:center}
+.route-scan-label strong{color:var(--text);font-weight:700}
+
+/* ---------- OurWKRP surfaces ----------
+   @ocr/ui's shared stylesheet already carries these: the vocabulary spans both sides of
+   the hybrid model, and WKRP is why. Rebased here to the same scale and token rules as
+   everything else, so a listener surface and an event surface are visibly one system. */
+.track-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);
+  min-height:var(--tap-min);transition:outline-color .15s;cursor:pointer;
+  outline:2px solid transparent;outline-offset:-2px}
+.track-card:hover{outline-color:var(--border-strong)}
+.track-art{width:56px;height:56px;border-radius:var(--radius-control);background:var(--surface);
+  flex-shrink:0;object-fit:cover;border:1px solid var(--border)}
+.track-info{flex:1;min-width:0}
+.track-name{font-size:1rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-artist{font-size:.9375rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now-playing{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);
+  padding:16px;margin-top:8px}
+.now-playing-label{font-size:.8125rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--accent-text);font-weight:700}
+.now-playing-track{font-size:1.125rem;font-weight:600;margin-top:4px}
+/* Attribution: the listener credits the track. Plant-your-flag, one tap. */
+.attr-btn{background:var(--accent);color:var(--on-accent);border:none;border-radius:var(--radius-pill);
+  padding:10px 18px;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--font);
+  min-height:var(--tap-min);min-width:var(--tap-min);transition:background .2s;flex-shrink:0}
+.attr-btn:disabled{opacity:.5;cursor:default}
+.attr-btn.done{background:var(--surface);color:var(--accent-text);border:2px solid var(--accent-text)}
+.attr-btn:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}

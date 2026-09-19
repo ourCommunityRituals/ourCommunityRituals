@@ -1,0 +1,8 @@
+<!-- @dsCard group="Navigation" height=180 subtitle="Sticky header with the screen's one h1 and a live indicator" -->
+<div id="root" style="padding:24px"></div>
+<script>
+const { Header } = window.OurSharedEvents;
+const h = React.createElement;
+function Demo(){ return h('div',{style:{display:'flex',flexDirection:'column',gap:16}},h(Header,{title:'Maple Street Fair',live:true}),h(Header,{title:'Harbour Night Market',live:false}),h(Header,{title:'Your events'})); }
+ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
+</script>
