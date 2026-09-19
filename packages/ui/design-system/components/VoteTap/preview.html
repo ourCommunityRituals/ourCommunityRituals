@@ -1,0 +1,15 @@
+<!-- @dsCard group="Fist of Five" height=560 subtitle="One tap, anonymous, attributed to a named team" -->
+<div id="root" style="padding:24px;display:flex;flex-direction:column;gap:20px"></div>
+<script>
+const { VoteTap } = window.OurSharedEvents;
+const h = React.createElement;
+function Demo(){
+  const [voted,setVoted] = React.useState(false);
+  return h('div',{style:{display:'flex',flexDirection:'column',gap:20}},
+    h(VoteTap,{ nowPlaying:'Harbour Lights — The Sunday Stable', team:'The Sunday Stable',
+      tally: 47 + (voted?1:0), floor: 10, voted, onVote:()=>setVoted(true), belt:'Holds the belt' }),
+    h(VoteTap,{ nowPlaying:'Backroom Blues — Triple A challenger', team:'Open challenge',
+      tally: 3, floor: 10 }));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(Demo));
+</script>

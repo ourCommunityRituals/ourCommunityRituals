@@ -10,7 +10,7 @@ A Universal Event Code carries its category in its hue. That hue has to work in 
 | `--uec-<k>-scan` | QR module fill, inside the white `.qr-frame` | AA on white — a printed code has no theme |
 | **`--uec-<k>-ui`** | Chips, legends, map cells | AA on `--bg` **and** `--surface`, per theme |
 
-`@ocr/ui` had the first two. The rule "hue carries meaning, never mode-flip" is exactly right for a printed code and exactly wrong for a chip on a navy screen: seven of the eleven display hues fell under 3:1 on `--bg`.
+`@ocr/ui` had the first two. The rule "hue carries meaning, never mode-flip" is exactly right for a printed code and exactly wrong for a chip on a navy screen: seven of the ten display hues fell under 3:1 on `--bg`.
 
 ```
 uec-sponsor  1.44:1      uec-shop     1.80:1      uec-utility  2.01:1
@@ -35,7 +35,7 @@ The `-ui` variant keeps the hue family and moves only lightness, so the category
 | `archive` | 📦 | `#6c3483` | `#b177c9` | `#6c3483` | Memory. Past events and SharedReports. |
 | `shop` | 🛍️ | `#1a4a48` | `#379c97` | `#1a4a48` | Buy something on site. |
 | `utility` | 🔧 | `#4a4a4a` | `#8e8e8e` | `#4a4a4a` | Utility codes with no category of their own. |
-## Eleven categories is more than hue can carry
+## Ten categories is still more than hue can carry
 
 Roughly eight is the practical ceiling for reliable colour separation among sighted users, and this palette has eleven. Under deuteranopia `enter` / `checkin` / `shop` converge, and so do `help` / `live`. Ageing eyes lose blue–navy discrimination first, which is precisely where `sponsor` sits.
 

@@ -296,3 +296,73 @@ label{display:block;font-size:1rem;color:var(--text-muted);margin-bottom:8px;lin
 .attr-btn:disabled{opacity:.5;cursor:default}
 .attr-btn.done{background:var(--surface);color:var(--accent-text);border:2px solid var(--accent-text)}
 .attr-btn:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+
+/* ---------- Tier 3 brand: ourWKRP — amber-on-black ----------
+   Brain §11: 'OW brand identity: amber-on-black; OSE: navy/blue system. Brand affects
+   chrome only — UEC hues never re-theme.' Re-maps semantic roles only; adds no --ocr-*
+   primitive, so it does not trip the tokens.test.ts assertion that keeps legacy amber
+   out of the OSE primitive scale. Every ink value below is AAA on both OW grounds. */
+[data-brand="ow"]{
+  --bg:#0b0b0b; --surface:#322e27; --surface-hover:#443f35;
+  --border:#322e27; --border-strong:#807668;
+  --text:#f0ede8; --text-primary:#f0ede8;
+  --text-muted:#bfbab4; --text-secondary:#bfbab4;
+  --accent:#d4954b; --accent-hover:#e0b37d; --accent-text:#e0b37d;
+  --on-accent:#000000; --focus-ring:#e0b37d; --card:#322e27; --info:#e0b37d;
+}
+
+/* ---------- STRUCTURE ENCODES TRUTH (brain §11) ----------
+   A non-colour channel, mandatory on any surface showing a number or a place.
+   solid = counted · dashed = claimed/dormant/planned · held = suppressed, with a reason.
+   Never communicate this with colour alone, and never let a planned thing render as
+   though it were counted. This is also how open-ended taxonomies (the ourAirwaves flag
+   verticals) are carried without spending hue on them. */
+.is-counted{border-style:solid}
+.is-claimed{border-style:dashed;border-width:2px}
+.is-claimed .stat-value,.is-claimed .list-count{color:var(--text-muted)}
+.is-held{opacity:.72;border-style:solid;border-color:var(--border)}
+.is-held .stat-value,.is-held .list-count{color:var(--text-muted)}
+/* the reason is words, never a tooltip and never an icon alone */
+.held-reason{font-size:.9375rem;color:var(--text-muted);line-height:1.45;margin-top:4px}
+.hex-cell-claimed{fill:none;stroke:var(--map-cell-line);stroke-width:1.5;stroke-dasharray:4 3}
+.status-chip{display:inline-flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;padding:6px 12px;border-radius:var(--radius-pill);
+  min-height:32px;border:1px solid var(--border-strong);color:var(--text-muted);background:var(--surface)}
+.status-chip.live{color:var(--live-text);border-color:var(--live-text);
+  background:color-mix(in srgb, var(--live) 18%, transparent)}
+.status-chip.rollout{color:var(--warn-text);border-color:var(--warn-text);
+  background:color-mix(in srgb, var(--warn) 18%, transparent)}
+.status-chip.planned{border-style:dashed}
+
+/* ---------- Fist of Five — the hybrid vote vocabulary ----------
+   One tap, anonymous, attributed to a named team, never joinable.
+   A vote surface may show the team, the song, the tally and the belt.
+   It may NEVER render a voter or any count narrow enough to identify one. */
+.vote-tap{width:100%;min-height:var(--tap-min-primary);display:flex;align-items:center;
+  justify-content:center;gap:10px;background:var(--accent);color:var(--on-accent);
+  border:none;border-radius:var(--radius-sm);font-family:var(--font);font-size:1.125rem;
+  font-weight:700;cursor:pointer;transition:background .2s}
+.vote-tap:hover{background:var(--accent-hover)}
+.vote-tap:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+.vote-tap[aria-pressed="true"]{background:var(--surface);color:var(--live-text);
+  border:2px solid var(--live-text)}
+.vote-tap:disabled{opacity:.5;cursor:not-allowed}
+/* the anonymity promise sits where the tap happens — canon words, verbatim */
+.vote-promise{font-size:.9375rem;color:var(--text-muted);text-align:center;
+  line-height:1.45;margin-top:10px}
+.tally{display:flex;align-items:baseline;gap:10px}
+.tally-value{font-size:1.75rem;font-weight:700;color:var(--accent-text);
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.tally-label{font-size:.875rem;color:var(--text-muted)}
+.belt{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;padding:6px 14px;border-radius:var(--radius-pill);
+  background:color-mix(in srgb, var(--warn) 20%, transparent);color:var(--warn-text);
+  border:1px solid var(--warn-text);min-height:32px}
+.standings{display:flex;flex-direction:column;gap:var(--tap-gap);list-style:none;margin:0;padding:0}
+.standings-row{display:flex;align-items:center;gap:12px;padding:12px;min-height:var(--tap-min);
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface)}
+.standings-rank{font-size:1rem;font-weight:700;font-variant-numeric:tabular-nums;
+  min-width:2ch;color:var(--text-muted)}
+.standings-team{flex:1;min-width:0;font-size:1rem;font-weight:600}
+.standings-score{font-size:1rem;font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--accent-text)}

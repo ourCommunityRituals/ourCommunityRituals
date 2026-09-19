@@ -25,7 +25,10 @@ Measured against `--surface`, not `--bg`:
 --text-muted  #7A94B0   4.75:1   under AA once hovered (4.04:1)
 ```
 
-The `@ocr/ui` test suite checked every foreground against `--bg` only, which is why none of this surfaced — but almost all text in the product sits on a card, not on the page ground.
+`tests/tokens.test.ts:69-70` *does* assert one pair against `--surface` — body text. Every
+other foreground is checked against `--bg` only, and `--surface-hover` is never a ground in
+any assertion in `tokens.test.ts`, `theme-swap.test.ts` or `scripts/verify-contrast.mjs`.
+So the three roles that fail are exactly the three the suite does not measure.
 
 Structure was worse. Every neutral step in the dark theme:
 
@@ -65,6 +68,28 @@ Unchanged from `@ocr/ui`:
 
 - **Tier 1 — primitives** (`--ocr-*`). Never referenced by a component. Each is tagged FILL, INK, LINE or GROUND in its usage note.
 - **Tier 2 — semantic roles.** What every component consumes. Nothing hard-codes a hex.
-- **Tier 3 — client brands.** One `[data-brand="x"]` block re-maps roles. A brand may re-map `--accent` and `--accent-text`; it may **never** touch `--uec-*`, and any re-mapped ink must still clear 7:1 on `--bg` and `--surface`. Structure never changes — a brand changes hue, never layout, spacing or type.
+- **Tier 3 — brands.** One `[data-brand="x"]` block re-maps roles. A brand may re-map
+  `--accent` and `--accent-text`; it may **never** touch `--uec-*`, and any re-mapped ink must
+  still clear 7:1 on `--bg` and `--surface`. Structure never changes — a brand changes hue,
+  never layout, spacing or type. Brain §11: *"Brand affects chrome only — UEC hues never
+  re-theme."*
+
+  **`[data-brand="ow"]` is the real one.** Brain §11 states ourWKRP's identity as
+  **amber-on-black**, against OSE's navy/blue. Verified values, all AAA on their own grounds:
+
+  | Role | Value | On OW `--bg` | On OW `--surface` |
+  |---|---|---|---|
+  | `--bg` | `#0b0b0b` | — | — |
+  | `--surface` | `#322e27` | 1.46:1 | — |
+  | `--text` | `#f0ede8` | 16.86:1 | 11.56:1 |
+  | `--text-muted` | `#bfbab4` | 10.21:1 | 7.01:1 |
+  | `--accent` (fill) | `#d4954b` | black on it: 8.20:1 | — |
+  | `--accent-text` (ink) | `#e0b37d` | 10.23:1 | 7.02:1 |
+  | `--border-strong` | `#807668` | 4.41:1 | 3.03:1 |
+
+  One caveat worth knowing: `tests/tokens.test.ts` asserts `#D4954B` is absent from the
+  **primitives** ("accent is CARTO blue, not legacy amber"). That assertion is about Tier 1
+  and OSE's accent. A Tier 3 block re-maps semantic roles and introduces no `--ocr-*`
+  primitive, so it does not trip it — but anyone adding amber to `tokens.ts` will.
 
 Dark is the default: the dark roles sit on bare `:root`, with light arriving via `prefers-color-scheme` or `data-theme="light"`. Force either with `data-theme`.

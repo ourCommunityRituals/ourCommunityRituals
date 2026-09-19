@@ -27,12 +27,14 @@ export default tseslint.config(
       '**/dist/**',
       'packages/flags/src/generated/**',
       'OCR-docs/**',
-      // The published design system: a specification, not source. `tokens.css` and
-      // `components/bundle.js` are generated (by `compile-tokens.mjs` and by the
-      // @ocr/ui React build respectively), the previews are documents the artifact
-      // renders, and `components/index.d.ts` is documentation outside any tsconfig
-      // project. Linting it would police generators and prose, not anyone's code.
-      'packages/ui/design-system/**',
+      // The design system's two GENERATED artifacts only. `tokens.css` is emitted by
+      // compile-tokens.mjs (drift-gated by `pnpm ui:check:generated`), and bundle.js is
+      // an opaque prebuilt artifact this repo has no build script for — see that folder's
+      // CONSUMING.md. The generator itself is NOT ignored: it falls through to the
+      // `**/*.mjs` rule below like packages/tokens/scripts/build.mjs and
+      // packages/flags/scripts/generate-from-yaml.mjs, and is linted the same way.
+      'packages/ui/design-system/tokens.css',
+      'packages/ui/design-system/components/bundle.js',
     ],
   },
   js.configs.recommended,
@@ -74,6 +76,9 @@ export default tseslint.config(
       '**/scripts/**/*.ts',
       '**/*.config.ts',
       'packages/data-provider/src/**/*.ts',
+      // Types-as-documentation for the design system; outside any tsconfig project.
+      // Named here rather than hidden in a directory-wide ignore, per this list's own rule.
+      'packages/ui/design-system/components/index.d.ts',
     ],
     ...tseslint.configs.disableTypeChecked,
   },

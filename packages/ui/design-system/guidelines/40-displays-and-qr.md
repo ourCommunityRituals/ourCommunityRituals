@@ -105,3 +105,27 @@ What the card shows is the event's **routes** — `/public`, `/donate`, `/checki
 **One armed code at a time.** The obvious design is a grid of small codes, one per route. It fails: at 20mm apiece nothing scans, and at scannable size a person cannot tell which code their phone is pointed at. So the routes are a list of large rows, and tapping one arms its code — which then grows and is labelled "Scan for: Chip in". The label is not decoration; it is the only thing that makes a shared screen safe to scan from.
 
 This also gives someone browsing at a bar exactly the right rhythm: read the map, tap a point, read what's on offer, tap the one thing they want, lift the phone.
+
+## Tamper — the risk the geometry does not cover
+
+Everything above makes a code *scannable*. None of it makes it *trustworthy*. A sticker
+placed over a public QR redirects every scan to an attacker's URL, and it is the easiest
+attack against any surface in this product. Our own one-tap framing removes exactly the
+friction that would let someone notice a swapped destination.
+
+- **Print the destination in words beside the code.** "Goes to oursharedevents.com" — canon
+  already requires word + path + tier on every code, and this is why.
+- **A code on an unattended surface gets checked.** Venue displays render the code; they are
+  not stickered. A printed poster in the wild is the exposed case — build a walk-past check
+  into canvassing, and say so in the organizer flow.
+- **A short link is opaque by design.** That is good for the poster and bad for a person
+  eyeballing where it goes. Minting must be non-sequential and rate-limited so adjacent
+  events cannot be enumerated.
+- **Never ask for anything sensitive behind a scanned code.** No credentials, no payment
+  details entered on a page reached only by scanning an unattended code.
+
+## The floor viewport
+
+**375 × 812 — iPhone 13 Mini.** Invariant #14 names it. iPhone X / XS / 11 Pro share it;
+390+ passes by being wider; Android 360px is a separately verified edge case. No horizontal
+scroll at 375, and the primary CTA sits above the fold there.

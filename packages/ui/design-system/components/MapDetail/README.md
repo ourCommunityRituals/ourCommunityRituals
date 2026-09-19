@@ -17,7 +17,7 @@ So the routes are a list of large rows, and tapping one **arms** its code. The a
 ## Rules
 
 - Rows are `--tap-min` tall with `--tap-gap` between them. On a display tier that is 20mm and 12mm physical.
-- Every route carries its UEC glyph on a `--uec-*-ui` ground, so category reads by hue **and** glyph. Eleven categories is past what hue alone can separate.
+- Every route carries its UEC glyph on a `--uec-*-ui` ground, so category reads by hue **and** glyph. Ten categories is past what hue alone can separate.
 - The armed row is marked by a 2px `--focus-ring` border and the words "Ready to scan" — border weight and text, never hue alone.
 - **Routes are phase-dependent.** An event three weeks out should not offer "Check in at the door". The caller passes the routes that actually apply; the component renders what it is given.
 - The sponsor line is verbatim covenant language and is never softened.

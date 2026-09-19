@@ -2,7 +2,12 @@
 /**
  * Compiles tokens.json -> tokens.css for the OurSharedEvents design system.
  *
- * Run from this directory:   node compile-tokens.mjs
+ * Write:  node compile-tokens.mjs
+ * Check:  node compile-tokens.mjs --check   (diffs, exits 1 on drift, writes NOTHING)
+ *
+ * --check must never write: the CI job that runs it has `permissions: contents: read`,
+ * so a "write then git diff --exit-code" pattern would need a write path that should
+ * not exist even transiently.
  *
  * Emits, in order:
  *   1. the first theme's colours on bare :root (dark is the default, matching @ocr/ui)
@@ -12,7 +17,7 @@
  *
  * A colour value of "{other-token}" is an alias and compiles to var(--other-token).
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -92,5 +97,30 @@ for (const g of T.type.groups ?? []) {
 }
 out.push(styles.join('\n\n'));
 
-writeFileSync(join(here, 'tokens.css'), out.join('\n\n') + '\n');
+const rendered = out.join('\n\n') + '\n';
+const target = join(here, 'tokens.css');
+
+if (process.argv.includes('--check')) {
+  if (!existsSync(target)) {
+    console.error('check:generated FAILED — tokens.css is missing. Run: node compile-tokens.mjs');
+    process.exit(1);
+  }
+  const onDisk = readFileSync(target, 'utf8');
+  if (onDisk === rendered) {
+    console.log('check:generated OK — tokens.css matches tokens.json');
+    process.exit(0);
+  }
+  // Report the first differing line so the failure is actionable in a CI log.
+  const a = onDisk.split('\n');
+  const b = rendered.split('\n');
+  const i = a.findIndex((l, n) => l !== b[n]);
+  console.error('check:generated FAILED — tokens.css does not match tokens.json.');
+  console.error(`  first difference at line ${i + 1}`);
+  console.error(`  on disk:  ${JSON.stringify(a[i])}`);
+  console.error(`  expected: ${JSON.stringify(b[i] ?? '<end of file>')}`);
+  console.error('  Regenerate with: pnpm --filter @ocr/ui compile-tokens');
+  process.exit(1);
+}
+
+writeFileSync(target, rendered);
 console.log('tokens.css written');

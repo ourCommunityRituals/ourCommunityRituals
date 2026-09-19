@@ -183,6 +183,24 @@ jobs:
       - name: 'Quality — vitest (adapter-spec × N adapters; invariants run in the dedicated job)'
         run: pnpm flags:test:gate
 
+      # ── Quality: @ocr/ui ──────────────────────────────────────────────
+      # packages/ui carried ~130 assertions across five suites that NO workflow
+      # invoked, and no `ui:*` script existed in the root package.json for CI to
+      # call. Same shape as the L1-lint gap above and the COST-201 sibling-probe
+      # false green: absent, and invisible from every tier over it. @ocr/ui is a
+      # shared cross-product package (invariant #22) — a broken token here reaches
+      # both OSE and OW with no other gate in this repo.
+      # ci-workflow.test.ts asserts these steps exist so they cannot go absent again.
+      - name: 'Drift — @ocr/ui tokens.css matches design-system/tokens.json'
+        run: pnpm ui:check:generated
+
+      - name: 'Quality — TypeScript (@ocr/ui)'
+        working-directory: packages/ui
+        run: pnpm exec tsc -p tsconfig.json --noEmit
+
+      - name: 'Quality — vitest (@ocr/ui)'
+        run: pnpm ui:test
+
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
     runs-on: ubuntu-latest

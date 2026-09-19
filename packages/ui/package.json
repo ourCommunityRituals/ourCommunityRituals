@@ -25,7 +25,9 @@
   "scripts": {
     "test": "vitest run tests/",
     "scan": "tsx scripts/scan.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "compile-tokens": "node design-system/compile-tokens.mjs",
+    "check:generated": "node design-system/compile-tokens.mjs --check"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

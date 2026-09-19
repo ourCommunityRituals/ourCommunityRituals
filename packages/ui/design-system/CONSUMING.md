@@ -13,12 +13,30 @@ The live, browsable version is the Design System artifact it was published from.
 | `tokens.json` | The source of truth for every token | Yes |
 | `tokens.css` | Compiled custom properties + type-style classes | **No — generated** |
 | `compile-tokens.mjs` | `node compile-tokens.mjs` regenerates `tokens.css` | Yes |
-| `components/bundle.css` | The full CSS class vocabulary, refined | Yes |
-| `components/bundle.js` | `@ocr/ui`'s React layer as one classic script, plus `MapDetail` | **No — built from `packages/ui/src/react/*`** |
+| `components/bundle.css` | **Preview-only.** A SUBSET of `src/styles.ts` — see the warning below | Yes |
+| `components/bundle.js` | **UNREVIEWED THIRD-PARTY ARTIFACT — see the warning below** | **No** |
 | `components/index.d.ts` | Types as documentation | Yes |
 | `components/<Comp>/README.md` | Per-component guidelines | Yes |
 | `components/<Comp>/preview.html` | Live preview, rendered by the artifact | Yes |
 | `design-system.json` | The artifact index, kept so the system can be re-synced | **No** |
+
+## ⚠ Two artifacts you must not trust
+
+**`components/bundle.js` was not built from this repo.** It came from an external handoff
+bundle. There is no build script in `packages/ui` that produces it (`scripts` are `test`,
+`scan`, `typecheck` — no `build`), so it cannot be regenerated or verified. It is known to
+diverge from `src`: `AccessDenied` renders "This area is for DJs" in
+`src/react/EmptyState.tsx:38-40` and "…is organizer-only" in the bundle. That divergence was
+found only because it happened to be readable prose; a changed class name, a dropped
+`aria-*` or a different handler would not have surfaced the same way.
+**Do not wire any component from this bundle or its previews.** It exists to render the
+live component cards in the design-system artifact, nothing else.
+
+**`components/bundle.css` is a SUBSET of `src/styles.ts`** — 122 classes against 134.
+The 34 it lacks are almost all ourWKRP surfaces (`.genre-link*`, `.genre-popup*`,
+`.contributor-*`, `.grid-*`, `.track-grid`, `.progress-*`, `.preview-table*`, `.result-*`).
+Adopting it in place of `styles.ts` would silently delete a third of OW's rendered surfaces.
+**The adoption target is a patch to `src/styles.ts`, not this file.**
 
 ## Reading it as an agent
 
@@ -28,7 +46,7 @@ Read `README.md` first — it is the brand book and it names everything else. Th
 
 ```css
 @import '@ocr/ui/design-system/tokens.css';
-@import '@ocr/ui/design-system/components/bundle.css';  /* optional: the class vocabulary */
+@import '@ocr/ui/design-system/bundle.css';  /* optional: the class vocabulary */
 ```
 
 `tokens.css` puts the dark roles on bare `:root`, so dark is the default exactly as `@ocr/ui` has it. Light arrives via `prefers-color-scheme`, and `data-theme="light"` or `data-theme="dark"` forces either one.
@@ -49,4 +67,13 @@ So a primary button is `--accent` with `--on-accent` text; a link is `--accent-t
 
 `README.md` ends with the full list. In short: fill and ink roles split, text raised from AA to AAA, `--border-strong` added, `--on-accent` made per-theme, UEC given a third `-ui` variant, map and display tiers added, and the type scale rebased for readers aged 50–75.
 
-**None of it is wired in.** `packages/ui/src/tokens.ts` and `styles.ts` are untouched, so the running product is unchanged. Adopting it means porting the values into `tokens.ts` and extending `tests/tokens.test.ts` to assert contrast against `--surface` and `--surface-hover` rather than only `--bg` — which is where the current suite misses every failure listed in the README.
+**None of it is wired in.** `packages/ui/src/tokens.ts` and `styles.ts` are untouched, so the
+running product is unchanged. Adoption means porting the values into `tokens.ts` and widening
+`tests/tokens.test.ts` (see the README for exactly which grounds it does and does not cover).
+
+Because `partials.ts` emits only class names — zero inline styles, zero literal hex — landing
+the migration in `styles.ts` carries it to the server-rendered surfaces for free. The entire
+literal-colour migration is eight lines in `styles.ts`: 27, 31, 124, 182, 216, 253, 259
+(267 stays literal white; a QR frame is white in both themes). Three of those — `.attr-btn`,
+`.genre-filter-btn`, `.contributor-avatar` — are ourWKRP surfaces carrying the identical
+`color:#000` bug, so fixing `--on-accent` once fixes both sides of the hybrid.

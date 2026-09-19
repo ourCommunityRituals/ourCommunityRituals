@@ -66,7 +66,7 @@
   --focus-ring: var(--ocr-blue-300);
   --ocr-red-400: #e87272;
   --ocr-red-600: #c03838;
-  --uec-enter: #2d6a4f;
+  --uec-enter: #006b6b;
   --uec-live: #e07a5f;
   --uec-sponsor: #1d3557;
   --uec-archive: #6c3483;
@@ -75,9 +75,8 @@
   --uec-utility: #4a4a4a;
   --uec-alert: #b8960a;
   --uec-staff: #a00020;
-  --uec-checkin: #006b6b;
   --uec-shop: #1a4a48;
-  --uec-enter-scan: #1a6b2f;
+  --uec-enter-scan: #006b6b;
   --uec-live-scan: #c04048;
   --uec-sponsor-scan: #1a3a8a;
   --uec-archive-scan: #5e1a9a;
@@ -86,9 +85,8 @@
   --uec-utility-scan: #2a2a3a;
   --uec-alert-scan: #b8960a;
   --uec-staff-scan: #a00020;
-  --uec-checkin-scan: #006b6b;
   --uec-shop-scan: #1a4a48;
-  --uec-enter-ui: #439e75;
+  --uec-enter-ui: #009e9e;
   --uec-live-ui: #e07a5f;
   --uec-sponsor-ui: #658fcc;
   --uec-archive-ui: #b177c9;
@@ -97,7 +95,6 @@
   --uec-utility-ui: #8e8e8e;
   --uec-alert-ui: #b8960a;
   --uec-staff-ui: #ff466b;
-  --uec-checkin-ui: #009e9e;
   --uec-shop-ui: #379c97;
   --map-ground: var(--ocr-navy-950);
   --map-cell-line: var(--ocr-slate-450);
@@ -131,7 +128,7 @@
     --info: var(--ocr-blue-800);
     --card: var(--ocr-light-100);
     --focus-ring: var(--ocr-blue-800);
-    --uec-enter-ui: #2d6a4f;
+    --uec-enter-ui: #006b6b;
     --uec-live-ui: #c54726;
     --uec-sponsor-ui: #1d3557;
     --uec-archive-ui: #6c3483;
@@ -140,7 +137,6 @@
     --uec-utility-ui: #4a4a4a;
     --uec-alert-ui: #896f07;
     --uec-staff-ui: #a00020;
-    --uec-checkin-ui: #006b6b;
     --uec-shop-ui: #1a4a48;
     --map-ground: var(--ocr-light-050);
     --map-cell-line: var(--ocr-slate-550);
@@ -172,7 +168,7 @@
   --info: var(--ocr-blue-800);
   --card: var(--ocr-light-100);
   --focus-ring: var(--ocr-blue-800);
-  --uec-enter-ui: #2d6a4f;
+  --uec-enter-ui: #006b6b;
   --uec-live-ui: #c54726;
   --uec-sponsor-ui: #1d3557;
   --uec-archive-ui: #6c3483;
@@ -181,7 +177,6 @@
   --uec-utility-ui: #4a4a4a;
   --uec-alert-ui: #896f07;
   --uec-staff-ui: #a00020;
-  --uec-checkin-ui: #006b6b;
   --uec-shop-ui: #1a4a48;
   --map-ground: var(--ocr-light-050);
   --map-cell-line: var(--ocr-slate-550);

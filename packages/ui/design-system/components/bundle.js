@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"OurSharedEvents","components":[{"name":"Button","sourcePath":"components/actions/Button.jsx"},{"name":"AccessDenied","sourcePath":"components/feedback/AccessDenied.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Loading","sourcePath":"components/feedback/Loading.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"FormGroup","sourcePath":"components/forms/FormGroup.jsx"},{"name":"FormInput","sourcePath":"components/forms/FormInput.jsx"},{"name":"FormSelect","sourcePath":"components/forms/FormSelect.jsx"},{"name":"RadioGroup","sourcePath":"components/forms/RadioGroup.jsx"},{"name":"Textarea","sourcePath":"components/forms/Textarea.jsx"},{"name":"BottomNav","sourcePath":"components/navigation/BottomNav.jsx"},{"name":"Header","sourcePath":"components/navigation/Header.jsx"},{"name":"Card","sourcePath":"components/surfaces/Card.jsx"},{"name":"MapDetail","sourcePath":"components/map/MapDetail.jsx"}],"sourceHashes":{"components/actions/Button.jsx":"98ec5d54ec4b","components/feedback/AccessDenied.jsx":"3e0e75b8a4f2","components/feedback/EmptyState.jsx":"64ec714cb973","components/feedback/Loading.jsx":"7939943f183d","components/forms/Checkbox.jsx":"a519ce7b9e2b","components/forms/FormGroup.jsx":"da7c4d4f3b4a","components/forms/FormInput.jsx":"a9903cafe712","components/forms/FormSelect.jsx":"bb6a78191a74","components/forms/RadioGroup.jsx":"4b57d9dc7075","components/forms/Textarea.jsx":"8e63a37796bf","components/navigation/BottomNav.jsx":"7d1204cef1c5","components/navigation/Header.jsx":"6eef30f1ec3d","components/surfaces/Card.jsx":"e2b546b63a8c","ui_kits/admin/AdminScreens.jsx":"93544d0934d6","ui_kits/display/DisplayScreens.jsx":"7d4a6271ef54","ui_kits/public/PublicScreens.jsx":"6c682b5f059b","ui_kits/reports/ReportScreens.jsx":"6354404a07b0","ui_kits/shared/KitShared.jsx":"bca8da349740","ui_kits/sponsor/SponsorSteps.jsx":"ca72a09603a3"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"OurSharedEvents","components":[{"name":"Button","sourcePath":"components/actions/Button.jsx"},{"name":"AccessDenied","sourcePath":"components/feedback/AccessDenied.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Loading","sourcePath":"components/feedback/Loading.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"FormGroup","sourcePath":"components/forms/FormGroup.jsx"},{"name":"FormInput","sourcePath":"components/forms/FormInput.jsx"},{"name":"FormSelect","sourcePath":"components/forms/FormSelect.jsx"},{"name":"RadioGroup","sourcePath":"components/forms/RadioGroup.jsx"},{"name":"Textarea","sourcePath":"components/forms/Textarea.jsx"},{"name":"BottomNav","sourcePath":"components/navigation/BottomNav.jsx"},{"name":"Header","sourcePath":"components/navigation/Header.jsx"},{"name":"Card","sourcePath":"components/surfaces/Card.jsx"},{"name":"MapDetail","sourcePath":"components/map/MapDetail.jsx"},{"name":"VoteTap","sourcePath":"components/vote/VoteTap.jsx"}],"sourceHashes":{"components/actions/Button.jsx":"98ec5d54ec4b","components/feedback/AccessDenied.jsx":"3e0e75b8a4f2","components/feedback/EmptyState.jsx":"64ec714cb973","components/feedback/Loading.jsx":"7939943f183d","components/forms/Checkbox.jsx":"a519ce7b9e2b","components/forms/FormGroup.jsx":"da7c4d4f3b4a","components/forms/FormInput.jsx":"a9903cafe712","components/forms/FormSelect.jsx":"bb6a78191a74","components/forms/RadioGroup.jsx":"4b57d9dc7075","components/forms/Textarea.jsx":"8e63a37796bf","components/navigation/BottomNav.jsx":"7d1204cef1c5","components/navigation/Header.jsx":"6eef30f1ec3d","components/surfaces/Card.jsx":"e2b546b63a8c","ui_kits/admin/AdminScreens.jsx":"93544d0934d6","ui_kits/display/DisplayScreens.jsx":"7d4a6271ef54","ui_kits/public/PublicScreens.jsx":"6c682b5f059b","ui_kits/reports/ReportScreens.jsx":"6354404a07b0","ui_kits/shared/KitShared.jsx":"bca8da349740","ui_kits/sponsor/SponsorSteps.jsx":"ca72a09603a3"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -848,9 +848,9 @@ function DisplayActive() {
   }, "Scan to check in \u2014 it takes one tap"), /*#__PURE__*/React.createElement("div", {
     className: "qr-frame"
   }, /*#__PURE__*/React.createElement(QRBlock, {
-    seed: "checkin-maple",
+    seed: "enter-maple",
     size: 200,
-    color: "var(--uec-checkin-scan)"
+    color: "var(--uec-enter-scan)"
   })), /*#__PURE__*/React.createElement("div", {
     className: "now-playing",
     style: {
@@ -1412,7 +1412,7 @@ const CATEGORIES = [{
 }, {
   id: 'active',
   label: 'Runs & sports',
-  uec: 'checkin',
+  uec: 'enter',
   types: ['Fun run', 'Bike ride', 'Pickup league']
 }, {
   id: 'civic',
@@ -1958,7 +1958,7 @@ __ds_ns.Card = __ds_scope.Card;
 (() => {
 const ns = (window.OurSharedEvents = window.OurSharedEvents || {});
 const h = React.createElement;
-const GLYPH = { enter: '\u{1F6AA}', checkin: '✅', live: '\u{1F534}', alert: '⚠️',
+const GLYPH = { enter: '\u{1F6AA}', live: '\u{1F534}', alert: '⚠️',
   staff: '\u{1F3BD}', help: '\u{1F198}', feedback: '\u{1F4AC}', sponsor: '\u{1F91D}',
   archive: '\u{1F4E6}', shop: '\u{1F6CD}️', utility: '\u{1F527}' };
 
@@ -1999,4 +1999,44 @@ function MapDetail({ name, when, where, routes = [], armed, onArm, onClose, spon
       'Same size, same spots for every sponsor.') : null);
 }
 ns.MapDetail = MapDetail;
+})();
+
+/* VoteTap — INTENTIONAL ADDITION. The Fist of Five hybrid vote.
+   One tap, +1 for the now-playing song, anonymous, attributed to a named team.
+   The component renders the team, the song, the tally and the belt. It has NO prop for a
+   voter and cannot render one — the named roster and the anonymous aggregate must be a
+   structurally impossible join (OCR_VISION.md, the choice-token model).
+   A tally below the count floor renders HELD with its reason in words, never as a small
+   number: a small number is a re-identification surface. */
+(() => {
+const ns = (window.OurSharedEvents = window.OurSharedEvents || {});
+const h = React.createElement;
+const PROMISE = 'We count the room, never the person.';
+
+function VoteTap({ nowPlaying, team, tally, floor = 0, held, voted, onVote, belt, disabled }) {
+  const under = held || (typeof tally === 'number' && tally < floor);
+  return h('div', { className: 'card' + (under ? ' is-held' : ' is-counted') },
+    h('p', { className: 'now-playing-label' }, 'Now playing'),
+    h('p', { className: 'now-playing-track' }, nowPlaying),
+    team ? h('p', { className: 'item-sub' }, 'for ', team) : null,
+    belt ? h('p', { style: { marginTop: 8 } }, h('span', { className: 'belt' }, '🏆 ', belt)) : null,
+    h('div', { style: { marginTop: 16 } },
+      h('button', {
+        type: 'button',
+        className: 'vote-tap',
+        'aria-pressed': !!voted,
+        disabled: disabled || voted,
+        onClick: onVote,
+      }, voted ? '✓ Counted' : '+1 for this')),
+    h('p', { className: 'vote-promise' }, 'No account · nothing stored. ' + PROMISE),
+    h('div', { className: 'tally', style: { marginTop: 16 } },
+      under
+        ? h('span', { className: 'tally-label' }, 'Held')
+        : h(React.Fragment, null,
+            h('span', { className: 'tally-value' }, String(tally ?? 0)),
+            h('span', { className: 'tally-label' }, 'votes in the room'))),
+    under ? h('p', { className: 'held-reason' },
+      'Below the count floor, so the number is held. It appears once enough of the room has voted that no single person can be picked out of it.') : null);
+}
+ns.VoteTap = VoteTap;
 })();

@@ -57,4 +57,22 @@ Every image in this group carries its rights. Add a row here when you add a file
 |---|---|---|---|---|
 | _(none yet)_ | | | | |
 
+### Ingest requirements — before any image is published
+
+A licence is not the only gate. These are orthogonal to copyright and matter more here,
+because this platform's whole position is that it underclaims and does not track people.
+
+- **Strip EXIF and GPS on ingest.** A poster photograph carrying location metadata leaks a
+  real place, which sits directly against the anonymity doctrine the platform is built on.
+  Strip unconditionally; never rely on the uploader having done it.
+- **Raster formats only, re-encoded server-side.** Accept PNG/JPEG/WebP and re-encode rather
+  than passing bytes through. Re-encoding is also what removes anything hiding in the
+  container.
+- **Never accept SVG for poster art.** An SVG rendered as markup rather than through `<img>`
+  is a stored-XSS path, and it bypasses the escaping discipline that protects every text
+  field in `partials.ts`.
+- **Faces and bystanders.** A community photograph taken in public may still show identifiable
+  people who did not choose to be on a poster. Get the organizer's confirmation, not just the
+  photographer's licence.
+
 Photography supplied by the project owner is recorded as such. **Nothing goes in this group without a licence line** — a community platform cannot ship art it cannot account for, and a showcase poster is the most likely thing to be screenshotted and reshared.

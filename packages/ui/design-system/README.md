@@ -92,9 +92,17 @@ brought to you by OurCommunityRituals
 
 Casing is literal — lowercase leading "o" on `ourSharedEvents`, capital O on `OurCommunityRituals`. They are cased differently on purpose. The JavaScript global `window.OurSharedEvents` is an identifier, not the wordmark, and keeps its capital O. Full rules in `assets/Brand/README.md`.
 
+## Built against brain canon
+
+This system is checked against `OCR-docs/ocr-docs-brain/architectural-invariants.yaml` and the
+hybrid design brief's §11 Design language. See `guidelines/05-brain-canon.md` for the full
+conformance table, including which floors this system exceeds and where it still falls short.
+
 ## Components
 
-Exactly `@ocr/ui`'s React layer — nothing invented:
+Named from `@ocr/ui`'s React layer. **The shipped bundle is a fork, not a build of it** —
+see the warning in `CONSUMING.md`. These are the component *contracts* this system
+specifies; `packages/ui/src/react/*` is the implementation of record.
 
 - **Actions** — `Button`
 - **Surfaces** — `Card`
@@ -109,10 +117,18 @@ Exactly `@ocr/ui`'s React layer — nothing invented:
 Everything here is either `@ocr/ui` verbatim or a change listed below. The grounds — `--bg`, `--surface`, `--surface-hover` — are untouched, so the product still looks like itself.
 
 1. **Fill and ink roles split.** New: `--accent-text`, `--live-text`, `--warn-text`, `--focus-ring`. `--error` and `--info` now point at ink primitives rather than fills.
-2. **Text raised from AA to AAA.** `--text-muted` was 4.75:1 on `--surface` and 4.04:1 once hovered — under AA. Measured against `--surface`, `--accent` read 4.11:1 and `--danger` 3.90:1; the existing test suite only checked against `--bg`, so none of this was caught.
+2. **Text raised from AA to AAA.** `--text-muted` was 4.75:1 on `--surface` and 4.04:1 once
+   hovered — under AA. Measured against `--surface`, `--accent` read 4.11:1 and `--danger`
+   3.90:1. Precisely: `tests/tokens.test.ts:69-70` *does* assert body text on `--surface`;
+   every **other** foreground is checked only against `--bg`, and `--surface-hover` is never
+   a ground in any assertion. The three roles that actually fail are the untested ones.
 3. **`--border-strong` added.** Every neutral step in the dark theme was between 1.15:1 and 1.63:1, so nothing reached the 3:1 WCAG 1.4.11 needs to identify a control.
-4. **`--on-accent` is per-theme, and `.btn-primary` reads it.** `@ocr/ui` hardcodes `color:#000`, which is 3.33:1 on the light theme's accent — a live failure.
-5. **UEC gained a third variant.** `display` (poster and print) · `scan` (QR modules on white) · **`ui`** (chips and map cells). Seven of the eleven display hues fell under 3:1 on the dark ground; `--uec-sponsor` read 1.44:1. See `guidelines/30-uec-and-maps.md`.
+4. **`--on-accent` is per-theme, and `.btn-primary` must read it.** `@ocr/ui` hardcodes
+   `color:#000`, which is 3.33:1 on the light theme's accent — a live failure. Note this is a
+   **value change, not just a wiring change**: `src/tokens.ts:92` and `:118` set `--on-accent`
+   to white in *both* themes; this system sets dark to black (5.78:1 against the CARTO fill,
+   versus 3.63:1 for white) and keeps light white (6.30:1).
+5. **UEC gained a third variant.** `display` (poster and print) · `scan` (QR modules on white) · **`ui`** (chips and map cells). Seven of the ten display hues fell under 3:1 on the dark ground; `--uec-sponsor` read 1.44:1. See `guidelines/30-uec-and-maps.md`.
 6. **Map tokens added** — `--map-ground`, `--map-cell-line`, `--map-halo`. The corridor map filled cells at 1.20:1 and stroked them at 1.36:1: functionally invisible, on the product's signature surface.
 7. **Type rebased** for the 50–75 bracket, as above.
 8. **`--tap-min-primary` and `--tap-gap` added.**

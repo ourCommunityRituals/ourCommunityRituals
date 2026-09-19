@@ -8,8 +8,10 @@ import type { ReactNode, ChangeEvent, MouseEvent } from 'react';
 
 /** A UEC v1.1 category. Hue and glyph together carry the meaning — never hue alone. */
 export type UecCategory =
-  | 'enter' | 'checkin' | 'live' | 'alert' | 'staff' | 'help'
+  | 'enter' | 'live' | 'alert' | 'staff' | 'help'
   | 'feedback' | 'sponsor' | 'archive' | 'shop' | 'utility';
+// 'enter' absorbed the former 'checkin': arriving and being counted are one event.
+// It keeps the name Enter and takes Check-in's teal. Its copy states the anonymity.
 
 export interface ButtonProps {
   children?: ReactNode;
@@ -141,7 +143,7 @@ export declare function AccessDenied(props: AccessDeniedProps): JSX.Element;
 
 /** One thing you can do at an event. Each is a UEC category, so it arrives with a hue and a glyph. */
 export interface EventRoute {
-  /** The short path the QR encodes: '/public', '/donate', '/checkin'. */
+  /** The short link the QR encodes, `/s/<CODE><SUFFIX>`: '/s/TRV24', '/s/TRV24D'. */
   path: string;
   label: string;
   sub?: string;
@@ -160,3 +162,23 @@ export interface MapDetailProps {
   sponsor?: string;
 }
 export declare function MapDetail(props: MapDetailProps): JSX.Element;
+
+/**
+ * The Fist of Five hybrid vote. One tap, anonymous, attributed to a named team.
+ * There is deliberately NO voter prop: the named roster and the anonymous aggregate
+ * must be a structurally impossible join. A tally below `floor` renders held.
+ */
+export interface VoteTapProps {
+  nowPlaying: string;
+  /** The named team the vote rolls up to. Never a person. */
+  team?: string;
+  tally?: number;
+  /** Below this, the tally is held with a stated reason rather than shown. */
+  floor?: number;
+  held?: boolean;
+  voted?: boolean;
+  onVote?: () => void;
+  belt?: string;
+  disabled?: boolean;
+}
+export declare function VoteTap(props: VoteTapProps): JSX.Element;
