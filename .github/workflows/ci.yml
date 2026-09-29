@@ -201,6 +201,12 @@ jobs:
       - name: 'Quality — vitest (@ocr/ui)'
         run: pnpm ui:test
 
+      # The token contrast pairs (text, on-accent fills, hover grounds, control
+      # edges) — carried over from ourSharedEvents' CI when that repo's copy of
+      # @ocr/ui was retired (ADR-008 Phase 0). Exits non-zero on any sub-AA pair.
+      - name: 'Quality — token contrast (@ocr/ui verify-contrast)'
+        run: pnpm ui:contrast
+
       # ── Quality: @ocr/tokens and @ocr/runner-fleet ────────────────────────
       # Both declared full script sets and neither was called by any workflow —
       # found by the absent-tier antibody in ci-workflow.test.ts, not by hand.

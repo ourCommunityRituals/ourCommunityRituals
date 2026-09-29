@@ -1,32 +1,54 @@
 import { contrastRatio } from '../src/contrast.ts';
+import { brandThemes } from '../src/tokens.ts';
+import { checkBrandContrast, resolveBrandPalette, brandContrastPairs } from '../src/brand.ts';
 
-const darkBg  = '#0F1824';
-const darkSurf = '#1A2740';
-const lightBg  = '#F4F7FC';
-
-const pairs = [
-  // Dark mode
-  ['text on bg (dark)',        '#F0F4F8', darkBg],
-  ['text on surface (dark)',   '#F0F4F8', darkSurf],
-  ['muted on bg (dark)',       '#7A94B0', darkBg],
-  ['accent on bg (dark)',      '#1785FB', darkBg],
-  ['live/teal on bg (dark)',   '#00C4B4', darkBg],
-  ['danger on bg (dark)',      '#E05252', darkBg],
-  // Light mode — darker variants
-  ['text on bg (light)',       '#162945', lightBg],
-  ['muted on bg (light)',      '#4A6882', lightBg],
-  ['accent on bg (light)',     '#0057D6', lightBg],
-  ['live/teal on bg (light)',  '#00796B', lightBg],
-  ['danger on bg (light)',     '#B03030', lightBg],
+// Every pair is DERIVED from tokens.ts: the base palette is resolved the same
+// way registered brands are, and held to the same matrix (brandContrastPairs):
+// each text role on every ground at 4.5:1, control edges at 3:1, ink on every
+// accent/danger fill at 4.5:1. The hand-synced hex list this replaced is how a
+// stale --bg let the OSE-1325 danger regression through, and how the dark
+// accent-as-text (4.11:1) and muted-on-hover (4.04:1) gaps went unseen.
+const extraPairs = [
+  // Status-pill text on the neutral --border fill (sponsor-home .done/.declined).
+  { fg: '--text', bg: '--border', min: 4.5, kind: 'text' },
 ];
 
 let allPass = true;
-for (const [label, fg, bg] of pairs) {
-  const ratio = contrastRatio(fg, bg);
-  const pass  = ratio >= 4.5;
-  const tag   = pass ? 'AA ✓     ' : ratio >= 3.0 ? 'AA large ' : 'FAIL ✗   ';
-  if (!pass) allPass = false;
-  console.log(`${String(ratio.toFixed(2)).padStart(5)}:1  ${tag}  ${label}`);
+for (const mode of ['dark', 'light']) {
+  const pal = resolveBrandPalette('', mode);
+  let checked = 0;
+  for (const p of [...brandContrastPairs(), ...extraPairs]) {
+    const ratio = contrastRatio(pal[p.fg], pal[p.bg]);
+    checked++;
+    if (ratio < p.min) {
+      allPass = false;
+      console.log(`FAIL ✗     base ${mode}: ${p.fg} on ${p.bg} = ${ratio.toFixed(2)}:1 (min ${p.min})`);
+    }
+  }
+  console.log(`base ✓?    base palette ${mode}: ${checked} pairs checked`.replace('✓?', allPass ? '✓ ' : '✗ '));
+}
+// Registered brand themes ([data-brand]) — each on its OWN grounds, both modes.
+// The pairs are derived from tokens.ts (not hand-synced), see src/brand.ts.
+for (const name of Object.keys(brandThemes)) {
+  const failures = checkBrandContrast(name);
+  if (failures.length) allPass = false;
+  for (const mode of ['dark', 'light']) {
+    const pal = resolveBrandPalette(name, mode);
+    const owned = brandThemes[name][mode];
+    const rows = brandContrastPairs().filter((p) => p.fg in owned || p.bg in owned);
+    const worst = rows
+      .map((p) => ({ ...p, ratio: contrastRatio(pal[p.fg], pal[p.bg]) }))
+      .sort((a, b) => a.ratio / a.min - b.ratio / b.min)[0];
+    const bad = failures.filter((f) => f.mode === mode);
+    console.log(
+      `${bad.length ? 'FAIL ✗   ' : 'brand ✓  '}  [data-brand="${name}"] ${mode}: ${rows.length} pairs` +
+        (worst ? `, tightest ${worst.fg} on ${worst.bg} ${worst.ratio.toFixed(2)}:1 (min ${worst.min})` : '')
+    );
+    for (const f of bad) console.log(`           ${f.fg} on ${f.bg} = ${f.ratio.toFixed(2)}:1 (min ${f.min})`);
+  }
 }
 console.log('');
-console.log(allPass ? '✓ All pairs meet WCAG AA (4.5:1)' : '✗ Some pairs below AA — fix before shipping');
+console.log(allPass ? '✓ All pairs meet WCAG AA (4.5:1 text, 3:1 control edges)' : '✗ Some pairs below AA — fix before shipping');
+// A gate that can't fail is not a gate — exit non-zero so CI actually blocks
+// on a sub-AA pair (OSE-1328).
+process.exit(allPass ? 0 : 1);

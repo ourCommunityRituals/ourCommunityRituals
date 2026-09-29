@@ -1,5 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { tokens, primitives, semanticDark, semanticLight, structural, rootBlock, lightModeBlock, uecDisplay, uecScan, uecBlock } from '../src/tokens';
+import {
+  tokens,
+  primitives,
+  semanticDark,
+  semanticLight,
+  structural,
+  rootBlock,
+  lightModeBlock,
+  uecDisplay,
+  uecScan,
+  uecBlock,
+} from '../src/tokens';
 import { contrastRatio } from '../src/contrast';
 
 // Resolved hex values for contrast checks — primitives are the source of truth
@@ -8,8 +19,17 @@ const P = primitives;
 describe('token structure', () => {
   it('all required semantic names are present in the dark map', () => {
     const required = [
-      '--bg', '--surface', '--surface-hover', '--border', '--text', '--text-muted',
-      '--accent', '--accent-hover', '--live', '--danger', '--error',
+      '--bg',
+      '--surface',
+      '--surface-hover',
+      '--border',
+      '--text',
+      '--text-muted',
+      '--accent',
+      '--accent-hover',
+      '--live',
+      '--danger',
+      '--error',
     ];
     for (const t of required) expect(t in semanticDark, `missing ${t}`).toBe(true);
   });
@@ -50,18 +70,28 @@ describe('palette identity (CARTO, Ember-free)', () => {
   });
 
   it('danger is red and distinct from live (no red+green semantic pair)', () => {
-    const liveDark   = P['--ocr-teal-400'];
+    const liveDark = P['--ocr-teal-400'];
     const dangerDark = P['--ocr-red-500'];
     expect(liveDark).not.toBe(dangerDark);
-    // Teal and red are not the same hue family
-    expect(liveDark.startsWith('#00')).toBe(true);   // teal
-    expect(dangerDark.startsWith('#E0')).toBe(true);  // red
+    // Red vs teal are different hue families (colorblind-safe: no red+green pair).
+    // Checked by channel dominance, NOT an exact hex — so an in-family tweak
+    // (e.g. brightening danger for AA contrast, OSE-1328) doesn't falsely fail.
+    const rgb = (h: string): [number, number, number] => {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+      return [r ?? 0, g ?? 0, b ?? 0];
+    };
+    const [lr, lg, lb] = rgb(liveDark);
+    const [dr, dg, db] = rgb(dangerDark);
+    expect(dr).toBeGreaterThan(dg); // danger: red channel dominant
+    expect(dr).toBeGreaterThan(db);
+    expect(lr).toBeLessThan(lg); // live: teal — low red, high green/blue
+    expect(lr).toBeLessThan(lb);
   });
 });
 
 describe('WCAG AA contrast (4.5:1 minimum, dark mode)', () => {
-  const bg   = P['--ocr-navy-950'];   // #0F1824
-  const surf = P['--ocr-navy-900'];   // #1A2740
+  const bg = P['--ocr-navy-950']; // #0F1824
+  const surf = P['--ocr-navy-900']; // #1A2740
 
   it('body text on bg >= 4.5:1', () => {
     expect(contrastRatio(P['--ocr-navy-100'], bg)).toBeGreaterThanOrEqual(4.5);
@@ -84,7 +114,7 @@ describe('WCAG AA contrast (4.5:1 minimum, dark mode)', () => {
 });
 
 describe('WCAG AA contrast (4.5:1 minimum, light mode)', () => {
-  const bg = P['--ocr-light-050'];  // #F4F7FC
+  const bg = P['--ocr-light-050']; // #F4F7FC
 
   it('body text on bg >= 4.5:1', () => {
     expect(contrastRatio(P['--ocr-dark-900'], bg)).toBeGreaterThanOrEqual(4.5);
@@ -158,13 +188,13 @@ describe('UEC scan palette — WCAG AA on white (4.5:1 minimum)', () => {
   // WCAG AA for normal text: 4.5:1. For large text / graphical objects: 3:1.
   // QR modules are graphical — targeting 3:1 minimum, documenting 4.5:1 where achieved.
   const scanColors: Array<[string, string]> = [
-    ['enter-scan',    uecScan['--uec-enter-scan']],
-    ['live-scan',     uecScan['--uec-live-scan']],
-    ['sponsor-scan',  uecScan['--uec-sponsor-scan']],
-    ['archive-scan',  uecScan['--uec-archive-scan']],
-    ['help-scan',     uecScan['--uec-help-scan']],
+    ['enter-scan', uecScan['--uec-enter-scan']],
+    ['live-scan', uecScan['--uec-live-scan']],
+    ['sponsor-scan', uecScan['--uec-sponsor-scan']],
+    ['archive-scan', uecScan['--uec-archive-scan']],
+    ['help-scan', uecScan['--uec-help-scan']],
     ['feedback-scan', uecScan['--uec-feedback-scan']],
-    ['utility-scan',  uecScan['--uec-utility-scan']],
+    ['utility-scan', uecScan['--uec-utility-scan']],
   ];
 
   for (const [name, hex] of scanColors) {
@@ -183,15 +213,15 @@ describe('UEC display palette — badge text contrast >= 3:1', () => {
   const black = '#000000';
 
   const darkBackground: Array<[string, string]> = [
-    ['enter (green)',   uecDisplay['--uec-enter']],     // white text >= 4.5:1
-    ['sponsor (navy)',  uecDisplay['--uec-sponsor']],   // white text >= 10:1
-    ['archive (purple)',uecDisplay['--uec-archive']],   // white text >= 6:1
-    ['help (pink)',     uecDisplay['--uec-help']],      // white text ~3.5:1
+    ['enter (green)', uecDisplay['--uec-enter']], // white text >= 4.5:1
+    ['sponsor (navy)', uecDisplay['--uec-sponsor']], // white text >= 10:1
+    ['archive (purple)', uecDisplay['--uec-archive']], // white text >= 6:1
+    ['help (pink)', uecDisplay['--uec-help']], // white text ~3.5:1
     ['utility (charcoal)', uecDisplay['--uec-utility']], // white text >= 7:1
   ];
 
   const lightBackground: Array<[string, string]> = [
-    ['live (coral)',     uecDisplay['--uec-live']],     // dark text ~7:1 — NOT white
+    ['live (coral)', uecDisplay['--uec-live']], // dark text ~7:1 — NOT white
     ['feedback (amber)', uecDisplay['--uec-feedback']], // dark text ~7.5:1 — NOT white
   ];
 
