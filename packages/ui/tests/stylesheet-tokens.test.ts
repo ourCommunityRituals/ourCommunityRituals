@@ -34,12 +34,34 @@ function rules(css: string): { selector: string; body: string }[] {
   return out;
 }
 
+/**
+ * Drop `@media print { … }` blocks. Print is ink on paper: theme tokens do not
+ * apply there, and a dark theme's light text would print invisible, so print
+ * rules legitimately name black. Everything on screen is still checked.
+ */
+function withoutPrintBlocks(css: string): string {
+  let out = '';
+  let i = 0;
+  for (;;) {
+    const start = css.indexOf('@media print', i);
+    if (start === -1) return out + css.slice(i);
+    out += css.slice(i, start);
+    let depth = 0;
+    let j = css.indexOf('{', start);
+    for (; j < css.length; j++) {
+      if (css[j] === '{') depth++;
+      else if (css[j] === '}' && --depth === 0) break;
+    }
+    i = j + 1;
+  }
+}
+
 const HEX = /(?:color|background|background-color|border-color|fill|stroke)\s*:\s*(#[0-9a-fA-F]{3,8})/g;
 
 describe('stylesheet uses tokens, not literal colours', () => {
   it('no rule hardcodes a colour except the documented allowlist', () => {
     const offenders: string[] = [];
-    for (const { selector, body } of rules(componentStyles)) {
+    for (const { selector, body } of rules(withoutPrintBlocks(componentStyles))) {
       if (Object.keys(LITERAL_ALLOWLIST).some((a) => selector.includes(a))) continue;
       for (const hit of body.matchAll(HEX)) {
         offenders.push(`${selector} -> ${hit[0]}`);
