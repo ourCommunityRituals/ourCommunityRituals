@@ -65,6 +65,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .input{width:100%;min-height:44px;padding:12px 14px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text);font-size:16px;font-family:var(--font);outline:none}
 .input:focus{border-color:var(--accent)}
 .input::placeholder{color:var(--text-muted)}
+textarea.input{resize:vertical;min-height:80px}
 
 /* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:color-mix(in srgb, var(--bg) 95%, transparent);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 env(safe-area-inset-bottom,10px)}
@@ -74,7 +75,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* Live indicator */
 .live-indicator{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:var(--radius-pill)}
-.live-indicator.on{color:var(--live);background:color-mix(in srgb, var(--live) 15%, transparent);animation:pulse 2s ease-in-out infinite}
+/* Pill text is --live pulled 20% toward --text: bare --live on its own 15% tint
+   is only 4.0:1 in the light theme (small uppercase text needs 4.5). The mix
+   keeps the teal hue and clears 5.0:1 light / 6.4:1 dark (base and ow). */
+.live-indicator.on{color:color-mix(in srgb, var(--live) 80%, var(--text));background:color-mix(in srgb, var(--live) 15%, transparent);animation:pulse 2s ease-in-out infinite}
 .live-indicator.off{color:var(--text-muted);background:var(--surface)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
@@ -91,13 +95,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .empty-state p{color:var(--text-muted);font-size:.9rem;max-width:34ch}
 .empty-state .btn{margin-top:12px}
 
-.hidden{display:none}
-
 /* Form helpers */
 label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .loading-text{font-size:1rem;color:var(--text-muted)}
 .body-centered{display:flex;flex-direction:column;align-items:center;justify-content:center}
-.btn-link{background:none;border:none;color:var(--text-muted);cursor:pointer;text-decoration:underline;font-family:var(--font);min-height:44px;padding:8px;font-size:.875rem}
+.btn-link{background:none;border:none;color:var(--text-muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--font);min-height:44px;padding:8px;font-size:.875rem}
+.btn-link:hover{color:var(--text)}
+.btn-link:disabled{opacity:.5;cursor:not-allowed}
 
 /* Error banner */
 .error-banner{background:color-mix(in srgb, var(--error) 10%, transparent);border:1px solid var(--error);color:var(--error);padding:12px 16px;border-radius:var(--radius-sm);font-size:.875rem;margin-bottom:20px;display:none}
@@ -125,7 +129,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .live-view-header{text-align:center;padding:32px 20px 20px;border-bottom:1px solid var(--border)}
 
 /* Live badge */
-.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--live);background:color-mix(in srgb, var(--live) 15%, transparent);padding:4px 10px;border-radius:999px;margin-top:8px;animation:pulse 2s ease-in-out infinite}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:color-mix(in srgb, var(--live) 80%, var(--text));background:color-mix(in srgb, var(--live) 15%, transparent);padding:4px 10px;border-radius:999px;margin-top:8px;animation:pulse 2s ease-in-out infinite}
 
 /* Offline / footer CTA */
 .offline-msg{text-align:center;padding:60px 20px}
@@ -178,7 +182,9 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 /* Range sliders */
 .range-group{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .range-group label{font-size:.875rem;color:var(--text-muted);min-width:100px;margin-bottom:0}
-.range-group input[type=range]{flex:1;accent-color:var(--accent);height:44px}
+/* font-size 16px on range/checkbox too: the mobile-workability audit measures every
+   input, and iOS zooms on focus of any control under 16px. */
+.range-group input[type=range]{flex:1;accent-color:var(--accent);height:44px;font-size:16px}
 .range-value{font-size:.875rem;color:var(--text);min-width:40px;text-align:right}
 
 /* Stats blocks */
@@ -257,8 +263,8 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 /* Toggle switch (create) */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
 .toggle-label{font-size:.9rem}
-.toggle{position:relative;width:44px;height:24px}
-.toggle input{opacity:0;width:0;height:0}
+.toggle{position:relative;display:inline-block;width:44px;height:24px;margin:0}
+.toggle input{opacity:0;width:0;height:0;font-size:16px}
 .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:12px;cursor:pointer;transition:background .2s}
 .toggle-track::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:var(--text);top:3px;left:3px;transition:transform .2s}
 .toggle input:checked+.toggle-track{background:var(--accent)}
@@ -298,7 +304,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 /* Profile components */
 .profile-header{padding:32px 20px 20px;text-align:center;border-bottom:1px solid var(--border)}
 .profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;color:var(--on-accent);margin:0 auto 12px}
-.source-list{display:flex;flex-wrap:wrap;gap:8px}
+.source-list,.genre-list{display:flex;flex-wrap:wrap;gap:8px}
 .source-badge{font-size:.75rem;padding:6px 14px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text);min-height:44px;line-height:30px}
 
 /* Contributor leaderboard (stats) */
@@ -314,6 +320,9 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .qr-frame{background:#fff;border-radius:16px;padding:24px;margin:0 auto 32px;display:inline-block}
 .qr-frame canvas,.qr-frame img{display:block;width:200px;height:200px}
 .qr-placeholder{width:200px;height:200px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--text-muted)}
+/* The frame is literal white in both themes, so its placeholder ink is literal too:
+   a themed muted grey is only 3.5:1 on white in the dark theme. 7.5:1 here. */
+.qr-frame .qr-placeholder{color:#555}
 .cta{font-size:1.1rem;font-weight:600;margin-bottom:8px}
 .cta-sub{font-size:.8rem;color:var(--text-muted);margin-bottom:32px}
 .now-playing{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:8px}
@@ -336,6 +345,98 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .radio-option input[type=radio]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
 .radio-group-error{font-size:.75rem;color:var(--error);margin-top:6px}
 
+/* ── Named surfaces (ourWKRP) ────────────────────────────────────────────────
+   Vocabulary only ourWKRP's pages use today: the named-identity product (DJs,
+   contributor profiles, a community catalog). Lifted from its nine templates
+   when they moved onto this sheet (ADR-008), so they carry no stylesheet of
+   their own. Tokenised like everything above, so [data-brand="ow"] paints it
+   amber on black and any other brand repaints it; nothing here sets a colour.
+   Names that could collide with another spoke's markup carry an ow- prefix.
+   Before adding here, look for a shared class above that already says it —
+   ourWKRP reuses .btn/.input/.list-item/.attr-btn/.stat-card/.page-header
+   rather than keeping its own near-copies. */
+
+/* Sign-in (connect) */
+.ow-signin{width:100%;max-width:400px}
+.ow-logo{text-align:center;margin-bottom:40px}
+.ow-logo h1{font-size:2rem;font-weight:700;letter-spacing:-.02em}
+.ow-logo p{color:var(--text-muted);margin-top:8px;font-size:.875rem}
+.ow-actions{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.ow-alt{text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.ow-alt-note{font-size:.75rem;color:var(--text-muted);margin-top:4px}
+.ow-signoff{text-align:center;margin-top:40px;color:var(--text-muted);font-size:.75rem}
+@media(max-width:390px){.ow-logo{margin-bottom:28px}.ow-logo h1{font-size:1.75rem}}
+
+/* Catalog: stacked header, chip rows, lazily revealed filters, track list */
+.header.header--stacked{display:block}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:12px 20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-row .filter-chip{touch-action:manipulation}
+.feature-gated{display:contents}
+.range-filters{padding:0 20px 12px;display:none}
+.range-filters.visible{display:block}
+.sync-status{font-size:.8rem;color:var(--text-muted)}
+.track-list{padding:0 20px 100px}
+.track-count{font-size:.75rem;color:var(--text-muted);padding:8px 0 12px}
+.track-meta{display:flex;gap:6px;flex-shrink:0}
+.load-more{display:block;margin:16px auto;padding:12px 32px;min-height:48px}
+
+/* DJ identity + live set (live, poster) */
+.dj-name{font-size:1.5rem;font-weight:700}
+.venue-name{font-size:.8rem;color:var(--text-muted);margin-top:6px}
+.set-list .track-card{padding:12px;border:1px solid var(--border);margin-bottom:8px;transition:border-color .2s}
+.set-list .track-card:first-of-type{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 5%, transparent)}
+.offline-msg a{display:inline-block;min-height:44px;line-height:44px}
+.display-card .brand{margin-bottom:24px}
+.display-card .dj-name{font-size:2rem;margin-bottom:4px}
+.display-card .venue-name{font-size:.9rem;margin:0 0 32px}
+/* Poster copy is decorative, not a control — deliberately not .cta so tap-target
+   audits don't read the headline as a button; the poster's action is the scan. */
+.poster-cta{font-size:1.1rem;font-weight:600;margin-bottom:8px}
+.poster-cta-sub{font-size:.8rem;color:var(--text-muted);margin-bottom:32px;line-height:1.4}
+.now-playing .now-playing-label{margin-bottom:8px}
+.now-playing-artist{font-size:.85rem;color:var(--text-muted)}
+@media(min-width:768px){.display-card .dj-name{font-size:2.5rem}}
+
+/* DJ dashboard: set controls + track rows */
+.set-controls{display:flex;gap:10px;margin-bottom:16px}
+.set-controls .btn{flex:1}
+.set-track,.search-result{display:flex;align-items:center;gap:12px;padding:10px;border-radius:var(--radius-sm);min-height:48px}
+.search-result{transition:background .15s}
+.search-result:hover{background:var(--surface-hover)}
+.set-pos{font-size:.7rem;color:var(--text-muted);min-width:24px}
+
+/* Community stats */
+.big-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.stat-card.big-stat{padding:20px;border-radius:var(--radius)}
+.big-stat .stat-value{font-size:2rem}
+.big-stat .stat-label{text-transform:uppercase;letter-spacing:.05em}
+/* Second/third bar series. Both clear 3:1 against the .bar-track fill (non-text,
+   WCAG 1.4.11); every row also carries its text label, so colour is never the
+   only carrier (1.4.1). */
+.bar-fill.series-2{background:var(--text-muted)}
+.bar-fill.series-3{background:var(--border-strong)}
+
+/* Contributor profile (named identity) */
+.profile-name{font-size:1.5rem;font-weight:700;margin-bottom:4px}
+.profile-roles .user-badge{display:inline-block;margin:0 2px 4px}
+.profile-slug{font-size:.75rem;color:var(--text-muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin:6px 0 2px;word-break:break-all}
+.profile-generation{font-size:.75rem;color:var(--text-muted)}
+.profile-joined{font-size:.7rem;color:var(--text-muted);margin-top:8px}
+.genre-tag.genre-tag--lg,.facet-chip{display:inline-block;font-size:.8rem;padding:6px 14px;border-radius:var(--radius-pill);min-height:44px;line-height:30px}
+.facet-chip{background:color-mix(in srgb, var(--accent) 10%, transparent);color:var(--accent)}
+.genre-count,.facet-depth{font-size:.65rem;color:var(--text-muted);margin-left:4px}
+.facet-depth{margin-left:6px;text-transform:capitalize}
+.portfolio-add{display:flex;gap:8px;margin-bottom:12px}
+.portfolio-add .input{flex:1}
+.portfolio-item{margin-bottom:16px}
+.portfolio-item iframe{display:block;border:0;border-radius:var(--radius)}
+
+/* Import: a failed import re-colours the result card with the locked --error */
+.result-success.failed{background:color-mix(in srgb, var(--error) 10%, transparent);border-color:color-mix(in srgb, var(--error) 30%, transparent)}
+.result-success.failed h3{color:var(--error)}
+
 /* Accessibility: keyboard focus rings (WCAG 2.4.11 — Focus Appearance, Level AA in 2.2)
    :focus-visible targets keyboard/programmatic focus only, not mouse clicks.
    Outline colour references --accent which clears 3:1 against all surfaces in both themes. */
@@ -344,6 +445,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .card:focus-visible,.track-card:focus-visible,.genre-link:focus-visible,.list-item:focus-visible,.grid-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .input:focus-visible,.search-bar:focus-visible,.sort-select:focus-visible{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
 .toggle input:focus-visible+.toggle-track{outline:2px solid var(--accent);outline-offset:2px}
+.genre-tag:focus-visible,.contributor-item:focus-visible,.search-result:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* Accessibility: reduced motion (WCAG 2.3.3 — Animation from Interactions, Level AAA)
    Removes infinite animations for users with vestibular or cognitive sensitivities.
@@ -353,5 +455,13 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
   .spinner{animation:none;border-top-color:var(--accent);opacity:.7}
   .search-bar.loading{animation:none;background-image:none}
   .btn,.card,.track-card,.filter-chip,.grid-card,.genre-popup,.genre-link,.list-item,.nav-item,.bar-fill,.progress-bar,.toggle-track,.toggle-track::after{transition:none}
+  .search-result,.set-list .track-card,.genre-tag,.drop-zone,.view-btn,.attr-btn{transition:none}
 }
+
+/* Visibility utilities LAST: at equal specificity the later rule wins, so a
+   .hidden declared mid-sheet lost to any display rule after it (.drop-zone,
+   .btn …) and the element stayed on screen. [hidden] is the UA contract; the
+   !important keeps a component's display from silently overriding it. */
+.hidden{display:none}
+[hidden]{display:none!important}
 `.trim();

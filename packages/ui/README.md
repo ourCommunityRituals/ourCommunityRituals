@@ -58,6 +58,23 @@ emptyState({ icon: '📀', title: 'No sets yet',
 page({ title: 'Dashboard', live: true, body, nav: [...] });
 ```
 
+## Brands on the shared system
+
+A spoke paints itself with a registered Tier-3 brand: `<html data-brand="ow">`.
+`brandThemes` in `src/tokens.ts` holds each brand's dark AND light values, and
+may only set roles in `BRAND_CUSTOMIZABLE` (`src/brand.ts`) — never `--live`,
+`--danger`, `--warn`, `--info`, `--success`, `--error` or a `--uec-*` colour.
+`tests/brand-themes.test.ts` (and `pnpm ui:contrast`) hold every brand to 4.5:1
+text / 3:1 control-edge contrast on its own grounds in both themes.
+
+| Brand | Spoke | Look |
+|-------|-------|------|
+| `acme` | — (example) | violet accent on the OCR base |
+| `ow` | ourWKRP | amber on carbon black; burnt amber on warm paper in light |
+
+Vocabulary only one spoke needs lives in a clearly marked "named surfaces"
+section of `src/styles.ts` (ourWKRP's today), tokenised like the rest.
+
 ## Keep it slim — the contract
 
 `checkTemplate()` (see `src/contract.ts`) is a CI guard in the spirit of the
