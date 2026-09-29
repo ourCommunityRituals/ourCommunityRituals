@@ -26,7 +26,7 @@
  *
  * No dependencies: docs-only spokes run it with plain Node.
  */
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, realpathSync } from 'node:fs';
 import { join, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -173,6 +173,9 @@ function main(argv) {
   return 0;
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+// Run when invoked as a script. Compare real paths: a symlinked checkout (as in
+// local staging) must not make the gate silently skip itself.
+const invoked = process.argv[1] ? realpathSync(process.argv[1]) : '';
+if (invoked === realpathSync(fileURLToPath(import.meta.url))) {
   process.exit(main(process.argv.slice(2)));
 }
