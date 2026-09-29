@@ -93,6 +93,17 @@ export const primitives = {
   // Surface hover steps
   '--ocr-navy-800': '#223350', // surface-hover dark (between navy-900 and navy-700)
 
+  // Dark-theme text and edge steps (rendered audit, 2026-09-29): the base dark
+  // palette put accent-as-text at 4.11:1 on cards, muted text at 4.04:1 on
+  // hovered rows, and control edges at 1.51:1. The CARTO blue stays the brand's
+  // signature primitive; dark UI reads it one step lighter.
+  '--ocr-blue-400': '#52A6FF', // dark --accent: 6.51 / 5.86 / 4.98 on bg / surface / surface-hover
+  '--ocr-blue-300': '#8AC2FF', // dark --accent-hover
+  '--ocr-navy-450': '#8AA1BC', // dark --text-muted: 6.23 / 5.61 / 4.77
+  '--ocr-navy-600': '#6483A3', // dark --border-strong: 4.19 / 3.78 / 3.21 (WCAG 1.4.11)
+  '--ocr-red-350': '#F08585', // dark --danger / --error: 6.62 / 5.96 / 5.07; 7.14 with navy ink as a fill
+  '--ocr-red-300': '#F4A3A3', // dark --danger-hover
+
   // Light-mode foreground variants — darker to clear 4.5:1 on #F4F7FC
   '--ocr-blue-700': '#0057D6', // accent light mode (4.7:1 on light-050)
   '--ocr-blue-600l': '#2E6FDF', // accent hover light
@@ -110,23 +121,23 @@ export const semanticDark = {
   '--border': 'var(--ocr-navy-700)',
   // Edge of a form control (input, search, select). Dark keeps its current look:
   // same colour as --border. Light needs 3:1 for WCAG 1.4.11.
-  '--border-strong': 'var(--ocr-navy-700)',
+  '--border-strong': 'var(--ocr-navy-600)',
   '--text': 'var(--ocr-navy-100)',
-  '--text-muted': 'var(--ocr-navy-500)',
-  '--accent': 'var(--ocr-blue-600)',
-  '--accent-hover': 'var(--ocr-blue-500)',
+  '--text-muted': 'var(--ocr-navy-450)',
+  '--accent': 'var(--ocr-blue-400)',
+  '--accent-hover': 'var(--ocr-blue-300)',
   '--live': 'var(--ocr-teal-400)', // on-air / active — teal, not green
   '--live-hover': 'var(--ocr-teal-300)',
   '--surface-hover': 'var(--ocr-navy-800)',
-  '--danger': 'var(--ocr-red-500)', // destructive actions only
-  '--danger-hover': 'var(--ocr-red-400)',
-  '--error': 'var(--ocr-red-500)', // alias — form validation / error banners
+  '--danger': 'var(--ocr-red-350)', // destructive actions only
+  '--danger-hover': 'var(--ocr-red-300)',
+  '--error': 'var(--ocr-red-350)', // alias — form validation / error banners
   '--warn': 'var(--ocr-amber-400)', // caution / pending — amber (OSE-1328)
-  '--info': 'var(--ocr-blue-500)', // informational — blue, lighter than --accent (OSE-1328)
+  '--info': 'var(--ocr-blue-300)', // informational — blue, lighter than --accent (OSE-1328)
   // OSE-654 role vocabulary — the swap seam brand themes re-map.
   '--card': 'var(--ocr-navy-900)', // card surface (= surface by default; brands may differ)
   '--text-primary': 'var(--ocr-navy-100)', // alias of --text (explicit role name)
-  '--text-secondary': 'var(--ocr-navy-500)', // secondary shares the muted tone
+  '--text-secondary': 'var(--ocr-navy-450)', // secondary shares the muted tone
   '--success': 'var(--ocr-green-400)', // done / accepted / completed — emerald (OSE-1328)
   // Dark --accent (#1785FB) is light-ish, so text on it must be DARK: white was
   // 3.63:1 (sub-AA); navy-950 is 4.92:1 — full AA (CCR-PR567 re-run item 5).

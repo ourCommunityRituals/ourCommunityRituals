@@ -74,10 +74,9 @@ describe('light theme: form-control edges (WCAG 1.4.11, >= 3:1)', () => {
   }
 });
 
-describe('the existing dark site is visually unchanged', () => {
-  it('dark --border-strong is the same colour as dark --border', () => {
-    expect(resolve(semanticDark, '--border-strong')).toBe(resolve(semanticDark, '--border'));
-  });
+describe('dark theme keeps its own values', () => {
+  // The dark palette's contrast is asserted in dark-contrast.test.ts; this only
+  // guards that the light-theme fixes above never leak into dark.
   it('dark --surface-hover is still navy-800', () => {
     expect(semanticDark['--surface-hover']).toBe('var(--ocr-navy-800)');
   });

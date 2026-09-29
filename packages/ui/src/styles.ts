@@ -147,10 +147,10 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
    forcing 44px of dead space on a desktop line. */
 .ocr-footer{text-align:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--border);margin-top:32px;color:var(--text-muted);font-size:.8rem}
 .ocr-footer-legal{margin:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 2px;line-height:1.5}
-.ocr-footer a{color:var(--accent);text-decoration:none;padding:11px 4px;display:inline-block;border-radius:var(--radius-sm)}
+.ocr-footer a{color:var(--accent);text-decoration:none;padding:11px 4px;display:inline-flex;align-items:center;min-height:44px;border-radius:var(--radius-sm)}
 .ocr-footer a:hover,.ocr-footer a:focus-visible{text-decoration:underline}
 .ocr-footer-sep{opacity:.5;padding:0 2px}
-.ocr-footer-sub{margin:4px 0 0;font-size:.75rem;opacity:.75}
+.ocr-footer-sub{margin:4px 0 0;font-size:.75rem;color:var(--text-muted)}
 /* OSE-1327 — combined-footer privacy statement, above the legal line. */
 .ocr-footer-statement{margin:0 auto 12px;max-width:60ch}
 .ocr-footer-flag{margin:0;font-size:1.1rem;font-weight:700;line-height:1.2;color:var(--text)}
@@ -176,7 +176,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .attr-btn.done{background:var(--surface);color:var(--accent);border:1px solid var(--accent)}
 
 /* Filter chips */
-.filter-chip{flex-shrink:0;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:.8rem;cursor:pointer;transition:all .2s;min-height:44px;display:inline-flex;align-items:center}
+.filter-chip{flex-shrink:0;padding:6px 14px;background:var(--surface);border:1px solid var(--border-strong);border-radius:20px;color:var(--text-muted);font-size:.8rem;cursor:pointer;transition:all .2s;min-height:44px;display:inline-flex;align-items:center}
 .filter-chip:hover,.filter-chip.active{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb, var(--accent) 10%, transparent)}
 
 /* Range sliders */
@@ -265,7 +265,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .toggle-label{font-size:.9rem}
 .toggle{position:relative;display:inline-block;width:44px;height:24px;margin:0}
 .toggle input{opacity:0;width:0;height:0;font-size:16px}
-.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:12px;cursor:pointer;transition:background .2s}
+.toggle-track{position:absolute;inset:0;background:var(--border-strong);border-radius:12px;cursor:pointer;transition:background .2s}
 .toggle-track::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:var(--text);top:3px;left:3px;transition:transform .2s}
 .toggle input:checked+.toggle-track{background:var(--accent)}
 .toggle input:checked+.toggle-track::after{transform:translateX(20px);background:var(--on-accent)}
