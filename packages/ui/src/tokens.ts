@@ -180,6 +180,11 @@ export const structural = {
   '--radius-sm': '8px',
   '--radius-pill': '20px',
   '--tap-min': '48px',
+  // The smallest text the fleet renders: 13px at the default 16px root. Decided
+  // 2026-09-29 alongside AA-everywhere. Every sub-13px size in styles.ts points
+  // here instead of carrying its own literal, so the floor is one value to read
+  // and one to change. Gated by tests/text-floor.test.ts.
+  '--text-min': '.8125rem',
   '--font': "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 } as const;
 

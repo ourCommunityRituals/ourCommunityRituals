@@ -10,7 +10,7 @@ The live, browsable version is the Design System artifact it was published from.
 |---|---|---|
 | `README.md` | The brand book. **Start here.** | Yes |
 | `guidelines/*.md` | Eight sections: the 50–75 reader, colour, UEC and maps, displays and QR, the CSS vocabulary, map archetypes, rotating displays, the recursive web | Yes |
-| `tokens.json` | The source of truth for every token | Yes |
+| `tokens.json` | Type, spacing, radius and the bundle-only roles. **Every colour it shares with `src/tokens.ts` mirrors that file** — `src/tokens.ts` is the single source, and `tests/token-parity.test.ts` fails CI on any drift | Yes — colours only via `src/tokens.ts` |
 | `tokens.css` | Compiled custom properties + type-style classes | **No — generated** |
 | `compile-tokens.mjs` | `node compile-tokens.mjs` regenerates `tokens.css` | Yes |
 | `components/bundle.css` | **Preview-only.** A SUBSET of `src/styles.ts` — see the warning below | Yes |
@@ -58,18 +58,21 @@ Read `README.md` first — it is the brand book and it names everything else. Th
 **A token is either a ground or something you read. Never both.**
 
 - **FILL** roles — `--accent`, `--live`, `--danger`, `--warn` — are grounds. They need 3:1 against their surroundings.
-- **INK** roles — `--text`, `--text-muted`, `--accent-text`, `--error`, `--live-text`, `--warn-text` — are read. They clear 7:1 on `--bg` and `--surface`.
+- **INK** roles — `--text`, `--text-muted`, `--accent-text`, `--error`, `--live-text`, `--warn-text` — are read. They clear AA (4.5:1) on every ground. AA is the floor everywhere (decided 2026-09-29).
 - **LINE** — `--border` is decorative and may never be the only thing marking a control; `--border-strong` marks anything meaningful and clears 3:1.
 
 So a primary button is `--accent` with `--on-accent` text; a link is `--accent-text`. Getting this backwards is the failure the whole revision exists to fix.
 
 ## How this differs from what `packages/ui` currently ships
 
-`README.md` ends with the full list. In short: fill and ink roles split, text raised from AA to AAA, `--border-strong` added, `--on-accent` made per-theme, UEC given a third `-ui` variant, map and display tiers added, and the type scale rebased for readers aged 50–75.
+`README.md` ends with the full list. In short: fill and ink roles split, `--border-strong` added, `--on-accent` made per-theme, UEC given a third `-ui` variant, map and display tiers added, and the type scale rebased for readers aged 50–75.
 
-**None of it is wired in.** `packages/ui/src/tokens.ts` and `styles.ts` are untouched, so the
-running product is unchanged. Adoption means porting the values into `tokens.ts` and widening
-`tests/tokens.test.ts` (see the README for exactly which grounds it does and does not cover).
+**Colours are one system as of 2026-09-29.** Every colour role and primitive this bundle
+shares with `packages/ui/src/tokens.ts` now carries the same value, and
+`tests/token-parity.test.ts` keeps it that way. To change a shared colour, change
+`src/tokens.ts`, then mirror it here and run `pnpm --filter @ocr/ui compile-tokens`. The bundle's own
+type scale, spacing and component vocabulary are still a proposal — not yet wired into
+`styles.ts` — except the 13px text floor, which `styles.ts` now enforces through `--text-min`.
 
 Because `partials.ts` emits only class names — zero inline styles, zero literal hex — landing
 the migration in `styles.ts` carries it to the server-rendered surfaces for free. The entire

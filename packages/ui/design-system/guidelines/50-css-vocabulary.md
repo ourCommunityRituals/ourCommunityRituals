@@ -69,7 +69,7 @@ The React layer covers the thirteen primitives that carry props and behaviour. E
 
 - Never hard-code a colour, radius, font size or tap height. If a value is missing, add a token.
 - Never use `--border` alone to mark something interactive — that is `--border-strong`.
-- Never put AAA-critical text on `--surface-hover`.
+- Every text role clears AA on `--surface-hover`, but hover is still drawn as a `--border-strong` outline, not a tint.
 - Every interactive class already carries `min-height: var(--tap-min)`. Do not override it downward.
 - Focus is `:focus-visible` only, 3px `--focus-ring`, offset 2.
 - `@media (prefers-reduced-motion: reduce)` disables every animation and transition in the sheet. Do not reintroduce one outside that guard.

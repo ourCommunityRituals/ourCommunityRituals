@@ -4,16 +4,16 @@
 
 **A token is either a ground or something you read. Never both.** Everything else in this palette follows from that.
 
-The two jobs have different requirements. A ground needs 3:1 against what surrounds it so you can see where it starts. Text needs 4.5:1 to meet AA — and 7:1 to meet AAA, which is the target here, because contrast sensitivity falls with age and this product is used outdoors. One token cannot satisfy both without either washing out the brand or failing the reader.
+The two jobs have different requirements. A ground needs 3:1 against what surrounds it so you can see where it starts. Text needs 4.5:1 to meet AA, and **AA is the floor everywhere** — every product, brand and white-label page, decided 2026-09-29 for uniformity. It is a floor, not a target: contrast sensitivity falls with age and this product is used outdoors, so a role that clears it comfortably is better than one that scrapes past. One token cannot satisfy both without either washing out the brand or failing the reader.
 
 | Family | Roles | Target |
 |---|---|---|
 | **FILL** | `--accent` `--accent-hover` `--live` `--danger` `--danger-hover` `--warn` `--success` | 3:1 vs surroundings |
-| **INK** | `--text` `--text-muted` `--accent-text` `--live-text` `--warn-text` `--error` `--info` `--on-accent` | **7:1** on `--bg` and `--surface` |
+| **INK** | `--text` `--text-muted` `--accent-text` `--live-text` `--warn-text` `--error` `--info` `--on-accent` | **4.5:1 (AA)** on every ground, `--surface-hover` included |
 | **LINE** | `--border` (decorative) · `--border-strong` (meaningful) · `--focus-ring` | 3:1 for the latter two |
 | **GROUND** | `--bg` `--surface` `--surface-hover` `--card` | — |
 
-So `--accent` (#1785FB, the CARTO signature) is the ground under a primary button and the fill of a progress bar. A link, a stat value or an active nav label uses `--accent-text`. The brand keeps its blue; the type stays readable.
+So `--accent` is the ground under a primary button and the fill of a progress bar — #52A6FF in dark (the CARTO signature #1785FB, read one step lighter so it also works as text on dark cards) and #0057D6 in light. A link, a stat value or an active nav label uses `--accent-text`. The brand keeps its blue; the type stays readable.
 
 ## What was failing before the split
 
@@ -41,20 +41,18 @@ WCAG 1.4.11 asks for 3:1 on anything that identifies a control. Nothing reached 
 
 ## Hover is an outline, not a tint
 
-`--surface-hover` lifts the ground by 1.18:1 — invisible — and cannot carry AAA text anyway. On touch there is no hover at all. So hover and focus draw a `--border-strong` outline instead. It reads at a glance, it works on a phone as a pressed state, and it never moves the ground under the text.
+`--surface-hover` lifts the ground by only 1.18:1 — barely visible — and on touch there is no hover at all. So hover and focus draw a `--border-strong` outline instead. It reads at a glance, it works on a phone as a pressed state, and it never moves the ground under the text.
 
-`--surface-hover` survives as a *pressed and selected* ground only. Do not put AAA-critical text on it.
+`--surface-hover` survives as a *pressed and selected* ground. Every text and status role still clears AA on it, so a hovered row never drops below the floor.
 
 ## --on-accent flips per theme
 
 ```
-dark   black on #1785FB   5.78:1        white on #1785FB   3.63:1
-light  white on #0057D6   6.30:1        black on #0057D6   3.33:1
+dark   navy #0F1824 on #52A6FF   7.02:1        (and 7.14:1 on the #F08585 danger fill)
+light  white on #0057D6          6.30:1        (and 6.34:1 on the #B03030 danger fill)
 ```
 
-`@ocr/ui`'s `.btn-primary` hardcodes `color:#000`, which is a live failure on the light theme. `.btn-primary` must read `var(--on-accent)`.
-
-The primary button label is 18px/700. At that size it counts as large text under WCAG, so 5.78:1 clears the AAA threshold of 4.5:1 — which is how the brand blue survives an AAA target without being repainted.
+`.btn-primary` and `.btn-danger` read `var(--on-accent)`; never hardcode a label colour on a fill. Both themes clear AA at any label size, so the primary button does not depend on being large text to pass.
 
 ## Status is never colour alone
 
@@ -70,12 +68,12 @@ Unchanged from `@ocr/ui`:
 - **Tier 2 — semantic roles.** What every component consumes. Nothing hard-codes a hex.
 - **Tier 3 — brands.** One `[data-brand="x"]` block re-maps roles. A brand may re-map
   `--accent` and `--accent-text`; it may **never** touch `--uec-*`, and any re-mapped ink must
-  still clear 7:1 on `--bg` and `--surface`. Structure never changes — a brand changes hue,
+  still clear AA (4.5:1) on every ground — `checkBrandContrast()` refuses a brand that doesn't. Structure never changes — a brand changes hue,
   never layout, spacing or type. Brain §11: *"Brand affects chrome only — UEC hues never
   re-theme."*
 
   **`[data-brand="ow"]` is the real one.** Brain §11 states ourWKRP's identity as
-  **amber-on-black**, against OSE's navy/blue. Verified values, all AAA on their own grounds:
+  **amber-on-black**, against OSE's navy/blue. Verified values, all at least AA on their own grounds:
 
   | Role | Value | On OW `--bg` | On OW `--surface` |
   |---|---|---|---|

@@ -10,7 +10,7 @@ Two readers set every value in this system, and neither is the person building i
 
 **Someone aged 50 to 75, on their own phone, outdoors.** Anyone under 50 has had a phone their whole adult life and will find their way through almost anything. The people who most need a community platform to work are the ones who did not grow up with one. They will tap the wrong thing. They will not know what a term means the first time. They will lose their place if the page moves under them. Designing for them is not a constraint on the design — it *is* the design, and everyone else inherits a calmer product.
 
-**Someone with an ageing eye, in daylight.** Contrast sensitivity falls with age — roughly halved by 60, a third of a young reader's by 75 — and this product lives outdoors, on cheap phones, on venue wifi. WCAG AA's 4.5:1 is a twenty-year-old's floor. Every piece of text in this system clears **AAA, 7:1**, on every ground it can land on.
+**Someone with an ageing eye, in daylight.** Contrast sensitivity falls with age — roughly halved by 60, a third of a young reader's by 75 — and this product lives outdoors, on cheap phones, on venue wifi. So one floor holds everywhere: every piece of text clears **WCAG AA (4.5:1) on every ground it can land on**, and nothing is smaller than **13px**. It is the same floor for every product, brand and white-label page — decided 2026-09-29, for uniformity — and CI refuses anything below it.
 
 Five rules follow, and they are checkable:
 
@@ -46,10 +46,10 @@ This is the rule the whole palette hangs on. **A token is either a ground or som
 | Family | Examples | Must clear |
 |---|---|---|
 | **FILL** — grounds, bars, button surfaces | `--accent` `--live` `--danger` `--warn` | 3:1 against what surrounds it |
-| **INK** — anything read | `--text` `--text-muted` `--accent-text` `--error` `--live-text` `--warn-text` | **7:1** on `--bg` and `--surface` |
+| **INK** — anything read | `--text` `--text-muted` `--accent-text` `--error` `--live-text` `--warn-text` | **4.5:1 (AA)** on every ground |
 | **LINE** — boundaries | `--border` decorative · `--border-strong` meaningful | 3:1 for `--border-strong` (WCAG 1.4.11) |
 
-So the CARTO signature blue `#1785FB` stays exactly as it is — as a *fill*, under a primary button. Links and stat values use `--accent-text` instead. The brand keeps its colour and the type gets legible; before the split, one token had to do both jobs and failed at one of them.
+So the CARTO signature blue stays the brand — `#1785FB` as the primitive, read one step lighter (`#52A6FF`) as the dark-theme fill under a primary button, `#0057D6` in light. Links and stat values use `--accent-text` instead. The brand keeps its colour and the type gets legible; before the split, one token had to do both jobs and failed at one of them.
 
 Three tiers, as in `@ocr/ui`: Tier 1 primitives (`--ocr-*`) are never referenced by a component. Tier 2 semantic roles are what everything consumes. Tier 3 client brands re-map roles via `[data-brand="x"]`. Dark is the default; light arrives via `prefers-color-scheme` or `data-theme="light"`.
 
@@ -63,7 +63,7 @@ Hover no longer lifts the background. A fill lift from `--surface` to `--surface
 
 One system stack, no webfonts, so a poster renders instantly on a cheap phone. The scale is rebased for the 50–75 reader: **controls and body at 16px, error text at 16px, nothing below 13px.** `@ocr/ui` already used 16px on `.search-bar` and `.sort-select` to stop iOS zooming the page on focus — the right value for the wrong reason. It is now the rule, and it also means an older user never loses their place to a surprise zoom.
 
-The primary button label is 18px/700. At that size it counts as large text, so black on the blue fill clears AAA without repainting the brand — and the primary action ends up being the biggest label on the screen, which is where it belongs.
+The primary button label is 18px/700, so the primary action is the biggest label on the screen, which is where it belongs. Its label reads `--on-accent`: navy on the dark fill (7.02:1), white on the light fill (6.30:1) — AA at any size.
 
 ### Spacing and targets
 
@@ -132,5 +132,7 @@ Everything here is either `@ocr/ui` verbatim or a change listed below. The groun
 6. **Map tokens added** — `--map-ground`, `--map-cell-line`, `--map-halo`. The corridor map filled cells at 1.20:1 and stroked them at 1.36:1: functionally invisible, on the product's signature surface.
 7. **Type rebased** for the 50–75 bracket, as above.
 8. **`--tap-min-primary` and `--tap-gap` added.**
+
+**2026-09-29 — one colour source, AA everywhere, 13px floor.** Item 2 above raised text to AAA; that target is replaced by **AA everywhere, for uniformity**, and the bundle's shared colours now mirror `src/tokens.ts` exactly (`tests/token-parity.test.ts`). That moved `--bg` to `#141F30`, `--accent` to `#52A6FF` with navy `--on-accent`, `--text-muted` to `#8AA1BC`, the danger/error/info roles to the shipped values, and — the one that mattered most — `--success` from the `--live` teal to emerald, so "done" never reads as "on air" (OSE-1328). `styles.ts` now routes every sub-13px size through `--text-min` (`tests/text-floor.test.ts`).
 
 Not changed, and worth stating: the CARTO blue, the teal-not-green status rule, the no-shadow rule, the system font stack, the three-tier structure and the component inventory are all exactly as `@ocr/ui` has them.
