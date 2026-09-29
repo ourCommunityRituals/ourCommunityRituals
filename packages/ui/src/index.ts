@@ -69,6 +69,12 @@ export {
   BRAND_LOCKED,
   DESIGNATION,
   validateBrandOverride,
+  resolveBrandPalette,
+  brandContrastPairs,
+  checkBrandContrast,
   type CustomizableToken,
   type BrandOverrideViolation,
+  type ThemeMode,
+  type ContrastPair,
+  type ContrastFailure,
 } from './brand';

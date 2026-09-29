@@ -1,4 +1,6 @@
 import { contrastRatio } from '../src/contrast.ts';
+import { brandThemes } from '../src/tokens.ts';
+import { checkBrandContrast, resolveBrandPalette, brandContrastPairs } from '../src/brand.ts';
 
 const darkBg  = '#141F30'; // --bg after OSE-1325 (navy-925); was navy-950 #0F1824
 const darkSurf = '#1A2740';
@@ -70,6 +72,26 @@ for (const [label, fg, bg] of nonText) {
   const pass  = ratio >= 3.0;
   if (!pass) allPass = false;
   console.log(`${String(ratio.toFixed(2)).padStart(5)}:1  ${pass ? '3:1 ✓    ' : 'FAIL ✗   '}  ${label}`);
+}
+// Registered brand themes ([data-brand]) — each on its OWN grounds, both modes.
+// The pairs are derived from tokens.ts (not hand-synced), see src/brand.ts.
+for (const name of Object.keys(brandThemes)) {
+  const failures = checkBrandContrast(name);
+  if (failures.length) allPass = false;
+  for (const mode of ['dark', 'light']) {
+    const pal = resolveBrandPalette(name, mode);
+    const owned = brandThemes[name][mode];
+    const rows = brandContrastPairs().filter((p) => p.fg in owned || p.bg in owned);
+    const worst = rows
+      .map((p) => ({ ...p, ratio: contrastRatio(pal[p.fg], pal[p.bg]) }))
+      .sort((a, b) => a.ratio / a.min - b.ratio / b.min)[0];
+    const bad = failures.filter((f) => f.mode === mode);
+    console.log(
+      `${bad.length ? 'FAIL ✗   ' : 'brand ✓  '}  [data-brand="${name}"] ${mode}: ${rows.length} pairs` +
+        (worst ? `, tightest ${worst.fg} on ${worst.bg} ${worst.ratio.toFixed(2)}:1 (min ${worst.min})` : '')
+    );
+    for (const f of bad) console.log(`           ${f.fg} on ${f.bg} = ${f.ratio.toFixed(2)}:1 (min ${f.min})`);
+  }
 }
 console.log('');
 console.log(allPass ? '✓ All pairs meet WCAG AA (4.5:1 text, 3:1 control edges)' : '✗ Some pairs below AA — fix before shipping');

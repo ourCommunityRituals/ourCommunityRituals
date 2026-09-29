@@ -11,6 +11,9 @@
  * tests/brand.test.ts against semanticDark) — a new token can't go un-designated.
  */
 
+import { primitives, semanticDark, semanticLight, brandThemes } from './tokens';
+import { contrastRatio } from './contrast';
+
 /** Brand may re-map these (their own palette + surfaces). */
 export const BRAND_CUSTOMIZABLE = [
   '--accent',
@@ -72,4 +75,94 @@ export function validateBrandOverride(overrides: Record<string, string>): BrandO
     else if (designation === 'locked') violations.push({ token, reason: 'locked' });
   }
   return violations;
+}
+
+// ── Brand palette resolution + the contrast floors every brand must clear ─────
+
+
+export type ThemeMode = 'dark' | 'light';
+
+/**
+ * The effective semantic palette a page painted with `[data-brand=name]` sees in
+ * one mode: the OCR base for that mode with the brand's overrides on top, every
+ * value resolved to a hex. Locked roles come through from the base untouched —
+ * which is exactly why they must be checked against the BRAND's grounds.
+ */
+export function resolveBrandPalette(name: string, mode: ThemeMode): Record<string, string> {
+  const base = mode === 'dark' ? semanticDark : semanticLight;
+  const theme = brandThemes[name];
+  const merged: Record<string, string> = { ...base, ...(theme ? theme[mode] : {}) };
+  const P = primitives as Record<string, string>;
+  const out: Record<string, string> = {};
+  for (const [token, value] of Object.entries(merged)) {
+    const key = /^var\((--[\w-]+)\)$/.exec(value.trim())?.[1];
+    out[token] = key ? (P[key] ?? value) : value;
+  }
+  return out;
+}
+
+export interface ContrastPair {
+  fg: string;
+  bg: string;
+  min: number;
+  kind: 'text' | 'non-text';
+}
+
+/** Grounds text may sit on. */
+export const GROUND_ROLES = ['--bg', '--surface', '--card', '--surface-hover'] as const;
+/** Roles used as text colour — each must clear 4.5:1 on every ground. */
+export const TEXT_ROLES = [
+  '--text', '--text-primary', '--text-muted', '--text-secondary', '--accent',
+  '--live', '--danger', '--error', '--warn', '--info', '--success',
+] as const;
+
+/**
+ * The contrast floors a brand palette must clear in each mode (WCAG 2.x AA):
+ * every text role 4.5:1 on every ground; --on-accent 4.5:1 on the solid fills it
+ * labels (--accent, --accent-hover, --danger); control edges (--border-strong)
+ * and the focus ring (--accent) 3:1 on every ground.
+ */
+export function brandContrastPairs(): ContrastPair[] {
+  const pairs: ContrastPair[] = [];
+  for (const bg of GROUND_ROLES) {
+    for (const fg of TEXT_ROLES) pairs.push({ fg, bg, min: 4.5, kind: 'text' });
+    pairs.push({ fg: '--border-strong', bg, min: 3, kind: 'non-text' });
+  }
+  for (const bg of ['--accent', '--accent-hover', '--danger']) {
+    pairs.push({ fg: '--on-accent', bg, min: 4.5, kind: 'text' });
+  }
+  return pairs;
+}
+
+export interface ContrastFailure extends ContrastPair {
+  mode: ThemeMode;
+  ratio: number;
+}
+
+/**
+ * Every contrast floor a registered brand misses, in either mode. Empty = ships.
+ *
+ * A pair is the brand's responsibility when the brand sets EITHER side of it: a
+ * brand that re-grounds the page (ow) answers for every role on those grounds,
+ * locked status roles included; a brand that only swaps the accent (acme)
+ * answers for the accent pairs. Pairs where both sides are inherited are the
+ * base palette's, gated by the base's own tests.
+ */
+export function checkBrandContrast(name: string): ContrastFailure[] {
+  const failures: ContrastFailure[] = [];
+  const theme = brandThemes[name];
+  if (!theme) return failures;
+  for (const mode of ['dark', 'light'] as const) {
+    const pal = resolveBrandPalette(name, mode);
+    const owned = theme[mode];
+    for (const pair of brandContrastPairs()) {
+      if (!(pair.fg in owned) && !(pair.bg in owned)) continue;
+      const fg = pal[pair.fg];
+      const bg = pal[pair.bg];
+      if (fg === undefined || bg === undefined) continue; // every pair role is a semantic token
+      const ratio = contrastRatio(fg, bg);
+      if (ratio < pair.min) failures.push({ ...pair, mode, ratio });
+    }
+  }
+  return failures;
 }

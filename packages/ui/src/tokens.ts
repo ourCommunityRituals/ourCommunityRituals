@@ -326,20 +326,71 @@ export interface BrandTheme {
   light: Record<string, string>;
 }
 
-/** Registered example client theme(s). "acme" proves the swap end-to-end. */
+/**
+ * Registered brand themes. Every key in every theme MUST be BRAND_CUSTOMIZABLE
+ * (src/brand.ts) — gated by tests/brand-themes.test.ts, which also holds each
+ * theme to the contrast floors in BOTH modes on the brand's own grounds.
+ */
 export const brandThemes: Record<string, BrandTheme> = {
   acme: {
-    // Violet brand. Dark values are light-on-dark (AA on navy-950); light
-    // values are dark-on-light (AA on light-050).
+    // Violet brand — the minimal example: only the accent changes. Dark values
+    // are light-on-dark (AA on navy-950); light values are dark-on-light (AA on
+    // light-050). (--info was dropped: it is LOCKED, a brand may not recolour it.)
     dark: {
       '--accent': '#A78BFA',
       '--accent-hover': '#C4B5FD',
-      '--info': '#A78BFA',
     },
     light: {
       '--accent': '#6D28D9',
       '--accent-hover': '#5B21B6',
-      '--info': '#6D28D9',
+    },
+  },
+
+  // ourWKRP — amber on black. A broadcast product: it reads on a neutral carbon
+  // ground rather than the fleet's navy, with an ember accent. Values come from
+  // @ocr/tokens (carbon / ember families) and WKRP's shipped palette, mapped ONLY
+  // onto customizable roles: --live stays the fleet's teal and --danger its red
+  // (WKRP's old red "live" dot is retired — red means destructive, not on-air).
+  //
+  // Measured (tests/brand-themes.test.ts re-derives every one of these):
+  //   dark  — text 17.4 / muted 5.6 / accent 7.7 : 1 on --bg; muted 4.9 and
+  //           accent 6.8 on --surface-hover; --border-strong 3.3–3.7 : 1;
+  //           --on-accent 7.7 on --accent, 9.6 on --accent-hover.
+  //   light — ember #D4954B is only 2.4:1 on a light ground, so light uses a
+  //           burnt amber: accent 5.6 on --bg, 5.1 on --surface-hover; white
+  //           --on-accent 6.0 / 7.8 on accent / accent-hover; --border-strong
+  //           3.3–3.8 : 1; locked status roles (live/danger/warn/info/success)
+  //           all clear 4.5 on the warm paper grounds.
+  ow: {
+    dark: {
+      '--bg': '#0A0A0A', // carbon-950
+      '--surface': '#141414', // carbon-900
+      '--card': '#141414',
+      '--surface-hover': '#1A1A1A', // carbon-800
+      '--border': '#2A2A2A', // carbon-700 — decorative dividers only
+      '--border-strong': '#6B6B6B', // control edges (WCAG 1.4.11)
+      '--text': '#F0F0F0', // carbon-100
+      '--text-primary': '#F0F0F0',
+      '--text-muted': '#888888', // carbon-500
+      '--text-secondary': '#888888',
+      '--accent': '#D4954B', // ember-600
+      '--accent-hover': '#E8A849', // ember-500
+      '--on-accent': '#0A0A0A', // carbon ink on ember
+    },
+    light: {
+      '--bg': '#FAF7F2', // warm paper
+      '--surface': '#FFFFFF',
+      '--card': '#FFFFFF',
+      '--surface-hover': '#F2EDE4',
+      '--border': '#E4DDD1',
+      '--border-strong': '#8C8170',
+      '--text': '#1A1A1A',
+      '--text-primary': '#1A1A1A',
+      '--text-muted': '#5E574D',
+      '--text-secondary': '#5E574D',
+      '--accent': '#93540F', // burnt amber — ember darkened for a light ground
+      '--accent-hover': '#7A4608',
+      '--on-accent': '#FFFFFF',
     },
   },
 };
@@ -356,6 +407,10 @@ export function brandBlock(name: string): string {
   const dark = cssVars(theme.dark);
   const lightInner = cssVars(theme.light);
   const lightIndented = cssVars(theme.light, '    ');
+  // The explicit [data-theme="dark"] block is not redundant: without it, a page
+  // forced dark on a device that prefers light would pick up the @media light
+  // brand block (same specificity, later in the sheet) — light grounds under a
+  // dark page. (0,2,0) beats both the base and the @media block.
   return [
     `[data-brand="${name}"] {`,
     dark,
@@ -367,6 +422,9 @@ export function brandBlock(name: string): string {
     '}',
     `[data-theme="light"][data-brand="${name}"] {`,
     lightInner,
+    '}',
+    `[data-theme="dark"][data-brand="${name}"] {`,
+    dark,
     '}',
   ].join('\n');
 }
