@@ -97,6 +97,18 @@ The e2e spec asserts the *shared* selectors — so one spec validates the design
 system on every surface of both workers. That's the payoff of extraction: the UI
 became testable fleet-wide instead of page-by-page.
 
+## Consuming from a spoke (ADR-008)
+
+Spokes do not copy this package. Each pins one hub commit in its root `.ocr-hub-ref`, and its CI stages `packages/ui` from exactly that commit.
+
+- **The pin must be merged.** The spokes' staging scripts refuse a SHA that is not an ancestor of hub `main`. A PR-branch commit is unreviewed and can be garbage-collected.
+- **Bumping.** Once a change lands on hub `main`, open a PR in the spoke that sets `.ocr-hub-ref` to the new full SHA. In that PR:
+  - run the spoke's design check (`node ../packages/ui/scripts/check-spoke-styles.mjs --root .`) and its tests at the new pin;
+  - lower `.ocr-design-check.json` if debt shrank, since the check fails until the baseline follows;
+  - regenerate the lockfile only if this package's `package.json` changed.
+- **Caching.** Spokes serve `/ui.css` at a fixed URL and revalidate it by ETag, so a bump reaches browsers without waiting out a max-age.
+- **Design check in CI.** On PRs the check runs with `--base-config <base branch .ocr-design-check.json>`, so a PR can lower its baseline but never raise it or widen what is scanned.
+
 ## What's in the box
 
 | File | Purpose |
@@ -104,9 +116,9 @@ became testable fleet-wide instead of page-by-page.
 | `src/tokens.ts` | Canonical tokens; drift (two reds, missing radii) resolved into decisions |
 | `src/styles.ts` | Deduplicated component CSS + new `.empty-state` |
 | `src/css.ts` | Combined sheet, `serveCss()` route helper, `styleTag()` |
-| `src/partials.ts` | `page`, `header`, `bottomNav`, `button`, `card`, `loading`, `emptyState`, `accessDenied` |
+| `src/partials.ts` | 15 partials: `page`, `header`, `bottomNav`, `footer`, `button`, `card`, `loading`, `emptyState`, `accessDenied`, `formInput`, `textarea`, `formSelect`, `checkbox`, `radioGroup`, `formGroup` |
 | `src/contract.ts` | `checkTemplate()` drift guard for CI |
 | `src/esc.ts` | HTML/URL escaping (all partials use it) |
 | `src/contrast.ts` | WCAG contrast, used by the a11y tests |
-| `tests/` | 17 tests: token invariants, contrast AA/AAA, XSS escaping, no-dead-end |
+| `tests/` | 15 suites: token invariants and parity, brand and light/dark contrast (token pairs), text floor, XSS escaping, partials, the spoke design check |
 | `e2e/` | Playwright spec against shared selectors |
