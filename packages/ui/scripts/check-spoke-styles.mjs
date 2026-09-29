@@ -12,14 +12,25 @@
  *   own-stylesheet     characters of CSS the spoke carries itself: <style> blocks
  *                      over the inline budget, plus whole .css files
  *   raw-hex            hex colours in CSS that do not go through a token
- *                      (a var(--token, #fallback) fallback is allowed)
+ *                      (a var(--token, #fallback) fallback is allowed only when
+ *                      --token is one @ocr/ui defines; a fallback behind an
+ *                      undefined token is the colour that actually renders)
  *   foreign-stylesheet <link rel="stylesheet"> to anything other than /ui.css
  *
  * Existing debt is recorded in the spoke's baseline and may only shrink. Anything
- * new, or any count that grows, fails the build.
+ * new, or any count that grows, fails the build. A count that SHRINKS also fails
+ * until the baseline is lowered to match, so the ratchet closes instead of leaving
+ * slack that later growth can silently refill.
+ *
+ * The baseline itself is guarded with --base-config <file>: the spoke's CI passes
+ * the base branch's .ocr-design-check.json (e.g. `git show origin/main:...`), and
+ * the check fails if this change raises any baseline count, adds a file to the
+ * baseline, narrows `include`, widens `exclude` or raises `inlineStyleBudget`.
+ * Without it, a PR could raise its own baseline and stay green (CCR OSE-1393 H3).
  *
  * Usage (from the spoke's CI, with the hub checked out at the pinned commit):
- *   node <hub>/packages/ui/scripts/check-spoke-styles.mjs --root <spoke> [--write-baseline]
+ *   node <hub>/packages/ui/scripts/check-spoke-styles.mjs --root <spoke>
+ *        [--base-config <base .ocr-design-check.json>] [--write-baseline]
  * Config: <spoke>/.ocr-design-check.json
  *   { "include": ["src/templates/**\/*.html"], "exclude": [], "inlineStyleBudget": 400,
  *     "baseline": { "<path>": { "own-tokens": 0, "own-stylesheet": 0, "raw-hex": 0, "foreign-stylesheet": 0 } } }
@@ -86,8 +97,13 @@ function countOwnTokens(css, uiNames) {
   return n;
 }
 
-function countRawHex(css) {
-  const withoutFallbacks = css.replace(/var\(\s*--[a-z0-9-]+\s*,[^()]*(?:\([^()]*\)[^()]*)*\)/gi, 'var()');
+function countRawHex(css, uiNames) {
+  // Only a fallback behind a token @ocr/ui defines is exempt: behind an
+  // undefined token the fallback is simply the colour that renders.
+  const withoutFallbacks = css.replace(
+    /var\(\s*(--[a-z0-9-]+)\s*,[^()]*(?:\([^()]*\)[^()]*)*\)/gi,
+    (m, name) => (uiNames.has(name) ? 'var()' : m),
+  );
   return [...withoutFallbacks.matchAll(/#[0-9a-f]{3,8}\b/gi)].length;
 }
 
@@ -102,7 +118,7 @@ export function measure(path, text, { uiNames, inlineStyleBudget = 400 }) {
   return {
     'own-tokens': countOwnTokens(all, uiNames),
     'own-stylesheet': ownStylesheet,
-    'raw-hex': countRawHex(all),
+    'raw-hex': countRawHex(all, uiNames),
     'foreign-stylesheet': foreign,
   };
 }
@@ -121,6 +137,32 @@ export function compare(current, baseline) {
     }
   }
   return { regressions, improvements };
+}
+
+/**
+ * Guard the baseline file itself: compare this change's config against the base
+ * branch's. Returns one entry per way the change loosened the gate.
+ */
+export function compareConfigs(base, head) {
+  const violations = [];
+  const baseBaseline = base.baseline ?? {};
+  const headBaseline = head.baseline ?? {};
+  for (const file of Object.keys(headBaseline).sort()) {
+    for (const metric of METRICS) {
+      const now = headBaseline[file]?.[metric] ?? 0;
+      const was = baseBaseline[file]?.[metric] ?? 0;
+      if (now > was) violations.push(`baseline ${file} ${metric}: ${was} -> ${now}`);
+    }
+  }
+  const baseInclude = base.include ?? ['**/*.html', '**/*.css'];
+  const headInclude = head.include ?? ['**/*.html', '**/*.css'];
+  for (const g of baseInclude) if (!headInclude.includes(g)) violations.push(`include narrowed: removed "${g}"`);
+  const baseExclude = base.exclude ?? [];
+  for (const g of head.exclude ?? []) if (!baseExclude.includes(g)) violations.push(`exclude widened: added "${g}"`);
+  const baseBudget = base.inlineStyleBudget ?? 400;
+  const headBudget = head.inlineStyleBudget ?? 400;
+  if (headBudget > baseBudget) violations.push(`inlineStyleBudget raised: ${baseBudget} -> ${headBudget}`);
+  return violations;
 }
 
 export function run({ root, config, tokensSource }) {
@@ -155,18 +197,31 @@ function main(argv) {
   const tokensSource = readFileSync(join(here, '..', 'src', 'tokens.ts'), 'utf8');
   const { current, regressions, improvements } = run({ root, config, tokensSource });
 
+  const baseConfigPath = arg('--base-config');
+  if (baseConfigPath) {
+    const base = JSON.parse(readFileSync(baseConfigPath, 'utf8'));
+    const violations = compareConfigs(base, config);
+    if (violations.length) {
+      console.error('[design-check] .ocr-design-check.json loosens the gate relative to the base branch. The baseline may only shrink:');
+      for (const v of violations) console.error(`  ${v}`);
+      return 1;
+    }
+  }
+
   if (argv.includes('--write-baseline')) {
     config.baseline = current;
     writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
     console.log(`[design-check] baseline written for ${Object.keys(current).length} file(s)`);
     return 0;
   }
-  for (const r of improvements) {
-    console.log(`[design-check] improved  ${r.file}  ${r.metric} ${r.was} -> ${r.now} (lower the baseline)`);
-  }
   if (regressions.length) {
     console.error('[design-check] This spoke is growing its own design system. Use @ocr/ui tokens and /ui.css instead.');
     for (const r of regressions) console.error(`  ${r.file}  ${r.metric}: ${r.was} -> ${r.now}`);
+    return 1;
+  }
+  if (improvements.length) {
+    console.error('[design-check] Debt shrank — lower the baseline in .ocr-design-check.json to lock it in (the ratchet only closes):');
+    for (const r of improvements) console.error(`  ${r.file}  ${r.metric}: ${r.was} -> ${r.now}`);
     return 1;
   }
   console.log(`[design-check] OK — ${Object.keys(current).length} file(s) carry recorded debt, none grew.`);

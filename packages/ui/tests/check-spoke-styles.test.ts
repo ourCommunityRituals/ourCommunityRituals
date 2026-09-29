@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 // @ts-expect-error -- plain .mjs script with no type declarations
-import { run, measure, uiTokenNames, globToRegExp } from '../scripts/check-spoke-styles.mjs';
+import { run, measure, uiTokenNames, globToRegExp, compareConfigs } from '../scripts/check-spoke-styles.mjs';
 
 type Metrics = Record<string, number>;
 const tokensSource = readFileSync(join(__dirname, '..', 'src', 'tokens.ts'), 'utf8');
@@ -72,5 +73,80 @@ describe('check-spoke-styles', () => {
     });
     const r = run({ root, config: { include: ['**/*.html', '**/*.css'] }, tokensSource });
     expect(r.current).toEqual({});
+  });
+
+  // CCR OSE-1393 H3: a fallback behind a token @ocr/ui does not define is the
+  // colour that renders, so it is raw hex (OSE admin shipped light panels in
+  // dark theme this way: var(--surface-alt, #f1f3f5)).
+  it('counts a var() fallback behind an undefined token as raw hex', () => {
+    const m = measure('a.html', '<style>.a{background:var(--surface-alt,#f1f3f5);color:var(--text,#111)}</style>', {
+      uiNames,
+      inlineStyleBudget: 10_000,
+    }) as Metrics;
+    expect(m['raw-hex']).toBe(1); // --surface-alt is not an @ocr/ui token; --text is
+  });
+
+  describe('compareConfigs — the baseline may only shrink (H3)', () => {
+    const base = {
+      include: ['src/**/*.html'],
+      exclude: ['src/vendor/**'],
+      inlineStyleBudget: 400,
+      baseline: { 'src/a.html': { 'raw-hex': 3, 'own-stylesheet': 100 } },
+    };
+
+    it('accepts an unchanged or lowered baseline', () => {
+      expect(compareConfigs(base, base)).toEqual([]);
+      expect(
+        compareConfigs(base, { ...base, baseline: { 'src/a.html': { 'raw-hex': 1, 'own-stylesheet': 90 } } }),
+      ).toEqual([]);
+    });
+
+    it('rejects a raised count and a newly baselined file', () => {
+      const head = {
+        ...base,
+        baseline: { 'src/a.html': { 'raw-hex': 4, 'own-stylesheet': 100 }, 'src/b.html': { 'own-tokens': 2 } },
+      };
+      expect(compareConfigs(base, head)).toEqual([
+        'baseline src/a.html raw-hex: 3 -> 4',
+        'baseline src/b.html own-tokens: 0 -> 2',
+      ]);
+    });
+
+    it('rejects a narrowed include, a widened exclude and a raised inline budget', () => {
+      const head = { ...base, include: ['src/pages/*.html'], exclude: ['src/vendor/**', '**'], inlineStyleBudget: 9999 };
+      expect(compareConfigs(base, head)).toEqual([
+        'include narrowed: removed "src/**/*.html"',
+        'exclude widened: added "**"',
+        'inlineStyleBudget raised: 400 -> 9999',
+      ]);
+    });
+  });
+
+  describe('CLI', () => {
+    const script = join(__dirname, '..', 'scripts', 'check-spoke-styles.mjs');
+    const cli = (root: string, ...args: string[]) =>
+      spawnSync(process.execPath, [script, '--root', root, ...args], { encoding: 'utf8' });
+
+    it('fails when debt shrank but the baseline was not lowered (the ratchet closes)', () => {
+      const root = spoke({
+        'src/a.html': '<style>.a{color:#fff}</style>',
+        '.ocr-design-check.json': JSON.stringify({ include: ['src/**/*.html'], baseline: { 'src/a.html': { 'raw-hex': 2 } } }),
+      });
+      const r = cli(root);
+      expect(r.status).toBe(1);
+      expect(r.stderr).toContain('lower the baseline');
+    });
+
+    it('fails when the PR raises its own baseline against --base-config', () => {
+      const cfg = (n: number) => JSON.stringify({ include: ['src/**/*.html'], baseline: { 'src/a.html': { 'raw-hex': n } } });
+      const root = spoke({ 'src/a.html': '<style>.a{color:#fff;border-color:#000}</style>', '.ocr-design-check.json': cfg(2) });
+      const baseFile = join(root, 'base.json');
+      writeFileSync(baseFile, cfg(1));
+      const r = cli(root, '--base-config', baseFile);
+      expect(r.status).toBe(1);
+      expect(r.stderr).toContain('baseline src/a.html raw-hex: 1 -> 2');
+      writeFileSync(baseFile, cfg(2));
+      expect(cli(root, '--base-config', baseFile).status).toBe(0);
+    });
   });
 });
