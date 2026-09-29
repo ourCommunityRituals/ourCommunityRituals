@@ -41,8 +41,8 @@ These are set in `tokens.json` and are not negotiable per-screen.
 | 12px clear space between targets | `--tap-gap` | Size alone does not stop mis-taps — adjacency does |
 | 24px around destructive controls | — | And never beside a primary action |
 | 16px body, controls and errors | `body` `input` `error` | Below 16px an input also triggers iOS zoom, which loses the reader their place |
-| Nothing below 13px | `nav-label` `status-pill` | 10.4px nav labels were unreadable for this bracket |
-| All text at 7:1 (AAA) | every INK role | Contrast sensitivity is roughly halved by 60, a third by 75 |
+| Nothing below 13px | `--text-min` (`nav-label` `status-pill` `brand`) | 10.4px nav labels were unreadable for this bracket. Gated by `tests/text-floor.test.ts` |
+| All text at AA — 4.5:1 on every ground, 3:1 for control edges | every INK role | One floor for every product, brand and white-label page — AA everywhere, decided 2026-09-29 for uniformity. Contrast sensitivity is roughly halved by 60, a third by 75, so nothing ships below it: gated by `pnpm ui:contrast` and `tests/token-parity.test.ts` |
 | 3px focus ring | `--focus-ring` | A 2px ring is the first thing a low-vision user loses |
 
 **The whole label row is tappable** on every checkbox and radio — never just the 18px box.

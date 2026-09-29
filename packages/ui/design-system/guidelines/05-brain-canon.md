@@ -46,7 +46,7 @@ stylesheet silently drops a third of OW's classes is still a defect — see `CON
 |---|---|---|
 | Tap targets ≥ 44×44 pt | 48px (`--tap-min`), 56px primary | exceeds |
 | Input font-size ≥ 16px — suppresses iOS auto-zoom | 16px, same reason | **meets exactly** |
-| Text contrast WCAG AA minimum on every readable surface | AAA 7:1 | exceeds |
+| Text contrast WCAG AA minimum on every readable surface | AA 4.5:1 on every ground, fleet-wide (decided 2026-09-29) | meets |
 | Primary CTA above the fold on the floor viewport | not specified | **GAP** |
 | No horizontal scroll at 375px | specified 320–390px, floor not named | **GAP — named now: 375px** |
 
