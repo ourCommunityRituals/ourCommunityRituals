@@ -315,4 +315,6 @@ Run per `OCR-docs/CCR/OCR_REFERENCE_ccrProtocol.md` on this doc and the OCR-docs
 
 ## 12. Resume pointer
 
+**Standing rule (owner, 2026-09-30):** the privacy claim (never-who, aggregate-only, K-floored) and the brain invariants are the basis structure, to be perpetuated through the entire end-to-end flow — poster → scan → landing → form → report → admin card. Every artifact this programme adds (a cell, a fixture, an endpoint, a card, a log line) is checked against them before it lands, and §13's four live defects are the places where that basis is currently not carried through.
+
 For a fresh session: this doc is the design for the CI leg; the OCR-docs proposal (§2.1) is the brain leg and holds the owner's six-axis model. Both await the owner's answers to §10 here and §6 there. Next concrete step is **C1 (OSE-1180) fixture SQL + P5**, which is agent-buildable now and non-vacuous only after P1–P3. Do not start B1 (YAML reorder) before A and C2 gate. Read §1 before touching `sharedreport-depth.spec.ts`; it is stale, not merely masked.
