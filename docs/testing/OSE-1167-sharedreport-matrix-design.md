@@ -288,6 +288,31 @@ P1–P3 are the only things an agent cannot do. Everything else can be built and
 
 **OSE-1194 (Backlog):** `deploy-production` and `smoke-production` still `runs-on: self-hosted` (lines 1636 and 1847 of the CI workflow at 81c98aa); `runner-env-validation.yml` still exists and will hang every PR until item 1–3+5+7 land with the brain PR. Add item 5b: this hub repo's runner apparatus (F9). Nothing in this PR deletes any of it.
 
+## 13. CCR verdict — three loops, Security-led (2026-09-02, recorded 2026-09-30)
+
+Run per `OCR-docs/CCR/OCR_REFERENCE_ccrProtocol.md` on this doc and the OCR-docs proposal, six extended-scrum lenses with Security integrating. **Do not advance. Final confidence 45%.** Below the 70% floor: stop and surface. The documents' own claims (F1–F9) all verified in code; the score fell because pressure-testing the premise underneath them found live defects in OSE that neither document, nor the epic's earlier CCR, had seen.
+
+| Loop | Confidence | Key finding |
+| --- | --- | --- |
+| 1 Surface | 78% | Docs accurate. Missed the live cross-brand leak through `headcount_trend` (F10). Security veto on the GTM language. Corrections landed in this doc (F10–F13, §3.6, P5–P8, §10 tiering). |
+| 2 Pressure | 45% | "The single-node K floor is uniform" is false in code: three fields ship raw and one suppression string prints the number it hides. T2 placement has unbuilt wiring. |
+| 3 Confirm | 45% held | The unfloored-field list confirmed complete. Two severity corrections cancel. One new unpriced defect: no rate limit on the single-event GET. |
+
+**Live defects in OSE at 81c98aa, each verified by direct read (not inference):**
+
+1. **Cross-tenant leak, absolute veto on shipping `headcount_trend` at premium depth** (F10). `event_series` has no brand column; the detector clusters on venue string + weekday + hour; the trend query filters on series id only. Invariant #9.
+2. **Unfloored counts on the wire** (`shared-report-builder.ts`): `corridor_density.this_event_count` assigned raw, and the density ratios derive from it, so fixing the field alone is insufficient; `return_rate` gates at 3 not K=5, so percentages ship with a sub-K denominator, and its suppression detail prints the exact sub-K count; `sponsor_impressions[].count` raw at every depth beside the floored rollups computed from the same rows, defeating the floor inside one payload. Loop 3 downgraded the last from "person-derived" to "operational counter" (rows are unauthenticated public POSTs, no dedup): severity is inconsistency, not identity.
+3. **No rate limit on the single-event GET.** Only the batch endpoint calls the limiter; `poster_attribution` is a live join, so a token holder can poll and watch one poster's floored count tick at ~150 m granularity. Presence, not identity, but unbounded.
+4. **Impression rows are written by unauthenticated public POSTs** with no dedup and no route rate limit.
+
+**Security veto, widened in Loop 2:** "provably anonymous", "legal by construction", "no consent overhead", "no processing agreement" stay off every external surface. Loop 1 held them pending composition proofs; Loop 2 found the single-node premise itself is not yet true in code. No current external surface uses those phrases (grep of `OCR_VISION.md`, OSE docs/public/templates: zero hits).
+
+**Design-doc gaps the lenses found**, all recorded above as findings, none fixed in code by this PR: T4f double-masked (F11); T4b/T4c/T4c-phase2 have no zero-discovery guard; `contract-staging` has no `BASE_URL` and its fail check would not see a new step; a manual dispatch with `run_functional=true` bypasses the T2 gate; mint retries can cascade under the 10/min limiter; the existing isolation test asserts nothing on current fixtures (F12); no post-event render gate exists anywhere (F13); the mobile spec is dead GAS-era code; `frontend-integration.knowledge.md` is stale.
+
+**Owner-only decisions:** whether `event_series` may ever cluster across brands; whether a pollable real-time counter at that granularity is within the anonymous contract's "roughly when" tolerance once rate-limited; whether a pre-event signed link showing accrued data is acceptable (decides if E1 is build or test). **Agent-buildable with no policy call:** brand predicate on the trend query and detector; floor the three fields and the suppression string; add the existing limiter to the single-event GET; the T4 mask and guard fixes; `BASE_URL` and fail-check wiring in T2.
+
+**Since this verdict (2026-09-30):** OSE `main` moved 20+ commits (Bruno folder 12 now covers verify-qr; `PUT status` now enforces the transition table). The go-live evidence gate and the admin code ledger shipped on OSE branch `claude/verify-qr-evidence-tfqtei` under OSE-1420; none of items 1–4 above are addressed by that branch.
+
 ## 12. Resume pointer
 
 For a fresh session: this doc is the design for the CI leg; the OCR-docs proposal (§2.1) is the brain leg and holds the owner's six-axis model. Both await the owner's answers to §10 here and §6 there. Next concrete step is **C1 (OSE-1180) fixture SQL + P5**, which is agent-buildable now and non-vacuous only after P1–P3. Do not start B1 (YAML reorder) before A and C2 gate. Read §1 before touching `sharedreport-depth.spec.ts`; it is stale, not merely masked.
