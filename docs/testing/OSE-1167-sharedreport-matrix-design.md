@@ -331,4 +331,6 @@ The rule covers the **deduction methods** already ruled on, not just the fields.
 
 D1–D4 come from the §13 CCR; D5–D7 from the OSE-1376 / PR #691 session (`claude.ai/code/session_01HRxhB8tZHtNUMYRSPmH6St`). The go-live gate and code ledger (OSE-1420) comply: they emit codes, counts and reasons, never a person. §13 defects 1–4 are the open violations of D1/D2 (defect 1, 2), D3 (defect 3) and D7's write side (defect 4).
 
+**Next session (owner, 2026-09-30):** OSE-1421 (Urgent, due today) carries §13's four live defects as one ticket, re-verified against OSE `main` 8ec981e: defect 1 open; defect 2 two-of-three open (`this_event_count` was floored by DS-01 on main; `return_rate` gate/detail and `sponsor_impressions[].count` still raw); defect 3 open; defect 4 now route-limited but undeduplicated. Start there; the two owner rulings are listed on the ticket.
+
 For a fresh session: this doc is the design for the CI leg; the OCR-docs proposal (§2.1) is the brain leg and holds the owner's six-axis model. Both await the owner's answers to §10 here and §6 there. Next concrete step is **C1 (OSE-1180) fixture SQL + P5**, which is agent-buildable now and non-vacuous only after P1–P3. Do not start B1 (YAML reorder) before A and C2 gate. Read §1 before touching `sharedreport-depth.spec.ts`; it is stale, not merely masked.
