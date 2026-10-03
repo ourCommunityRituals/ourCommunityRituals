@@ -468,8 +468,9 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
   .search-result,.set-list .track-card,.genre-tag,.drop-zone,.view-btn,.attr-btn{transition:none}
 }
 
-/* A secondary line under a name (a sponsor's location): its own line, muted, at the text floor. */
-.sub-line{display:block;color:var(--text-muted);font-size:var(--text-min);overflow-wrap:anywhere}
+/* A secondary line under a name (a sponsor's location): its own line, muted, at the text floor.
+   flex-basis puts it on its own line inside a wrapping flex row too. */
+.sub-line{display:block;flex-basis:100%;color:var(--text-muted);font-size:var(--text-min);overflow-wrap:anywhere}
 
 /* Visibility utilities LAST: at equal specificity the later rule wins, so a
    .hidden declared mid-sheet lost to any display rule after it (.drop-zone,
