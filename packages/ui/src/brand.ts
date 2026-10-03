@@ -18,6 +18,8 @@ import { contrastRatio } from './contrast';
 export const BRAND_CUSTOMIZABLE = [
   '--accent',
   '--accent-hover',
+  // A followed link: part of the accent family, so it travels with the palette.
+  '--accent-visited',
   '--bg',
   '--surface',
   '--surface-hover',
@@ -112,7 +114,7 @@ export interface ContrastPair {
 export const GROUND_ROLES = ['--bg', '--surface', '--card', '--surface-hover'] as const;
 /** Roles used as text colour — each must clear 4.5:1 on every ground. */
 export const TEXT_ROLES = [
-  '--text', '--text-primary', '--text-muted', '--text-secondary', '--accent',
+  '--text', '--text-primary', '--text-muted', '--text-secondary', '--accent', '--accent-visited',
   '--live', '--danger', '--error', '--warn', '--info', '--success',
 ] as const;
 

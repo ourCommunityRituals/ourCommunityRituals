@@ -109,6 +109,19 @@ export const primitives = {
   '--ocr-blue-600l': '#2E6FDF', // accent hover light
   '--ocr-slate-600': '#4A6882', // muted light mode (4.6:1 on light-050)
   '--ocr-slate-500': '#72879F', // light-mode control edge (WCAG 1.4.11: 3.1–3.7:1 on bg/surface/surface-hover)
+
+  // Plain-web light (OSE-1523, PO 2026-10-03): white page, grey bands, thin
+  // rules, and the link blue and visited purple a browser uses by default.
+  // Ratios are measured by scripts/verify-contrast.mjs, never hand-kept here.
+  '--ocr-grey-050': '#F5F5F5', // light surface-hover: lighter than the band, so the fixed status colours stay AA on it
+  '--ocr-grey-100': '#EEEEEE', // light panel / band
+  '--ocr-grey-300': '#CCCCCC', // light rule (decorative)
+  '--ocr-grey-600': '#767676', // light control edge (WCAG 1.4.11)
+  '--ocr-grey-700': '#555555', // light muted text
+  '--ocr-grey-900': '#222222', // light text
+  '--ocr-link-600': '#0000EE', // light accent: the default web link blue
+  '--ocr-link-800': '#0000AA', // light accent hover
+  '--ocr-visited-700': '#551A8B', // light visited link: the default web visited purple
 } as const;
 
 export type PrimitiveName = keyof typeof primitives;
@@ -126,6 +139,9 @@ export const semanticDark = {
   '--text-muted': 'var(--ocr-navy-450)',
   '--accent': 'var(--ocr-blue-400)',
   '--accent-hover': 'var(--ocr-blue-300)',
+  // A link already followed. Dark keeps one link colour (no dark value was
+  // agreed in OSE-1523); light uses the web's visited purple.
+  '--accent-visited': 'var(--ocr-blue-400)',
   '--live': 'var(--ocr-teal-400)', // on-air / active — teal, not green
   '--live-hover': 'var(--ocr-teal-300)',
   '--surface-hover': 'var(--ocr-navy-800)',
@@ -146,29 +162,32 @@ export const semanticDark = {
 
 // ── Tier 2: Light mode override ───────────────────────────────────────────────
 
+// Plain-web light (OSE-1523): a white page, grey bands and thin rules. A panel
+// is a band on the page, not a raised card.
 export const semanticLight = {
-  '--bg': 'var(--ocr-light-050)',
-  '--surface': 'var(--ocr-light-100)',
-  '--border': 'var(--ocr-light-200)',
-  '--border-strong': 'var(--ocr-slate-500)', // 3.4:1 on --bg, 3.7:1 on --surface
-  '--text': 'var(--ocr-dark-900)',
-  '--text-muted': 'var(--ocr-slate-600)', // 4.6:1 — full AA
-  '--accent': 'var(--ocr-blue-700)', // 4.7:1 — full AA
-  '--accent-hover': 'var(--ocr-blue-600l)',
-  '--live': 'var(--ocr-teal-700)', // 4.9:1 — full AA
+  '--bg': 'var(--ocr-light-100)', // white page
+  '--surface': 'var(--ocr-grey-100)', // panel / band
+  '--border': 'var(--ocr-grey-300)', // rule
+  '--border-strong': 'var(--ocr-grey-600)', // control edge (WCAG 1.4.11)
+  '--text': 'var(--ocr-grey-900)',
+  '--text-muted': 'var(--ocr-grey-700)',
+  '--accent': 'var(--ocr-link-600)',
+  '--accent-hover': 'var(--ocr-link-800)',
+  '--accent-visited': 'var(--ocr-visited-700)',
+  '--live': 'var(--ocr-teal-700)',
   '--live-hover': 'var(--ocr-teal-600)',
-  // Was light-200 (= --border): muted/live/warn/success text on a hovered
-  // card or row fell to 3.97–4.43:1. light-150 keeps every role >= 4.5:1.
-  '--surface-hover': 'var(--ocr-light-150)',
-  '--danger': 'var(--ocr-red-700)', // 5.2:1 — full AA
+  // Lighter than the band, not darker: the fixed status colours (live teal,
+  // success) sit at 4.6:1 on the band and would fall under AA on a darker hover.
+  '--surface-hover': 'var(--ocr-grey-050)',
+  '--danger': 'var(--ocr-red-700)',
   '--danger-hover': 'var(--ocr-red-600)',
   '--error': 'var(--ocr-red-700)', // alias — form validation / error banners
   '--warn': 'var(--ocr-amber-700)', // caution / pending — amber (OSE-1328)
   '--info': 'var(--ocr-blue-700)', // informational — blue (OSE-1328)
   // OSE-654 role vocabulary — light-mode values.
-  '--card': 'var(--ocr-light-100)',
-  '--text-primary': 'var(--ocr-dark-900)',
-  '--text-secondary': 'var(--ocr-slate-600)', // 5.44:1 on --bg
+  '--card': 'var(--ocr-grey-100)',
+  '--text-primary': 'var(--ocr-grey-900)',
+  '--text-secondary': 'var(--ocr-grey-700)',
   '--success': 'var(--ocr-green-700)', // done / accepted / completed — emerald (OSE-1328)
   '--on-accent': 'var(--ocr-light-100)', // #FFFFFF — text on solid --accent (blue) surfaces
 } as const;
@@ -355,57 +374,35 @@ export const brandThemes: Record<string, BrandTheme> = {
     dark: {
       '--accent': '#A78BFA',
       '--accent-hover': '#C4B5FD',
+      '--accent-visited': '#A78BFA',
     },
     light: {
       '--accent': '#6D28D9',
       '--accent-hover': '#5B21B6',
+      '--accent-visited': '#5B21B6',
     },
   },
 
-  // ourWKRP — amber on black. A broadcast product: it reads on a neutral carbon
-  // ground rather than the fleet's navy, with an ember accent. Values come from
-  // @ocr/tokens (carbon / ember families) and WKRP's shipped palette, mapped ONLY
-  // onto customizable roles: --live stays the fleet's teal and --danger its red
-  // (WKRP's old red "live" dot is retired — red means destructive, not on-air).
+  // ourWKRP — the fleet's ground with an ember accent (OSE-1523, PO 2026-10-03).
+  // ourWKRP gave up its carbon black: dark is the same navy as OSE and light the
+  // same plain-web page, so the two products share one ground. "Named" is
+  // signalled by the ember accent and by words. Only the accent family is
+  // re-mapped; --live stays the fleet's teal and --danger its red.
   //
-  // Measured (tests/brand-themes.test.ts re-derives every one of these):
-  //   dark  — text 17.4 / muted 5.6 / accent 7.7 : 1 on --bg; muted 4.9 and
-  //           accent 6.8 on --surface-hover; --border-strong 3.3–3.7 : 1;
-  //           --on-accent 7.7 on --accent, 9.6 on --accent-hover.
-  //   light — ember #D4954B is only 2.4:1 on a light ground, so light uses a
-  //           burnt amber: accent 5.6 on --bg, 5.1 on --surface-hover; white
-  //           --on-accent 6.0 / 7.8 on accent / accent-hover; --border-strong
-  //           3.3–3.8 : 1; locked status roles (live/danger/warn/info/success)
-  //           all clear 4.5 on the warm paper grounds.
+  // Ember #D4954B is too light for a light ground, so light uses a burnt amber.
+  // Every pair is re-derived by tests/brand-themes.test.ts and
+  // scripts/verify-contrast.mjs.
   ow: {
     dark: {
-      '--bg': '#0A0A0A', // carbon-950
-      '--surface': '#141414', // carbon-900
-      '--card': '#141414',
-      '--surface-hover': '#1A1A1A', // carbon-800
-      '--border': '#2A2A2A', // carbon-700 — decorative dividers only
-      '--border-strong': '#6B6B6B', // control edges (WCAG 1.4.11)
-      '--text': '#F0F0F0', // carbon-100
-      '--text-primary': '#F0F0F0',
-      '--text-muted': '#888888', // carbon-500
-      '--text-secondary': '#888888',
       '--accent': '#D4954B', // ember-600
       '--accent-hover': '#E8A849', // ember-500
-      '--on-accent': '#0A0A0A', // carbon ink on ember
+      '--accent-visited': '#D4954B',
+      '--on-accent': '#0F1824', // navy ink on ember
     },
     light: {
-      '--bg': '#FAF7F2', // warm paper
-      '--surface': '#FFFFFF',
-      '--card': '#FFFFFF',
-      '--surface-hover': '#F2EDE4',
-      '--border': '#E4DDD1',
-      '--border-strong': '#8C8170',
-      '--text': '#1A1A1A',
-      '--text-primary': '#1A1A1A',
-      '--text-muted': '#5E574D',
-      '--text-secondary': '#5E574D',
       '--accent': '#93540F', // burnt amber — ember darkened for a light ground
       '--accent-hover': '#7A4608',
+      '--accent-visited': '#7A4608',
       '--on-accent': '#FFFFFF',
     },
   },

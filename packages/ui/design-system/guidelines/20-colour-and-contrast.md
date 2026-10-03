@@ -13,7 +13,7 @@ The two jobs have different requirements. A ground needs 3:1 against what surrou
 | **LINE** | `--border` (decorative) · `--border-strong` (meaningful) · `--focus-ring` | 3:1 for the latter two |
 | **GROUND** | `--bg` `--surface` `--surface-hover` `--card` | — |
 
-So `--accent` is the ground under a primary button and the fill of a progress bar — #52A6FF in dark (the CARTO signature #1785FB, read one step lighter so it also works as text on dark cards) and #0057D6 in light. A link, a stat value or an active nav label uses `--accent-text`. The brand keeps its blue; the type stays readable.
+So `--accent` is the ground under a primary button and the fill of a progress bar — #52A6FF in dark (the CARTO signature #1785FB, read one step lighter so it also works as text on dark cards) and #0000EE in light, the default web link blue. A link, a stat value or an active nav label uses `--accent-text`. The brand keeps its blue; the type stays readable.
 
 ## What was failing before the split
 
@@ -49,7 +49,7 @@ WCAG 1.4.11 asks for 3:1 on anything that identifies a control. Nothing reached 
 
 ```
 dark   navy #0F1824 on #52A6FF   7.02:1        (and 7.14:1 on the #F08585 danger fill)
-light  white on #0057D6          6.30:1        (and 6.34:1 on the #B03030 danger fill)
+light  white on #0000EE          9.40:1        (and 6.34:1 on the #B03030 danger fill)
 ```
 
 `.btn-primary` and `.btn-danger` read `var(--on-accent)`; never hardcode a label colour on a fill. Both themes clear AA at any label size, so the primary button does not depend on being large text to pass.

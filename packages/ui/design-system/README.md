@@ -49,7 +49,7 @@ This is the rule the whole palette hangs on. **A token is either a ground or som
 | **INK** — anything read | `--text` `--text-muted` `--accent-text` `--error` `--live-text` `--warn-text` | **4.5:1 (AA)** on every ground |
 | **LINE** — boundaries | `--border` decorative · `--border-strong` meaningful | 3:1 for `--border-strong` (WCAG 1.4.11) |
 
-So the CARTO signature blue stays the brand — `#1785FB` as the primitive, read one step lighter (`#52A6FF`) as the dark-theme fill under a primary button, `#0057D6` in light. Links and stat values use `--accent-text` instead. The brand keeps its colour and the type gets legible; before the split, one token had to do both jobs and failed at one of them.
+So the CARTO signature blue stays the brand — `#1785FB` as the primitive, read one step lighter (`#52A6FF`) as the dark-theme fill under a primary button, `#0000EE` (the default web link blue) in light. Links and stat values use `--accent-text` instead. The brand keeps its colour and the type gets legible; before the split, one token had to do both jobs and failed at one of them.
 
 Three tiers, as in `@ocr/ui`: Tier 1 primitives (`--ocr-*`) are never referenced by a component. Tier 2 semantic roles are what everything consumes. Tier 3 client brands re-map roles via `[data-brand="x"]`. Dark is the default; light arrives via `prefers-color-scheme` or `data-theme="light"`.
 
