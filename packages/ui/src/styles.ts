@@ -14,10 +14,17 @@
 export const componentStyles = `
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
+/* Links take the accent and visited tokens. :where() keeps the specificity at
+   zero, so any class that sets its own colour (.btn, a nav link) still wins. An
+   unclassed link used to fall to the browser's default blue, unreadable on the
+   dark ground. */
+:where(a){color:var(--accent)}
+:where(a:visited){color:var(--accent-visited)}
 
 /* Layout */
-.header{position:sticky;top:0;z-index:10;background:color-mix(in srgb, var(--bg) 90%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
-.header h1{font-size:1.25rem;font-weight:700}
+/* The header wraps and its title may break, so it fits a 320px screen at 200% text (WCAG 1.4.4 with 1.4.10). */
+.header{position:sticky;top:0;z-index:10;background:color-mix(in srgb, var(--bg) 90%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.header h1{font-size:1.25rem;font-weight:700;overflow-wrap:anywhere}
 .content{padding:20px 20px 100px}
 .section{margin-bottom:24px}
 .section-title{font-size:var(--text-min);font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
@@ -452,12 +459,17 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
    Removes infinite animations for users with vestibular or cognitive sensitivities.
    Short functional transitions (hover feedback) are also removed to respect the preference fully. */
 @media(prefers-reduced-motion:reduce){
+  /* Any animation, a spoke's own included, plays once and ends at once. */
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}
   .live-indicator.on,.live-badge{animation:none}
   .spinner{animation:none;border-top-color:var(--accent);opacity:.7}
   .search-bar.loading{animation:none;background-image:none}
   .btn,.card,.track-card,.filter-chip,.grid-card,.genre-popup,.genre-link,.list-item,.nav-item,.bar-fill,.progress-bar,.toggle-track,.toggle-track::after{transition:none}
   .search-result,.set-list .track-card,.genre-tag,.drop-zone,.view-btn,.attr-btn{transition:none}
 }
+
+/* A secondary line under a name (a sponsor's location): its own line, muted, at the text floor. */
+.sub-line{display:block;color:var(--text-muted);font-size:var(--text-min);overflow-wrap:anywhere}
 
 /* Visibility utilities LAST: at equal specificity the later rule wins, so a
    .hidden declared mid-sheet lost to any display rule after it (.drop-zone,

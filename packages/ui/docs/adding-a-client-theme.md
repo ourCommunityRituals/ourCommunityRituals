@@ -35,7 +35,7 @@ Override **only** the roles that differ — everything else inherits the OCR bas
 ### 2. Verify contrast
 
 Every overridden colour must clear its floor against the mode's background
-(`#0F1824` dark, `#F4F7FC` light): **4.5:1** for text roles, **3:1** for
+(`#141F30` dark, `#FFFFFF` light): **4.5:1** for text roles, **3:1** for
 interactive/large (accent, info). The test suite enforces this:
 
 ```

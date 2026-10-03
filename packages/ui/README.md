@@ -70,7 +70,7 @@ text / 3:1 control-edge contrast on its own grounds in both themes.
 | Brand | Spoke | Look |
 |-------|-------|------|
 | `acme` | — (example) | violet accent on the OCR base |
-| `ow` | ourWKRP | amber on carbon black; burnt amber on warm paper in light |
+| `ow` | ourWKRP | the fleet's grounds with an ember accent; burnt amber in light |
 
 Vocabulary only one spoke needs lives in a clearly marked "named surfaces"
 section of `src/styles.ts` (ourWKRP's today), tokenised like the rest.

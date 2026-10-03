@@ -57,12 +57,17 @@ describe('every registered brand theme', () => {
   });
 });
 
-describe('ow (ourWKRP) — amber on black', () => {
+describe('ow (ourWKRP) — ember on the fleet ground', () => {
   const dark = resolveBrandPalette('ow', 'dark');
   const light = resolveBrandPalette('ow', 'light');
 
-  it('is amber on carbon in dark, burnt amber on warm paper in light', () => {
-    expect(dark['--bg']).toBe('#0A0A0A');
+  it('shares the fleet grounds in both modes: ember in dark, burnt amber in light', () => {
+    // OSE-1523: ourWKRP gave up carbon black. One ground for OSE and ourWKRP.
+    const base = { dark: resolveBrandPalette('', 'dark'), light: resolveBrandPalette('', 'light') };
+    for (const ground of ['--bg', '--surface', '--card', '--surface-hover', '--border', '--text', '--text-muted']) {
+      expect(dark[ground], `dark ${ground}`).toBe(base.dark[ground]);
+      expect(light[ground], `light ${ground}`).toBe(base.light[ground]);
+    }
     expect(dark['--accent']).toBe('#D4954B');
     expect(light['--accent']).not.toBe('#D4954B');
     // Why the light accent differs: ember is not readable on a light ground.
@@ -88,8 +93,8 @@ describe('ow (ourWKRP) — amber on black', () => {
     }
   }
 
-  it('--on-accent flips per theme: carbon ink on ember, white on burnt amber', () => {
-    expect(dark['--on-accent']).toBe('#0A0A0A');
+  it('--on-accent flips per theme: navy ink on ember, white on burnt amber', () => {
+    expect(dark['--on-accent']).toBe('#0F1824');
     expect(light['--on-accent']).toBe('#FFFFFF');
   });
 
