@@ -58,6 +58,25 @@ emptyState({ icon: '📀', title: 'No sets yet',
 page({ title: 'Dashboard', live: true, body, nav: [...] });
 ```
 
+## Toasts (results of actions)
+
+One service for success, failure and heads-up messages (OSE-1564): icon + shape + a
+spoken label per kind, a failure that stays until dismissed and carries copyable details
+(code, request reference, time, action), a 10-second auto-dismiss that pauses on hover and
+focus. The styles ride in `/ui.css`; the runtime is one same-origin script:
+
+```ts
+import { serveToastJs } from '@ocr/ui';
+if (url.pathname === '/ui-toast.js') return serveToastJs(request); // <script src="/ui-toast.js" defer>
+```
+
+```js
+ocrToast.success('Event saved');
+ocrToast.failure('Could not save the event', { details: ocrToast.detailsFrom(res, body, 'Saving the event') });
+```
+
+Usage, options, behaviour and the security model: [`docs/toast.md`](docs/toast.md).
+
 ## Brands on the shared system
 
 A spoke paints itself with a registered Tier-3 brand: `<html data-brand="ow">`.
@@ -89,7 +108,7 @@ pnpm --filter @ocr/ui scan ./src/templates   # audit a folder
 ## Test
 
 ```bash
-pnpm --filter @ocr/ui test         # unit + a11y + contract (node:test, zero browser)
+pnpm --filter @ocr/ui test         # unit + a11y + contract (vitest; the toast suite runs in jsdom, no browser)
 BASE_URL=<preview-url> npx playwright test e2e/   # end-to-end across both apps
 ```
 
@@ -117,8 +136,9 @@ Spokes do not copy this package. Each pins one hub commit in its root `.ocr-hub-
 | `src/styles.ts` | Deduplicated component CSS + new `.empty-state` |
 | `src/css.ts` | Combined sheet, `serveCss()` route helper, `styleTag()` |
 | `src/partials.ts` | 15 partials: `page`, `header`, `bottomNav`, `footer`, `button`, `card`, `loading`, `emptyState`, `accessDenied`, `formInput`, `textarea`, `formSelect`, `checkbox`, `radioGroup`, `formGroup` |
+| `src/toast.ts` | Toast service: `toastScript` (browser runtime, `window.ocrToast`), `toastStyles`, `serveToastJs()` |
 | `src/contract.ts` | `checkTemplate()` drift guard for CI |
 | `src/esc.ts` | HTML/URL escaping (all partials use it) |
 | `src/contrast.ts` | WCAG contrast, used by the a11y tests |
-| `tests/` | 15 suites: token invariants and parity, brand and light/dark contrast (token pairs), text floor, XSS escaping, partials, the spoke design check |
+| `tests/` | 17 suites: token invariants and parity, brand and light/dark contrast (token pairs), text floor, XSS escaping, partials, the spoke design check, the toast (behaviour in jsdom, styles and contrast) |
 | `e2e/` | Playwright spec against shared selectors |
