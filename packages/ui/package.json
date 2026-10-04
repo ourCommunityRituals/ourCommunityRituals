@@ -31,7 +31,9 @@
     "contrast": "tsx scripts/verify-contrast.mjs"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "@types/react": "^18.3.0",
+    "jsdom": "^26.1.0",
     "react": "^18.3.0",
     "tsx": "^4.0.0",
     "typescript": "^5.4.0",

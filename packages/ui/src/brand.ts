@@ -121,7 +121,7 @@ export const TEXT_ROLES = [
 /**
  * The contrast floors a brand palette must clear in each mode (WCAG 2.x AA):
  * every text role 4.5:1 on every ground; --on-accent 4.5:1 on the solid fills it
- * labels (--accent, --accent-hover, --danger); control edges (--border-strong)
+ * labels (--accent, --accent-hover, --danger, --success); control edges (--border-strong)
  * and the focus ring (--accent) 3:1 on every ground.
  */
 export function brandContrastPairs(): ContrastPair[] {
@@ -130,7 +130,9 @@ export function brandContrastPairs(): ContrastPair[] {
     for (const fg of TEXT_ROLES) pairs.push({ fg, bg, min: 4.5, kind: 'text' });
     pairs.push({ fg: '--border-strong', bg, min: 3, kind: 'non-text' });
   }
-  for (const bg of ['--accent', '--accent-hover', '--danger']) {
+  // --success joins the fills --on-accent labels: the toast (OSE-1564) puts text on
+  // the solid success fill exactly as it does on the solid danger fill.
+  for (const bg of ['--accent', '--accent-hover', '--danger', '--success']) {
     pairs.push({ fg: '--on-accent', bg, min: 4.5, kind: 'text' });
   }
   return pairs;

@@ -11,6 +11,8 @@
  * No text is smaller than var(--text-min) (13px) — tests/text-floor.test.ts.
  */
 
+import { toastStyles } from './toast';
+
 export const componentStyles = `
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
@@ -470,6 +472,8 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 
 /* A secondary line under a name (a sponsor's location): its own line, muted, at the text floor. */
 .sub-line{display:block;color:var(--text-muted);font-size:var(--text-min);overflow-wrap:anywhere}
+
+${toastStyles}
 
 /* Visibility utilities LAST: at equal specificity the later rule wins, so a
    .hidden declared mid-sheet lost to any display rule after it (.drop-zone,
