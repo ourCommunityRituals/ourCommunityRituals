@@ -56,11 +56,11 @@
     "@types/node": "^20.0.0",
     "@types/pg": "^8.11.0",
     "better-sqlite3": "^11.0.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.3.2",
     "pg": "^8.11.0",
     "pg-mem": "^3.0.5",
     "typescript": "^5.4.0",
-    "vitest": "^3.2.6"
+    "vitest": "^4.1.11"
   },
   "engines": {
     "node": ">=20"
