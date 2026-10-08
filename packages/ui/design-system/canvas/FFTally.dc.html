@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fist of Five tonight's tally</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 18px; padding: 20px">
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Fist of Five · Card [N]</span>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 800">Tonight's tally</h1>
+    <span style="font-size: 14px; color: #A39D94">Song [N] of [N] · updates as the room votes</span>
+  </div>
+
+  <div style="background: #1A1918; border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; gap: 14px; align-items: center; color: #F4EEE2">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4954B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="3"></rect><circle cx="12" cy="12" r="3.2"></circle></svg>
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #D4954B">Belt on the line · held by</span>
+      <span style="font-size: 18px; font-weight: 800">[STABLE A]</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <sc-for list="{{teams}}" as="t" hint-placeholder-count="4">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <span style="font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 4px; background: #1A1918; border: 1px solid #403D3A; color: #F4EEE2">{{t.name}}</span>
+          <span style="font-size: 16px; font-weight: 700; color: {{t.valueColor}}">{{t.value}}</span>
+        </div>
+        <div style="height: 14px; border-radius: 4px; background: #232120; overflow: hidden; display: flex">
+          <span style="height: 14px; border-radius: 4px; background: {{t.bar}}; border: {{t.edge}}; box-sizing: border-box; width: {{t.width}}"></span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="border: 1px dashed #7E7871; border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px">
+    <span style="font-size: 14px; font-weight: 700">Held: fewer than 5 votes so far</span>
+    <span style="font-size: 13px; line-height: 1.45; color: #A39D94">A small number could point back to someone, so we hold it until the room gets bigger.</span>
+  </div>
+
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center">
+    <a href="#" style="width: 100%; min-height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #E07A5F; color: #1A1918; font-size: 18px; font-weight: 800; text-decoration: none">Back to voting</a>
+    <span style="font-size: 13px; color: #A39D94">Final results post to the SharedReport after the last song.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var solid = { bar: '#E07A5F', edge: 'none', valueColor: '#F4EEE2' };
+    return { teams: [
+      Object.assign({ name: '[STABLE A]', value: '[N] votes', width: '78%' }, solid),
+      Object.assign({ name: '[STABLE B]', value: '[N] votes', width: '64%' }, solid),
+      Object.assign({ name: '[STABLE C]', value: '[N] votes', width: '41%' }, solid),
+      { name: '[STABLE D]', value: 'Held', width: '100%', bar: 'transparent', edge: '2px dashed #7E7871', valueColor: '#A39D94' }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

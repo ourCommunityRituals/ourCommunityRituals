@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Type, space and touch</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1440px; height: 820px; box-sizing: border-box; padding: 64px 80px; background: #1A1918; color: #F4EEE2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px">
+  <div style="display: flex; flex-direction: column; gap: 22px">
+    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Type</div>
+    <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #A39D94">It uses one system-font stack (<span style="color: #F4EEE2">--font</span>: -apple-system, Segoe UI, Roboto), so there's no web-font cost on a phone or a venue kiosk. The hierarchy comes from weight and case, not typeface.</p>
+    <div style="display: flex; flex-direction: column; gap: 0; border-top: 1px solid #403D3A">
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Header h1 · 20 / 700</span><span style="font-size: 22px; font-weight: 700">Friday game night</span></div>
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Empty title · 17.6 / 700</span><span style="font-size: 18px; font-weight: 700">No sets yet</span></div>
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Input · 16 / 400</span><span style="font-size: 16px">Nothing below 16px, so iOS never zooms in</span></div>
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Button · 14.4 / 600</span><span style="font-size: 14px; font-weight: 600">Check in</span></div>
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Label · 14 / muted</span><span style="font-size: 14px; color: #A39D94">Venue address</span></div>
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Section · 13 caps</span><span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Your events</span></div>
+      <div style="display: flex; align-items: baseline; gap: 24px; padding: 16px 0; border-bottom: 1px solid #403D3A"><span style="width: 150px; flex-shrink: 0; font-size: 13px; color: #A39D94">Brand mark · 13 caps</span><span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">ourSharedEvents</span></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 36px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Radius</div>
+      <div style="display: flex; gap: 24px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 120px; height: 80px; background: #232120; border: 1px solid #7E7871; border-radius: 8px"></div><span style="font-size: 13px">--radius-sm · 8px</span><span style="font-size: 13px; color: #A39D94">Buttons, inputs, cards</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 120px; height: 80px; background: #232120; border: 1px solid #7E7871; border-radius: 12px"></div><span style="font-size: 13px">--radius · 12px</span><span style="font-size: 13px; color: #A39D94">Panels, sheets</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 120px; height: 36px; background: #232120; border: 1px solid #7E7871; border-radius: 999px"></div><span style="font-size: 13px">--radius-pill · 20px</span><span style="font-size: 13px; color: #A39D94">Chips, badges</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Touch</div>
+      <div style="display: flex; gap: 32px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="width: 48px; height: 48px; border: 2px dashed #00C4B4; border-radius: 8px; box-sizing: border-box"></div><span style="font-size: 13px">--tap-min · 48px</span><span style="font-size: 13px; color: #A39D94">Every button and nav item</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="width: 180px; height: 44px; border: 2px dashed #3D9BFF; border-radius: 8px; box-sizing: border-box"></div><span style="font-size: 13px">Input floor · 44px</span><span style="font-size: 13px; color: #A39D94">WCAG 2.5.5 and Apple HIG</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Spacing</div>
+      <div style="display: flex; gap: 14px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 8px; height: 8px; background: #3D9BFF"></div><span style="font-size: 13px; color: #A39D94">8</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 12px; height: 12px; background: #3D9BFF"></div><span style="font-size: 13px; color: #A39D94">12</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 16px; height: 16px; background: #3D9BFF"></div><span style="font-size: 13px; color: #A39D94">16</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 20px; height: 20px; background: #3D9BFF"></div><span style="font-size: 13px; color: #A39D94">20</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 24px; height: 24px; background: #3D9BFF"></div><span style="font-size: 13px; color: #A39D94">24</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 40px; height: 40px; background: #3D9BFF"></div><span style="font-size: 13px; color: #A39D94">40</span></div>
+        <p style="margin: 0 0 0 16px; font-size: 13px; line-height: 1.5; color: #A39D94; max-width: 260px">Content is padded 20px, sections are 24px apart and card bodies are padded 16px. The bottom nav reserves 100px.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

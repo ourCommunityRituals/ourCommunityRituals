@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Interaction states, older adults first</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1040px; box-sizing: border-box; padding: 56px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Interaction states · designing for the 50–75 reader</span>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">Make every mistake cheap</h1>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 16px; line-height: 1.5; color: #A39D94">People in this age range don't use software less carefully. They use it with less confidence. So every error should be obviously recoverable in one step, and nothing should move unless the person asked it to.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 16px; font-weight: 700">Undo beats confirm</span>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; background: #1A1918; border: 1px solid #7E7871">
+        <span style="flex-grow: 1; font-size: 16px">Sponsor removed.</span>
+        <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #3D9BFF; background: transparent; color: #3D9BFF; font: 700 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Undo</button>
+      </div>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">Do the thing, then offer Undo for 10 seconds. Keep a real confirm only for things that can't be undone, like taking a live event down.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 16px; font-weight: 700">Check on leave, never mid-word</span>
+      <label for="s-email" style="font-size: 14px; color: #A39D94; margin: 0">Email for the reminder</label>
+      <input id="s-email" type="text" value="hello@maplefair" style="min-height: 48px; padding: 12px 14px; box-sizing: border-box; background: #1A1918; border: 2px solid #F08585; border-radius: 8px; color: #F4EEE2; font-size: 16px; font-family: inherit">
+      <span style="min-height: 44px; font-size: 14px; line-height: 1.45; color: #F08585">That email is missing its ending. Try hello@maplefair.org.</span>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">Errors say what happened, why and what to do. The error line's space is saved from the start, so nothing jumps.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 16px; font-weight: 700">Explain before, not after</span>
+      <label for="s-addr" style="font-size: 14px; color: #A39D94; margin: 0">Venue address</label>
+      <span style="font-size: 14px; color: #A39D94">Why we ask: it sets your corridor, the few blocks around your venue.</span>
+      <input id="s-addr" type="text" value="[STREET ADDRESS]" style="min-height: 48px; padding: 12px 14px; box-sizing: border-box; background: #1A1918; border: 1px solid #7E7871; border-radius: 8px; color: #F4EEE2; font-size: 16px; font-family: inherit">
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">The hint sits under the label before anyone types. A hint that only shows up after a mistake feels like a telling-off.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 16px; font-weight: 700">Name the outcome</span>
+      <button type="button" style="min-height: 56px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 700 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Make the poster</button>
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="min-height: 44px; flex-grow: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px dashed #7E7871; color: #A39D94; font-size: 16px; text-decoration: line-through">Continue</span>
+        <span style="font-size: 14px; color: #A39D94">not this</span>
+      </div>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">A button says what happens next. One main action per screen: two equally weighted buttons means two screens.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 16px; font-weight: 700">Updates wait for you</span>
+      <button type="button" style="min-height: 44px; border-radius: 999px; border: 1px solid #3D9BFF; background: rgba(61,155,255,0.12); color: #3D9BFF; font: 700 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">2 updates · show them</button>
+      <div style="padding: 12px 14px; border-radius: 8px; border: 1px solid #403D3A; font-size: 16px">Bocce tournament · Sat 11 AM</div>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">Live changes like "moved indoors" or "running late" wait behind a button. The page never reflows under a finger.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 16px; font-weight: 700">No timeouts</span>
+      <div style="padding: 14px; border-radius: 8px; background: #1A1918; border: 1px solid #7E7871; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 16px; line-height: 1.45">Still working on this? Your draft is saved either way.</span>
+        <button type="button" style="min-height: 48px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 700 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Keep working</button>
+      </div>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">Nothing expires while someone is reading. If a session must end, warn at 20 minutes with one tap to keep going.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 16px; font-weight: 700">Space, focus, distance</span>
+      <div style="display: flex; gap: 12px">
+        <button type="button" style="min-height: 48px; flex-grow: 1; border: 1px solid #7E7871; border-radius: 8px; background: transparent; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; outline: 3px solid #8AC2FF; outline-offset: 2px">Share</button>
+        <button type="button" style="min-height: 48px; flex-grow: 1; border: 1px solid #7E7871; border-radius: 8px; background: transparent; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Edit</button>
+      </div>
+      <div style="height: 12px"></div>
+      <button type="button" style="min-height: 48px; border: 1px solid #F08585; border-radius: 8px; background: transparent; color: #F08585; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Delete sponsor</button>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">Targets are 48px with 12px between them and a 3px focus ring. Destructive actions sit 24px away, never beside the main action.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 16px; font-weight: 700">A glyph never travels alone</span>
+      <button type="button" style="min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #7E7871; border-radius: 8px; background: transparent; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
+        Share
+      </button>
+      <span style="font-size: 14px; line-height: 1.5; color: #A39D94">No icon-only buttons, no hover-only hints, no swipe or long-press actions. Every action has a visible control with a word on it.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Create event, pick a type</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column">
+  <div style="padding: 16px 20px; border-bottom: 1px solid #403D3A; display: flex; align-items: center; justify-content: space-between">
+    <span style="font-size: 18px; font-weight: 700">New event</span>
+    <span style="font-size: 13px; color: #A39D94">Step 1 of 3</span>
+  </div>
+  <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
+    <h1 style="margin: 0; font-size: 22px; line-height: 1.2; font-weight: 800">What kind of event?</h1>
+    <p style="margin: 0; font-size: 16px; line-height: 1.45; color: #A39D94">Pick the closest match. We'll fill in the rest, and you can change anything.</p>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Popular near you</span>
+      <sc-for list="{{popular}}" as="t" hint-placeholder-count="3">
+        <button type="button" style="min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 0 14px; text-align: left; border-radius: 8px; border: 1px solid #7E7871; background: #232120; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+          <span style="width: 40px; height: 40px; border-radius: 8px; border: 1px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #8AC2FF">{{t.code}}</span>
+          <span style="flex-grow: 1">{{t.name}}</span>
+          <span style="font-size: 13px; font-weight: 400; color: #A39D94">{{t.cat}}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">All 15 categories</span>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="9">
+          <button type="button" style="min-height: 64px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 8px 10px; border-radius: 8px; border: 1px solid #403D3A; background: #232120; color: #F4EEE2; text-align: left; font-family: inherit">
+            <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.05em; color: #8AC2FF">{{c.code}}</span>
+            <span style="font-size: 13px; line-height: 1.2">{{c.name}}</span>
+          </button>
+        </sc-for>
+      </div>
+      <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">See all categories</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      popular: [
+        { code: 'TAB', name: 'Board game night', cat: 'Tabletop' },
+        { code: 'REC', name: 'Bocce tournament', cat: 'Sports' },
+        { code: 'SOC', name: 'Neighborhood potluck', cat: 'Social' }
+      ],
+      cats: [
+        { code: 'REC', name: 'Sports & Rec' }, { code: 'SOC', name: 'Social & Dining' }, { code: 'ENT', name: 'Trivia & Fun' },
+        { code: 'PER', name: 'Open Mic' }, { code: 'ART', name: 'Arts & Music' }, { code: 'TAB', name: 'Tabletop' },
+        { code: 'MKT', name: 'Markets' }, { code: 'BIZ', name: 'Networking' }, { code: 'VOL', name: 'Mutual Aid' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

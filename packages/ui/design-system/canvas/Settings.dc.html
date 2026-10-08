@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column">
+
+  <div style="padding: 16px 40px; border-bottom: 1px solid #403D3A; display: flex; align-items: center; gap: 24px">
+    <span style="font-size: 18px; font-weight: 700">OurSharedEvents</span>
+    <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Settings</span>
+    <span style="margin-left: auto; font-size: 14px; color: #A39D94">[BRAND NAME] · Mid plan</span>
+    <span style="font-size: 14px; color: #34D399; font-weight: 600">All changes saved</span>
+  </div>
+
+  <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr) minmax(0, 1fr); gap: 32px; padding: 28px 40px">
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="6">
+        <a href="#" style="min-height: 48px; padding: 0 14px; display: flex; align-items: center; border-radius: 8px; border: 1px solid {{n.edge}}; background: {{n.fill}}; color: {{n.ink}}; font-size: 16px; font-weight: 600; text-decoration: none">{{n.label}}</a>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 800">Defaults for new events</h1>
+        <span style="font-size: 14px; color: #A39D94">Every new event starts from these. Changing one here does not touch events you already made.</span>
+      </div>
+
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; overflow: hidden">
+        <sc-for list="{{toggles}}" as="t" hint-placeholder-count="5">
+          <div style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-bottom: 1px solid #403D3A">
+            <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1; min-width: 0">
+              <span style="font-size: 16px; font-weight: 600">{{t.name}}</span>
+              <span style="font-size: 13px; color: #A39D94">{{t.help}}</span>
+            </div>
+            <button type="button" role="switch" aria-checked="{{t.on}}" aria-label="{{t.name}}" style="width: 64px; height: 44px; flex-shrink: 0; border-radius: 999px; border: 1px solid {{t.edge}}; background: {{t.fill}}; color: {{t.ink}}; font: 700 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">{{t.word}}</button>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #A39D94">Time zone
+          <select style="height: 48px; padding: 0 12px; border-radius: 8px; border: 1px solid #7E7871; background: #1A1918; color: #F4EEE2; font: inherit; font-size: 16px; font-weight: 400"><option>Central Time</option></select>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #A39D94">TV screen time, seconds
+          <input type="number" value="15" style="height: 48px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; border: 1px solid #7E7871; background: #1A1918; color: #F4EEE2; font: inherit; font-size: 16px; font-weight: 400">
+        </label>
+        <span style="grid-column: 1 / -1; font-size: 13px; color: #A39D94">Between 5 and 120 seconds.</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Your plan includes</span>
+        <sc-for list="{{plan}}" as="p" hint-placeholder-count="5">
+          <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px">
+            <span>{{p.name}}</span>
+            <span style="font-weight: 700; color: {{p.fg}}">{{p.state}}</span>
+          </div>
+        </sc-for>
+        <span style="font-size: 13px; line-height: 1.45; color: #A39D94">The plan is set with us, not on this page.</span>
+      </div>
+
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Timings</span>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>New event appears on the list after</span><span style="font-weight: 700">10 minutes</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Untouched drafts are archived after</span><span style="font-weight: 700">30 days</span></div>
+        <span style="font-size: 13px; color: #A39D94">Set for the whole platform.</span>
+      </div>
+
+      <div style="border: 1px dashed #7E7871; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Fixed for everyone · cannot be changed</span>
+        <sc-for list="{{fixed}}" as="f" hint-placeholder-count="5">
+          <span style="font-size: 14px; line-height: 1.45">{{f}}</span>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var navOn = { edge: '#3D9BFF', fill: 'rgba(61,155,255,0.12)', ink: '#8AC2FF' };
+    var navOff = { edge: 'transparent', fill: 'transparent', ink: '#F4EEE2' };
+    var yes = { on: 'true', word: 'On', edge: '#3D9BFF', fill: '#3D9BFF', ink: '#1A1918' };
+    var no = { on: 'false', word: 'Off', edge: '#7E7871', fill: 'transparent', ink: '#A39D94' };
+    return {
+      nav: [
+        Object.assign({ label: 'Defaults for new events' }, navOn),
+        Object.assign({ label: 'Brand and look' }, navOff),
+        Object.assign({ label: 'People and access' }, navOff),
+        Object.assign({ label: 'Sponsors' }, navOff),
+        Object.assign({ label: 'Plan' }, navOff),
+        Object.assign({ label: 'Logs' }, navOff)
+      ],
+      toggles: [
+        Object.assign({ name: 'Print QR codes on the poster', help: 'Off for walk-up events with nothing to scan.' }, yes),
+        Object.assign({ name: 'TV: show "Coming up next"', help: 'A screen listing your other events.' }, yes),
+        Object.assign({ name: 'TV: show sponsors', help: 'One screen for each sponsor that has agreed.' }, yes),
+        Object.assign({ name: 'Ask for a survey afterwards', help: 'A rating and an optional comment.' }, no),
+        Object.assign({ name: 'Offer email updates', help: 'One email when something is coming up.' }, no)
+      ],
+      plan: [
+        { name: 'Registration and check-in', state: 'Included', fg: '#34D399' },
+        { name: 'Surveys and email updates', state: 'Included', fg: '#34D399' },
+        { name: 'Report with the area map', state: 'Included', fg: '#34D399' },
+        { name: 'Codes on a poster', state: 'Up to 5', fg: '#F4EEE2' },
+        { name: 'One view across all campaigns', state: 'Enterprise', fg: '#A39D94' },
+        { name: 'Your own look and address', state: 'Enterprise', fg: '#A39D94' }
+      ],
+      fixed: [
+        'A count under 5 is held, never shown.',
+        'The map never goes finer than a neighborhood.',
+        'Registrations are deleted 90 days after the event; email sign-ups after 30.',
+        'Event code colors, and the line "Never who, only how many".',
+        'Security, roles and the activity record are the same on every plan.'
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

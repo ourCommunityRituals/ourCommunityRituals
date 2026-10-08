@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site map inside one event</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F4EEE2;color:#1A1918;-webkit-font-smoothing:antialiased}
+a{color:#0057D6}a:hover{color:#2E6FDF}
+</style>
+</helmet>
+<div style="width: 390px; height: 900px; box-sizing: border-box; background: #F4EEE2; color: #1A1918; display: flex; flex-direction: column; gap: 14px; padding: 16px 20px">
+  <nav aria-label="Where you are" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 14px">
+    <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 4px; font-weight: 600">[CORRIDOR]</a>
+    <span style="color: #5E584F">›</span>
+    <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 4px; font-weight: 600">Street fair</a>
+    <span style="color: #5E584F">›</span>
+    <span style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 4px; font-weight: 700">Food row</span>
+  </nav>
+
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <span style="font-size: 16px; font-weight: 700">You are near the [STREET] entrance</span>
+    <span style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid #857C6F; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800" aria-label="North is up">N</span>
+  </div>
+
+  <div style="background: #FAF6EE; border: 1px solid #D9CFBC; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{north}}" as="s" hint-placeholder-count="4">
+        <span style="min-height: 64px; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 700; border: {{s.edge}}; background: {{s.bg}}; color: {{s.fg}}">{{s.word}}<span style="font-size: 13px; font-weight: 400">{{s.n}}</span></span>
+      </sc-for>
+    </div>
+    <div style="min-height: 44px; border-radius: 4px; background: #EAE2D2; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 13px; color: #5E584F">
+      <span style="font-weight: 700; color: #1A1918">● You</span><span>[STREET NAME]</span><span>→ Music stage</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{south}}" as="s" hint-placeholder-count="4">
+        <span style="min-height: 64px; border-radius: 8px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 700; border: {{s.edge}}; background: {{s.bg}}; color: {{s.fg}}">{{s.word}}<span style="font-size: 13px; font-weight: 400">{{s.n}}</span></span>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="background: #FAF6EE; border: 1px solid #D9CFBC; border-radius: 12px; display: flex; flex-direction: column">
+    <div style="padding: 14px 16px; border-bottom: 1px solid #D9CFBC; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 18px; font-weight: 800">[VENDOR NAME]</span>
+      <span style="font-size: 14px; color: #5E584F">Bakery · stall 12 · open until 1:00 PM</span>
+    </div>
+    <sc-for list="{{routes}}" as="r" hint-placeholder-count="3">
+      <a href="#" style="min-height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #D9CFBC; text-decoration: none; color: #1A1918">
+        <span style="font-size: 16px; font-weight: 600; flex-grow: 1">{{r.word}}</span>
+        <span style="font-size: 13px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; color: #5E584F">/s/[CODE]{{r.suffix}}</span>
+      </a>
+    </sc-for>
+  </div>
+
+  <a href="#" style="min-height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #857C6F; font-size: 16px; font-weight: 600; text-decoration: none">Show as a list instead</a>
+  <span style="margin-top: auto; font-size: 13px; color: #5E584F; text-align: center">This map is saved on your phone, so it works without signal.</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var s = { edge: '1px solid #857C6F', bg: '#FAF6EE', fg: '#1A1918' };
+    var pick = { edge: '3px solid #0057D6', bg: '#EAE2D2', fg: '#0057D6' };
+    return {
+      north: [Object.assign({ word: 'Produce', n: '9' }, s), Object.assign({ word: 'Produce', n: '10' }, s), Object.assign({ word: 'Hot food', n: '11' }, s), Object.assign({ word: 'Bakery', n: '12' }, pick)],
+      south: [Object.assign({ word: 'Kids', n: '13' }, s), Object.assign({ word: 'Crafts', n: '14' }, s), Object.assign({ word: 'Hot food', n: '15' }, s), Object.assign({ word: 'Help', n: 'tent' }, s)],
+      routes: [
+        { word: 'Menu and prices', suffix: 'M' },
+        { word: 'Tell them how it was', suffix: 'F' },
+        { word: 'Get help here', suffix: 'H' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

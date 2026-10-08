@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Event poster, no artwork, no sponsors</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F4EEE2;color:#1A1918}
+</style>
+</helmet>
+<div style="width: 1056px; height: 1344px; box-sizing: border-box; padding: 64px 64px 56px; background: #F4EEE2; color: #1A1918; display: flex; flex-direction: column; gap: 32px">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <span style="font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #0057D6; font-weight: 600">OurSharedEvents</span>
+    <span style="font-size: 16px; color: #5E584F">[ORGANIZER NAME]</span>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px">
+    <span style="align-self: flex-start; font-size: 18px; font-weight: 700; letter-spacing: 0.05em; padding: 8px 14px; border-radius: 8px; border: 2px solid #1A1918">TAB · Tabletop</span>
+    <h1 style="margin: 0; font-size: 128px; line-height: 0.98; font-weight: 800; letter-spacing: -0.025em">Friday board game night</h1>
+
+
+    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 36px; line-height: 1.3">
+      <span style="font-weight: 700">Friday, October 23 · 7:00 PM</span>
+      <span>[VENUE NAME] · [STREET ADDRESS]</span>
+      <span>All ages · [YOUR PRICE]</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="3">
+      <div style="background: #FAF6EE; border: 1px solid #D9CFBC; border-top: 8px solid {{s.hex}}; border-radius: 12px; padding: 18px 14px 16px; display: flex; flex-direction: column; align-items: center; gap: 10px">
+        <span style="display: flex; align-items: baseline; gap: 8px">
+          <span style="font-size: 22px; font-weight: 800">{{s.word}}</span>
+          <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.08em; color: #5E584F">· {{s.uec}}</span>
+        </span>
+        <svg viewBox="0 0 29 29" width="230" height="230" shape-rendering="crispEdges" role="img" aria-label="QR code placeholder">
+          <rect width="29" height="29" fill="#FAF6EE"></rect>
+          <path fill="{{s.hex}}" d="M1 1h7v7H1zM21 1h7v7h-7zM1 21h7v7H1z"></path>
+          <path fill="#FAF6EE" d="M2 2h5v5H2zM22 2h5v5h-5zM2 22h5v5H2z"></path>
+          <path fill="{{s.hex}}" d="M3 3h3v3H3zM23 3h3v3h-3zM3 23h3v3H3zM10 1h2v2h-2zM13 2h1v3h-1zM10 5h3v1h-3zM15 1h3v1h-3zM16 3h2v2h-2zM10 10h3v2h-3zM14 9h2v4h-2zM18 10h3v1h-3zM22 10h2v3h-2zM25 11h3v1h-3zM1 10h2v2H1zM4 11h3v1H4zM2 14h4v1H2zM6 16h2v3H6zM1 17h3v1H1zM10 14h1v4h-1zM12 15h4v1h-4zM17 13h2v3h-2zM20 14h3v1h-3zM24 15h2v4h-2zM27 14h1v5h-1zM13 18h2v2h-2zM10 21h3v1h-3zM11 23h1v4h-1zM14 22h3v1h-3zM15 25h2v3h-2zM18 20h2v2h-2zM21 21h4v1h-4zM20 24h2v2h-2zM23 23h1v5h-1zM25 25h3v1h-3zM26 27h2v1h-2z"></path>
+        </svg>
+        <span style="font-size: 14px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; color: #5E584F">{{s.link}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding-top: 16px; border-top: 1px solid #D9CFBC; font-size: 16px; color: #5E584F">No name needed. Scans are counted, never tracked.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1056,"height":1344}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      sponsors: [
+        { name: '[SPONSOR NAME]' },
+        { name: '[SPONSOR NAME]' },
+        { name: '[SPONSOR NAME]' }
+      ],
+      slots: [
+        { word: 'EVENT', uec: 'UTILITY', hex: '#2A2A3A', link: '/s/[CODE]' },
+        { word: 'DONATE', uec: 'SHOP', hex: '#1A4A48', link: '/s/[CODE]' },
+        { word: 'SIGN UP', uec: 'ENTER', hex: '#1A6B2F', link: '/s/[CODE]' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

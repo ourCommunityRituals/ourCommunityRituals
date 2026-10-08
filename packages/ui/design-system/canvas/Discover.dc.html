@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Discover on the map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; position: relative">
+  <div style="padding: 14px 20px 10px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <span style="font-size: 22px; font-weight: 700">Near you</span>
+      <span style="font-size: 13px; color: #A39D94">Only your cell is shared</span>
+    </div>
+    <div style="display: flex; gap: 8px; overflow: hidden">
+      <button type="button" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #7E7871; background: transparent; color: #F4EEE2; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">All</button>
+      <button type="button" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #3D9BFF; background: rgba(61,155,255,0.12); color: #3D9BFF; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">TAB Tabletop</button>
+      <button type="button" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #7E7871; background: transparent; color: #F4EEE2; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">REC Sports</button>
+      <button type="button" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #7E7871; background: transparent; color: #F4EEE2; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">MKT Markets</button>
+    </div>
+  </div>
+  <svg width="390" height="300" viewBox="150 60 420 323" role="img" aria-label="Map of nearby cells with your cell outlined and open tabletop niches dashed">
+    <polygon points="199.3,86.0 199.3,132.0 159.5,155.0 119.7,132.0 119.7,86.0 159.5,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="279.0,86.0 279.0,132.0 239.2,155.0 199.3,132.0 199.3,86.0 239.2,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="358.7,86.0 358.7,132.0 318.9,155.0 279.0,132.0 279.0,86.0 318.9,63.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+    <polygon points="438.4,86.0 438.4,132.0 398.5,155.0 358.7,132.0 358.7,86.0 398.5,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="518.0,86.0 518.0,132.0 478.2,155.0 438.4,132.0 438.4,86.0 478.2,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="597.7,86.0 597.7,132.0 557.9,155.0 518.0,132.0 518.0,86.0 557.9,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="159.5,155.0 159.5,201.0 119.7,224.0 79.8,201.0 79.8,155.0 119.7,132.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="239.2,155.0 239.2,201.0 199.3,224.0 159.5,201.0 159.5,155.0 199.3,132.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="318.9,155.0 318.9,201.0 279.0,224.0 239.2,201.0 239.2,155.0 279.0,132.0" fill="#2B6BC0" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="398.5,155.0 398.5,201.0 358.7,224.0 318.9,201.0 318.9,155.0 358.7,132.0" fill="#23508A" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="478.2,155.0 478.2,201.0 438.4,224.0 398.5,201.0 398.5,155.0 438.4,132.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="557.9,155.0 557.9,201.0 518.0,224.0 478.2,201.0 478.2,155.0 518.0,132.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+    <polygon points="637.6,155.0 637.6,201.0 597.7,224.0 557.9,201.0 557.9,155.0 597.7,132.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="199.3,224.0 199.3,270.0 159.5,293.0 119.7,270.0 119.7,224.0 159.5,201.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+    <polygon points="279.0,224.0 279.0,270.0 239.2,293.0 199.3,270.0 199.3,224.0 239.2,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="358.7,224.0 358.7,270.0 318.9,293.0 279.0,270.0 279.0,224.0 318.9,201.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="518.0,224.0 518.0,270.0 478.2,293.0 438.4,270.0 438.4,224.0 478.2,201.0" fill="#23508A" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="597.7,224.0 597.7,270.0 557.9,293.0 518.0,270.0 518.0,224.0 557.9,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="239.2,293.0 239.2,339.0 199.3,362.0 159.5,339.0 159.5,293.0 199.3,270.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+    <polygon points="318.9,293.0 318.9,339.0 279.0,362.0 239.2,339.0 239.2,293.0 279.0,270.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="398.5,293.0 398.5,339.0 358.7,362.0 318.9,339.0 318.9,293.0 358.7,270.0" fill="#23508A" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="478.2,293.0 478.2,339.0 438.4,362.0 398.5,339.0 398.5,293.0 438.4,270.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="557.9,293.0 557.9,339.0 518.0,362.0 478.2,339.0 478.2,293.0 518.0,270.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+    <polygon points="438.4,224.0 438.4,270.0 398.5,293.0 358.7,270.0 358.7,224.0 398.5,201.0" fill="#23508A" stroke="#F4EEE2" stroke-width="3"></polygon>
+    <circle cx="279.0" cy="178.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+    <circle cx="398.5" cy="247.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+    <text x="398.5" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#F4EEE2">You</text>
+  </svg>
+  <div style="flex-grow: 1; background: #232120; border-top: 1px solid #403D3A; border-radius: 12px 12px 0 0; padding: 10px 20px 16px; display: flex; flex-direction: column; gap: 12px">
+    <span style="align-self: center; width: 40px; height: 4px; border-radius: 4px; background: #7E7871"></span>
+    <div style="display: flex; gap: 12px; align-items: center">
+      <span style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #8AC2FF">TAB</span>
+      <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1">
+        <span style="font-size: 16px; font-weight: 600">Board game night</span>
+        <span style="font-size: 13px; color: #A39D94">Fri · 7:00 PM · your cell</span>
+      </div>
+      <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Open</a>
+    </div>
+    <div style="border: 1px dashed #3D9BFF; border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 16px; font-weight: 700">4 nearby cells have no tabletop nights</span>
+      <span style="font-size: 13px; line-height: 1.45; color: #A39D94">They're outlined with dashes. Start one, and local sponsors who back tabletop events will be invited.</span>
+      <a href="#" style="align-self: flex-start; min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; border-radius: 8px; background: #3D9BFF; color: #1A1918; font-size: 14px; font-weight: 600; text-decoration: none">Start a tabletop night</a>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: flex-start; padding-top: 10px; border-top: 1px solid #403D3A">
+      <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94; padding-top: 3px">Local</span>
+      <span style="font-size: 13px; line-height: 1.45; color: #A39D94"><span style="color: #F4EEE2">[LOCAL SERVICE]</span> serves this cell. [ONE-LINE OFFER · YOUR PRICE]</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

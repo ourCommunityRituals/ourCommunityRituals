@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tier 3 brands</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; padding: 64px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 32px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Tier 3 · white label</div>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">Same structure, repainted</h1>
+    </div>
+    <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.5; color: #A39D94">A brand is one object with <span style="color: #F4EEE2">dark</span> and <span style="color: #F4EEE2">light</span> values. OSM onboards it and OA deploys it. It can't ship until <span style="color: #F4EEE2">checkBrandContrast()</span> reports no failures in both themes. Status roles and UEC colors stay fixed, so a brand can repaint the look but not change what a color means.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{brands}}" as="b" hint-placeholder-count="3">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: baseline; gap: 10px">
+          <span style="font-size: 18px; font-weight: 700">{{b.label}}</span>
+          <span style="font-size: 13px; color: #A39D94; font-family: ui-monospace, 'SF Mono', Menlo, monospace">{{b.attr}}</span>
+        </div>
+        <sc-for list="{{b.modes}}" as="m" hint-placeholder-count="2">
+          <div style="border-radius: 12px; border: 1px solid {{m.border}}; background: {{m.bg}}; color: {{m.text}}; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: {{m.accent}}">{{b.label}} · {{m.mode}}</span>
+              <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: {{m.live}}; border: 1px solid {{m.live}}">Live</span>
+            </div>
+            <div style="background: {{m.surface}}; border: 1px solid {{m.border}}; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 16px; font-weight: 700">Friday game night</span>
+              <span style="font-size: 13px; color: {{m.muted}}">Sat · 6:00 PM · [VENUE NAME]</span>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <span style="flex-grow: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; font-weight: 600; background: {{m.accent}}; color: {{m.onAccent}}">Check in</span>
+              <span style="min-height: 44px; padding: 0 16px; display: flex; align-items: center; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid {{m.border}}; background: {{m.surface}}">Share</span>
+            </div>
+          </div>
+        </sc-for>
+        <span style="font-size: 13px; line-height: 1.5; color: #A39D94">{{b.note}}</span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { brands: [
+      { label: 'OCR base', attr: '(no data-brand)', note: 'Charcoal and creme with the signature blue. OSE runs on it, so art and sponsors carry the color.', modes: [
+        { mode: 'dark', bg: '#1A1918', surface: '#232120', border: '#403D3A', text: '#F4EEE2', muted: '#A39D94', accent: '#3D9BFF', onAccent: '#1A1918', live: '#00C4B4' },
+        { mode: 'light', bg: '#F4EEE2', surface: '#FAF6EE', border: '#D9CFBC', text: '#1A1918', muted: '#5E584F', accent: '#0057D6', onAccent: '#FAF6EE', live: '#00796B' } ] },
+      { label: 'ourSharedMosaics', attr: 'data-brand="ow"', note: 'Amber on the same charcoal and creme base. Live stays the fleet teal.', modes: [
+        { mode: 'dark', bg: '#1A1918', surface: '#232120', border: '#403D3A', text: '#F4EEE2', muted: '#A39D94', accent: '#D4954B', onAccent: '#1A1918', live: '#00C4B4' },
+        { mode: 'light', bg: '#F4EEE2', surface: '#FAF6EE', border: '#D9CFBC', text: '#2D2B29', muted: '#5E584F', accent: '#93540F', onAccent: '#FAF6EE', live: '#00796B' } ] },
+      { label: 'acme', attr: 'data-brand="acme"', note: 'The minimal example: only the accent changes. Everything else is inherited from the base.', modes: [
+        { mode: 'dark', bg: '#1A1918', surface: '#232120', border: '#403D3A', text: '#F4EEE2', muted: '#A39D94', accent: '#A78BFA', onAccent: '#1A1918', live: '#00C4B4' },
+        { mode: 'light', bg: '#F4EEE2', surface: '#FAF6EE', border: '#D9CFBC', text: '#1A1918', muted: '#5E584F', accent: '#6D28D9', onAccent: '#FAF6EE', live: '#00796B' } ] }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

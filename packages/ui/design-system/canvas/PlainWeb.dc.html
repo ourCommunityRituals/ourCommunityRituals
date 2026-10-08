@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Plain-web backgrounds</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#FFFFFF;color:#222222}
+a{color:#0000EE}a:visited{color:#551A8B}a:hover{color:#0000EE}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; padding: 56px 80px; background: #FFFFFF; color: #222222; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; padding-bottom: 20px; border-bottom: 1px solid #CCCCCC">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: #555555">Proposal · 2026-10-03 · not yet in @ocr/ui</span>
+      <h1 style="margin: 0; font-size: 44px; font-weight: 800; letter-spacing: -0.015em">Plain-web backgrounds</h1>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 15px; line-height: 1.5; color: #555555">Modelled on the early classifieds web: a white page, gray bands, thin rules, and links in the browser's own blue. No cards, no shadows, no tinted surfaces. The event codes keep their colors.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 16px; font-weight: 700">Background and text roles</span>
+      <div style="border: 1px solid #CCCCCC">
+        <div style="display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1fr); gap: 10px; padding: 10px 14px; background: #EEEEEE; font-size: 13px; font-weight: 700">
+          <span>Role</span><span>Light today</span><span>Proposed</span>
+        </div>
+        <sc-for list="{{roles}}" as="r" hint-placeholder-count="7">
+          <div style="display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1fr); gap: 10px; padding: 10px 14px; border-top: 1px solid #CCCCCC; align-items: center; font-size: 14px">
+            <span style="font-weight: 600">{{r.role}}</span>
+            <span style="display: flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; flex-shrink: 0; border: 1px solid #999999; background: {{r.now}}"></span><span style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 13px; color: #555555">{{r.now}}</span></span>
+            <span style="display: flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; flex-shrink: 0; border: 1px solid #999999; background: {{r.next}}"></span><span style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 13px">{{r.next}}</span></span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="border: 1px solid #CCCCCC; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5">
+        <span style="font-weight: 700">Stays fixed</span>
+        <span style="color: #555555">Event code colors, Live and warning colors, 44px targets, 16px inputs, the privacy line, AA contrast. Link blue on white is 9.4:1; muted gray on the gray band is 6.4:1.</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{codes}}" as="c" hint-placeholder-count="4">
+            <span style="font-size: 13px; font-weight: 700; padding: 4px 10px; background: #FFFFFF; border: 1px solid #CCCCCC; border-top: 6px solid {{c.hex}}">{{c.name}}</span>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 16px; font-weight: 700">Events list</span>
+      <div style="border: 1px solid #CCCCCC; background: #FFFFFF; display: flex; flex-direction: column">
+        <div style="background: #EEEEEE; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #CCCCCC">
+          <span style="font-size: 18px; font-weight: 700">OurSharedEvents</span>
+          <a href="#" style="font-size: 15px">post an event</a>
+        </div>
+        <div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 8px">
+            <label style="flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600">Search events
+              <input type="search" placeholder="name or venue" style="height: 44px; box-sizing: border-box; padding: 0 10px; font: inherit; font-size: 16px; font-weight: 400; border: 1px solid #999999; background: #FFFFFF; color: #222222">
+            </label>
+            <button type="button" style="align-self: flex-end; height: 44px; padding: 0 16px; font: inherit; font-size: 16px; border: 1px solid #999999; background: #EEEEEE; color: #222222">search</button>
+          </div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 15px">
+            <span style="font-weight: 700">this weekend</span>
+            <a href="#">this month</a>
+            <a href="#">next 90 days</a>
+            <a href="#">recently wrapped</a>
+          </div>
+        </div>
+        <div style="background: #EEEEEE; padding: 6px 16px; font-size: 13px; font-weight: 700; border-top: 1px solid #CCCCCC; border-bottom: 1px solid #CCCCCC">Sat Oct 24</div>
+        <sc-for list="{{events}}" as="e" hint-placeholder-count="3">
+          <div style="padding: 12px 16px; border-bottom: 1px solid #CCCCCC; display: flex; flex-direction: column; gap: 4px">
+            <a href="#" style="font-size: 17px; font-weight: 600">{{e.name}}</a>
+            <span style="font-size: 14px; color: #555555">{{e.meta}}</span>
+          </div>
+        </sc-for>
+        <div style="padding: 12px 16px; font-size: 14px; color: #555555">Never who, only how many. <a href="#">how this works</a></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 16px; font-weight: 700">Event page</span>
+      <div style="border: 1px solid #CCCCCC; background: #FFFFFF; display: flex; flex-direction: column">
+        <div style="background: #EEEEEE; padding: 12px 16px; border-bottom: 1px solid #CCCCCC; font-size: 15px"><a href="#">all events</a></div>
+        <div style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
+          <h2 style="margin: 0; font-size: 28px; font-weight: 800">[EVENT TITLE]</h2>
+          <span style="font-size: 14px; color: #555555">Hosted by [HOST] · sponsored by <a href="#">[SPONSOR NAME]</a></span>
+          <span style="font-size: 17px; font-weight: 600">Sat Oct 24 · 7:00 PM</span>
+          <span style="font-size: 15px">[VENUE NAME] · <a href="#">directions</a></span>
+          <span style="font-size: 14px; color: #555555">Verified event link · no account needed</span>
+        </div>
+        <div style="background: #EEEEEE; padding: 6px 16px; font-size: 13px; font-weight: 700; border-top: 1px solid #CCCCCC; border-bottom: 1px solid #CCCCCC">What</div>
+        <div style="padding: 12px 16px; font-size: 15px; line-height: 1.5">[ONE OR TWO LINES ABOUT THE EVENT]</div>
+        <div style="padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 10px">
+          <button type="button" style="height: 48px; font: inherit; font-size: 17px; font-weight: 700; border: 1px solid #0000EE; background: #0000EE; color: #FFFFFF">Register</button>
+          <div style="display: flex; gap: 18px; font-size: 15px">
+            <a href="#">count me in anonymously</a>
+            <a href="#">share</a>
+            <a href="#">add to calendar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      roles: [
+        { role: 'Page', now: '#F4F7FC', next: '#FFFFFF' },
+        { role: 'Band', now: '#E8EEF6', next: '#EEEEEE' },
+        { role: 'Rule', now: '#D4E0ED', next: '#CCCCCC' },
+        { role: 'Text', now: '#162945', next: '#222222' },
+        { role: 'Muted', now: '#4A6882', next: '#555555' },
+        { role: 'Link', now: '#0057D6', next: '#0000EE' },
+        { role: 'Visited', now: '#0057D6', next: '#551A8B' }
+      ],
+      codes: [
+        { name: 'ENTER', hex: '#1A6B2F' },
+        { name: 'SPONSOR', hex: '#1A3A8A' },
+        { name: 'LIVE', hex: '#C04048' },
+        { name: 'UTILITY', hex: '#2A2A3A' }
+      ],
+      events: [
+        { name: '[EVENT TITLE]', meta: '7:00 PM · [VENUE NAME]' },
+        { name: '[EVENT TITLE]', meta: '8:30 PM · [VENUE NAME]' },
+        { name: '[EVENT TITLE]', meta: 'All day · [VENUE NAME]' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

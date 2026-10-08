@@ -1,0 +1,809 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "BeltHandoff.dc.html": {
+      "h": 900,
+      "title": "Roaming belt: new holder picks privacy",
+      "w": 390,
+      "x": 470,
+      "y": 12160
+    },
+    "BeltHome.dc.html": {
+      "h": 1000,
+      "title": "Roaming belt: its home page",
+      "w": 390,
+      "x": 0,
+      "y": 12160
+    },
+    "BeltJourney.dc.html": {
+      "h": 960,
+      "title": "Roaming belt: where it has roamed",
+      "w": 1440,
+      "x": 940,
+      "y": 12160
+    },
+    "Brands.dc.html": {
+      "h": 1000,
+      "title": "Tier 3: brands",
+      "w": 1440,
+      "x": 1520,
+      "y": 2220
+    },
+    "CanonCheck.dc.html": {
+      "h": 1000,
+      "title": "Canon check: code vs guidelines vs canvas",
+      "w": 1440,
+      "x": 0,
+      "y": 14700
+    },
+    "Choice.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "Choice: anonymous or named",
+      "w": 1440,
+      "x": 0,
+      "y": 3800
+    },
+    "Color.dc.html": {
+      "h": 1160,
+      "title": "Color: tiers 1 & 2",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Components.dc.html": {
+      "h": 1160,
+      "title": "Components",
+      "w": 1440,
+      "x": 0,
+      "y": 2220
+    },
+    "CreateDetails.dc.html": {
+      "h": 844,
+      "title": "Create 2: prefilled + sponsors",
+      "w": 390,
+      "x": 470,
+      "y": 5140
+    },
+    "CreateType.dc.html": {
+      "h": 844,
+      "title": "Create 1: pick a type",
+      "w": 390,
+      "x": 0,
+      "y": 5140
+    },
+    "Discover.dc.html": {
+      "h": 844,
+      "title": "Attendee: discover + niches",
+      "w": 390,
+      "x": 940,
+      "y": 5140
+    },
+    "Display.dc.html": {
+      "h": 1080,
+      "title": "Venue TV display: 1080p",
+      "w": 1920,
+      "x": 0,
+      "y": 6480
+    },
+    "FFPlaylist.dc.html": {
+      "h": 1000,
+      "title": "Fist of Five: team playlist, before the night",
+      "w": 390,
+      "x": 3300,
+      "y": 9376
+    },
+    "FFPromo.dc.html": {
+      "h": 1000,
+      "title": "Fist of Five 0: the card, before the night",
+      "w": 390,
+      "x": 2830,
+      "y": 9376
+    },
+    "FFRoom.dc.html": {
+      "h": 1080,
+      "title": "Fist of Five: the screen in the room",
+      "w": 1920,
+      "x": 3770,
+      "y": 9376
+    },
+    "FFStable.dc.html": {
+      "h": 844,
+      "title": "Fist of Five 5: stable page (named)",
+      "w": 390,
+      "x": 1880,
+      "y": 9376
+    },
+    "FFStandings.dc.html": {
+      "h": 844,
+      "title": "Fist of Five 3: season standings",
+      "w": 390,
+      "x": 940,
+      "y": 9376
+    },
+    "FFTally.dc.html": {
+      "h": 844,
+      "title": "Fist of Five 2: tonight's tally",
+      "w": 390,
+      "x": 470,
+      "y": 9376
+    },
+    "FFTripleA.dc.html": {
+      "h": 844,
+      "title": "Fist of Five 4: Triple A 1v1",
+      "w": 390,
+      "x": 1410,
+      "y": 9376
+    },
+    "FFVote.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Fist of Five 1: one-tap vote, like or not",
+      "w": 390,
+      "x": 0,
+      "y": 9376
+    },
+    "Landing.dc.html": {
+      "expand": "fill",
+      "h": 3200,
+      "is_interactive": true,
+      "title": "Landing: the choice, then the flow",
+      "w": 1440,
+      "x": 5360,
+      "y": 0
+    },
+    "Logs.dc.html": {
+      "h": 1000,
+      "title": "Logs: everything that happened",
+      "w": 1440,
+      "x": 5510,
+      "y": 13540
+    },
+    "Main.dc.html": {
+      "h": 1160,
+      "title": "Overview",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "ManagerHome.dc.html": {
+      "h": 1000,
+      "title": "Manager home: events, campaigns and reports over time",
+      "w": 1440,
+      "x": 3510,
+      "y": 13540
+    },
+    "MapSystem.dc.html": {
+      "h": 960,
+      "title": "H3 map system",
+      "w": 1440,
+      "x": 3040,
+      "y": 3800
+    },
+    "Mobile.dc.html": {
+      "h": 844,
+      "title": "Applied: public event page",
+      "w": 390,
+      "x": 3040,
+      "y": 2220
+    },
+    "OAAcademic.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: academic",
+      "w": 390,
+      "x": 2830,
+      "y": 10600
+    },
+    "OAArtist.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: artist",
+      "w": 390,
+      "x": 470,
+      "y": 10600
+    },
+    "OAAthlete.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: semi-pro athlete",
+      "w": 390,
+      "x": 3300,
+      "y": 10600
+    },
+    "OABiz.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: local business",
+      "w": 390,
+      "x": 1880,
+      "y": 10600
+    },
+    "OAFootprint.dc.html": {
+      "h": 1130,
+      "title": "ourAirwaves: your footprint, collected and yours",
+      "w": 390,
+      "x": 6260,
+      "y": 10600
+    },
+    "OALeader.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: community leader",
+      "w": 390,
+      "x": 3770,
+      "y": 10600
+    },
+    "OASpirit.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: spiritual community",
+      "w": 390,
+      "x": 1410,
+      "y": 10600
+    },
+    "OASports.dc.html": {
+      "h": 844,
+      "title": "ourAirwaves: sports team",
+      "w": 390,
+      "x": 940,
+      "y": 10600
+    },
+    "OAStudio.dc.html": {
+      "h": 1180,
+      "title": "ourAirwaves: Make it yours (editor)",
+      "w": 390,
+      "x": 0,
+      "y": 10600
+    },
+    "OSMFlow.dc.html": {
+      "h": 900,
+      "title": "OurSharedMagnets: brand a client, run from Bruno",
+      "w": 1440,
+      "x": 4240,
+      "y": 10600
+    },
+    "OWLive.dc.html": {
+      "h": 844,
+      "title": "ourSharedMosaics: live set + vote",
+      "w": 390,
+      "x": 0,
+      "y": 7940
+    },
+    "OWPoster.dc.html": {
+      "h": 1056,
+      "title": "ourSharedMosaics: set poster, Letter, light",
+      "w": 816,
+      "x": 940,
+      "y": 7940
+    },
+    "OWProfile.dc.html": {
+      "h": 844,
+      "title": "ourSharedMosaics: contributor profile",
+      "w": 390,
+      "x": 470,
+      "y": 7940
+    },
+    "OrgDashboard.dc.html": {
+      "h": 960,
+      "title": "Organizer: Your events + status + timeline",
+      "w": 1440,
+      "x": 0,
+      "y": 13540
+    },
+    "Piece-bqpb.dc.html": {
+      "frameless": true,
+      "h": 270.1714172363281,
+      "title": "Div",
+      "w": 389.9956359863281,
+      "x": 4867,
+      "y": 2493
+    },
+    "PlainWeb.dc.html": {
+      "h": 1000,
+      "title": "Proposal: plain-web backgrounds",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "Poster.dc.html": {
+      "h": 1344,
+      "title": "Poster: artwork and sponsors",
+      "w": 1056,
+      "x": 3776,
+      "y": 6480
+    },
+    "PosterArtOnly.dc.html": {
+      "h": 1344,
+      "title": "Poster: artwork, no sponsors",
+      "w": 1056,
+      "x": 4912,
+      "y": 6480
+    },
+    "PosterMax.dc.html": {
+      "h": 1344,
+      "title": "Poster: everything at its maximum",
+      "w": 1056,
+      "x": 8320,
+      "y": 6480
+    },
+    "PosterNoArt.dc.html": {
+      "h": 1344,
+      "title": "Poster: sponsors, no artwork",
+      "w": 1056,
+      "x": 6048,
+      "y": 6480
+    },
+    "PosterOneCode.dc.html": {
+      "h": 1344,
+      "title": "Poster: artwork full width, one code on top",
+      "w": 1056,
+      "x": 11512,
+      "y": 6480
+    },
+    "PosterOverlay.dc.html": {
+      "h": 1344,
+      "title": "Poster option: artwork fills the sheet, elements on top",
+      "w": 1056,
+      "x": 9916,
+      "y": 6480
+    },
+    "PosterPlain.dc.html": {
+      "h": 1344,
+      "title": "Poster: no artwork, no sponsors",
+      "w": 1056,
+      "x": 7184,
+      "y": 6480
+    },
+    "PosterTwoCodes.dc.html": {
+      "h": 1344,
+      "title": "Poster: artwork full width, two codes on top",
+      "w": 1056,
+      "x": 12648,
+      "y": 6480
+    },
+    "PreEventFlow.dc.html": {
+      "h": 1000,
+      "title": "Poster \u2192 pre-event \u2192 live: one link, shared every way",
+      "w": 1440,
+      "x": 3400,
+      "y": 5140
+    },
+    "Settings.dc.html": {
+      "h": 1000,
+      "title": "Settings: what can be set, and what is fixed",
+      "w": 1440,
+      "x": 7510,
+      "y": 13540
+    },
+    "SharedReport.dc.html": {
+      "h": 960,
+      "title": "SharedReport",
+      "w": 1440,
+      "x": 1880,
+      "y": 5140
+    },
+    "SiteMap.dc.html": {
+      "h": 900,
+      "title": "Site map: inside one event (light, outdoors)",
+      "w": 390,
+      "x": 3040,
+      "y": 13540
+    },
+    "SponsorHome.dc.html": {
+      "h": 844,
+      "title": "Sponsor home",
+      "w": 390,
+      "x": 1410,
+      "y": 5140
+    },
+    "States.dc.html": {
+      "h": 1040,
+      "title": "Interaction states: older adults first",
+      "w": 1440,
+      "x": 1520,
+      "y": 13540
+    },
+    "TrackRecord.dc.html": {
+      "h": 960,
+      "title": "Track record: a creator shows a sponsor what they have built",
+      "w": 1440,
+      "x": 7210,
+      "y": 10600
+    },
+    "Triangle.dc.html": {
+      "h": 900,
+      "title": "Triangle: four participants",
+      "w": 1440,
+      "x": 1520,
+      "y": 3800
+    },
+    "Type.dc.html": {
+      "h": 820,
+      "title": "Type, space, touch",
+      "w": 1440,
+      "x": 0,
+      "y": 1280
+    },
+    "UEC.dc.html": {
+      "h": 820,
+      "title": "UEC event codes",
+      "w": 1440,
+      "x": 1520,
+      "y": 1280
+    },
+    "UECCodes.dc.html": {
+      "h": 820,
+      "title": "UEC on poster and display codes",
+      "w": 1440,
+      "x": 3040,
+      "y": 1280
+    },
+    "XEventPage.dc.html": {
+      "h": 844,
+      "title": "Experiment: OSE event page, ourSharedMosaics ground",
+      "w": 390,
+      "x": 3510,
+      "y": 2220
+    },
+    "XEventsList.dc.html": {
+      "h": 844,
+      "title": "Experiment: OSE events list, ourSharedMosaics ground",
+      "w": 390,
+      "x": 3980,
+      "y": 2220
+    },
+    "Visuals.dc.html": {
+      "h": 1180,
+      "title": "Visuals: use what's provided, never force it",
+      "w": 1760,
+      "x": 0,
+      "y": 15900
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-29T15:00:00Z",
+    "v": 1
+  },
+  "designSystems": [
+    {
+      "artifact": "https://claude.ai/artifact/6HZTwaWYwRzrwbE2X8mqY9",
+      "copiedAt": "2026-10-04T18:34:28Z",
+      "namespace": "ocr",
+      "title": "ourCommunityRituals",
+      "version": null
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "belt": {
+      "kind": "title1",
+      "maxW": 2380,
+      "text": "Roaming objects: the Triple A belt gets a digital home",
+      "w": 240,
+      "x": 0,
+      "y": 11900
+    },
+    "beltNote": {
+      "fill": "orange",
+      "maxH": 640,
+      "text": "Objects get pages too: the Triple A bocce belt, a traveling trophy, a guitar passed hand to hand, a little free library. Each object has its own history of holders, how long each held it, and where it went. There are three location levels, and the new holder picks one: (1) the club's neighborhood cell (resolution 7, about 5 km\u00b2), the default and what the public map shows; (2) the exact spot (resolution 9, about a block), shared only by a link the holder sends and can turn off, never on the public map; (3) no place at all. The history saves past stops at resolution 7 or lower, never finer. This matches the code: the ourSharedEvents map rejects anything finer than resolution 7, and resolution 9 was removed from public event data (OSE-1247). A holder can also stay unnamed: 'a team that stayed anonymous'. The color is bronze on walnut, contrast-checked at 8.2:1.",
+      "w": 420,
+      "x": 2460,
+      "y": 12160
+    },
+    "ccrGo": {
+      "fill": "green",
+      "maxH": 520,
+      "text": "DECIDED 2026-10-04 \u00b7 CCR, 5 loops (PO lead, Designer, Community liaison, Data Scientist, Sr SDET/SRE, Dr of Security): GO as a design proposal for the charcoal and creme design system and this re-skinned canvas. NOT yet approved for code. Before code: (1) settle which @ocr/ui is canonical; (2) pnpm --filter @ocr/tokens check:generated passes; (3) fix or sign off the 4 pairs under AA (dark danger on surface 4.2 and raised 3.7, light action hover 4.4, OW light live 4.1); (4) QR codes scan-tested on creme in print; (5) two-ground rule (OSE vs OW) retired or kept, in writing.",
+      "w": 520,
+      "x": -640,
+      "y": 0
+    },
+    "community": {
+      "kind": "title1",
+      "maxW": 4480,
+      "text": "Choice, the Triangle and the hyperlocal map",
+      "w": 240,
+      "x": 0,
+      "y": 3520
+    },
+    "displayNext": {
+      "fill": "orange",
+      "maxH": 420,
+      "text": "TV display, next (direction 2026-10-03): an artwork screen when the event is a fundraiser; a donate-link screen with its own time in the rotation; a whole screen per sponsor. A dynamic scoreboard is asked for but not decided: it conflicts with 'league = links out'. Staging today is behind this board: 48px title, a clock and a ticker, and no QR on the featured screen.",
+      "w": 380,
+      "x": 3316,
+      "y": 6960
+    },
+    "displayNote": {
+      "fill": "blue",
+      "maxH": 420,
+      "text": "TV display: a 284px QR is 90mm on a 55\" 4K panel (3.15 px/mm), scannable from a rail about 900mm away. Set --display-ppmm for each panel at install, because CSS mm is wrong on large screens. Type starts at 22px and the headline is 120px, so it reads across a room. No clock and no ticker: nothing moves unless it has to.",
+      "w": 380,
+      "x": 2896,
+      "y": 6480
+    },
+    "fist": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Fist of Five: the vote-from-your-phone tournament",
+      "w": 240,
+      "x": 0,
+      "y": 9116
+    },
+    "fistNote": {
+      "fill": "purple",
+      "maxH": 560,
+      "text": "Built to the Fist of Five brief (design-system guideline 90). A vote is one tap: the coral 56px+ button, with no confirm and no picker. The server matches the time of the tap to the song playing. The screen never shows a voter, and says where you tap: \"We count the room, never the person.\" A tally under 5 is Held (dashed and muted), never a small number. The named team sits in its own amber-on-black band, separate from the anonymous navy vote area, so they are never blended. Solid means counted or played, dashed means not yet. Triple A runs on the phone link, so it works anywhere. The vote button is also a sponsor spot.",
+      "w": 400,
+      "x": 2350,
+      "y": 9376
+    },
+    "fistNote2": {
+      "fill": "purple",
+      "maxH": 640,
+      "text": "Fist of Five, revised 2026-10-03. Teams are public and pick their own names; a member is never named, so the team name is the only identity. Before each tourney every member adds their required songs to the team playlist, and the team submits it under the team name: a song belongs to the team, not to whoever added it. From a week to six hours before, the public card drums up the night: champion against challenger, each team's own line, the belt on the line. On the night people listen and vote on every song, like it or not for me, from their phone or by scanning the screen in the room. A vote is one tap and never tied to a person; a tally under 5 reads 'held'. The fun is in the framing: corners, records, promos, a belt. Open questions: how a member proves they are on a team without a personal profile (drawn here as a team link), and how many songs each member owes (drawn as 3).",
+      "w": 420,
+      "x": 5770,
+      "y": 9376
+    },
+    "flows": {
+      "kind": "title1",
+      "maxW": 3320,
+      "text": "Flows: create, discover, sponsor, prove",
+      "w": 240,
+      "x": 6,
+      "y": 4842
+    },
+    "footprintNote": {
+      "fill": "orange",
+      "maxH": 600,
+      "text": "ourAirwaves, purpose stated 2026-10-03: artists, historians, academics, businesses and athletes make things all over the internet and want one place to gather their own profiles and footprint that is theirs, not a platform's. This owner screen is that: each source is added by the owner (a link, or a file they exported), each can be shown or kept private, and everything can be downloaded or removed in one tap. Nothing is gathered without the owner. A link opens the other site; nothing from that site loads on the page, so the page does not hand its visitors to the platforms being left. No adverts and no list of who looked. Taking part in an OurSharedEvents gathering appears only if the person chooses to add it; OSE itself still never knows who came. Added the same day: hosting is part of the reclaim. A creator starts a workshop from here, in person or online; OurSharedEvents makes its page, poster, codes and report with no extra setup; and each report then sits in the creator's footprint as a record of their work over time.",
+      "w": 400,
+      "x": 6730,
+      "y": 10600
+    },
+    "foundations": {
+      "kind": "title1",
+      "size": 120,
+      "text": "Foundations: extracted from @ocr/ui",
+      "w": 240,
+      "x": 0,
+      "y": -312
+    },
+    "logsNote": {
+      "fill": "blue",
+      "maxH": 600,
+      "text": "Logs, 2026-10-03: one place to see what happened across the platform. Four tabs. Activity: who did what (published, changed codes, sent a sponsor link, shared a report), filtered by time, brand, person and action. System jobs: the nightly clean-up and what it deleted or archived. Security: refused sign-ins and rate-limit trips. Cost: billable use against its free allowance. Two views of the same screen: the platform view shows every brand; a manager sees only their own brands, with other tenants' details masked. No attendee ever appears here. Exists today: the activity record and its brand-scoped read. Not yet readable in the app: job results, security events and cost, which today go to the server's own log stream.",
+      "w": 400,
+      "x": 7030,
+      "y": 13540
+    },
+    "managerNote": {
+      "fill": "blue",
+      "maxH": 600,
+      "text": "Second layer of user, 2026-10-03: the organizer who runs many events. One screen after sign-in. Left: campaigns, plus a prompt when two events look like the same thing (never grouped silently). Middle: one campaign as a thread, Now / Coming up / Past, each event one tap from its report, poster and page; a renamed event shows its former name. Right: sponsor requests waiting, every report newest first with its share link, and events not yet in a campaign. A campaign is one idea for organizers and sponsors. Counts under 5 read 'held', as everywhere. Tiers as documented: a campaign's report is Mid; the view across all campaigns is Enterprise and is named, not hidden. It appears only once a manager has several events; a first-time organizer keeps the simple list.",
+      "w": 400,
+      "x": 5030,
+      "y": 13540
+    },
+    "oa": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "ourAirwaves: plant your flag, your way",
+      "w": 240,
+      "x": 0,
+      "y": 10340
+    },
+    "oaNote": {
+      "fill": "green",
+      "maxH": 600,
+      "text": "Everyone gets a page: DJs, artists, players and teams, community groups, businesses, educators, hobbyists, faith communities. The flag is a word, not a color, so the list can keep growing and every flag gets the same tools. People can change a lot: their color, the background (dark, light or warm paper), the cover, the sections and their order, and their domain. Every custom palette is contrast-checked in both modes before it publishes. If a color fails, like plum on a dark background (2.1:1), the page uses a readable version (7.1:1) instead of refusing. What never changes: the Live, warning and success colors, the event codes, and the privacy line. Examples: artist violet 8.9:1, team blue 6.2:1, community plum 7.5:1, business slate 10.1:1.",
+      "w": 400,
+      "x": 2350,
+      "y": 10600
+    },
+    "osmNote": {
+      "fill": "teal",
+      "maxH": 640,
+      "text": "Two customization products, 2026-10-03. OurSharedMagnets is for OSE events: a client's look, address, assets and whole seasons. It has no client screen. The client fills an intake form; our own staff run it from Bruno using the environments already in the repo (ose, ose-staging), staging first, then production; the intake is destroyed once applied. ourAirwaves is for ourSharedMosaics profiles, the named top layer: artists, semi-pro athletes, academics, community leaders. The owner edits their own page in 'Make it yours'. Three profile kinds are added here beside the existing artist, team, spiritual community and business. Fixed on both: event code colors, Live and warning colors, the privacy line, AA contrast. The Bruno folder names on the board are a proposal; no OurSharedMagnets collection exists in this repo yet.",
+      "w": 420,
+      "x": 5760,
+      "y": 10600
+    },
+    "ow": {
+      "kind": "title1",
+      "maxW": 2200,
+      "text": "ourSharedMosaics: the named side, amber on carbon",
+      "w": 240,
+      "x": 0,
+      "y": 7680
+    },
+    "owNote": {
+      "fill": "orange",
+      "maxH": 460,
+      "text": "ourSharedMosaics uses the registered brand theme data-brand=\"ow\": carbon #0A0A0A with ember #D4954B in dark, and warm paper #FAF7F2 with burnt amber #93540F in light (the poster). Locked roles stay the fleet's: Live is teal, never red, and Remove my name uses the danger red. One night mixes both sides: the +1 vote is anonymous, while saving a song or the DJ credit is named by choice (Fist of Five).",
+      "w": 380,
+      "x": 1836,
+      "y": 7940
+    },
+    "posterCornerNote": {
+      "fill": "green",
+      "maxH": 560,
+      "text": "From the sketch, 2026-10-03: with one or two codes, the artwork takes the full width of the lower section and the codes sit on top of it in the bottom corners, each on its own white tile at 180px (about 1.9 in). The title, sponsor header and date stay above the artwork, not on it. A portrait piece shown whole is narrower than the frame, so a corner tile sits mostly in the empty margin and covers only a small corner of the art. A wide piece gains the most room and loses the corner under each tile. Code count rule: 1\u20132 codes on top in the corners; 3 in a side column; 4\u20138 in a two-column grid.",
+      "w": 380,
+      "x": 13784,
+      "y": 6480
+    },
+    "posterMaxNote": {
+      "fill": "red",
+      "maxH": 520,
+      "text": "Stress case, 2026-10-03: a two-line title, five sponsors (the header wraps to a second row), artwork, and eight codes, the most any plan allows. By arithmetic the lower section is about 730px tall. Eight codes fit only as a two-column grid of compact cards with 100px codes (about 1 in, close-range scanning only). The artwork then gets about 545 \u00d7 730 (5.7 \u00d7 7.6 in) for a portrait piece. Rule for the code area: 1\u20133 codes in one column at 150px; 4\u20138 in two columns, shrinking to a 100px floor. Not yet checked by eye.",
+      "w": 380,
+      "x": 9456,
+      "y": 6960
+    },
+    "posterNote": {
+      "fill": "teal",
+      "maxH": 420,
+      "text": "Poster, 11 \u00d7 14 in. One design whose spacing depends on two optional parts (decided 2026-10-03). Sponsors: when the event has none, the sponsor header between the title and the date drops out and the space closes up. Artwork: when the event has none, the artwork area drops out; the title and details grow and the codes sit in a row. The four boards show the four cases. The organizer never picks a layout; it follows what the event has. Always present: title, date and venue, the codes in their UEC colors with word, UEC name and /s/ short link, and the privacy line. Artwork is shown whole, never cropped.",
+      "w": 380,
+      "x": 9456,
+      "y": 6480
+    },
+    "posterOverlayNote": {
+      "fill": "purple",
+      "maxH": 560,
+      "text": "Option, 2026-10-03: the artwork fills the 11 \u00d7 14 sheet and everything else sits on top of it on white plates. Codes keep their size: 180px (about 1.9 in), four across the bottom. Text is never printed straight onto the artwork, so contrast is guaranteed whatever the art is, and each code keeps its white quiet zone. Cost: the plates cover roughly the top quarter and bottom quarter of the artwork, so only the middle band is clear. Artwork that carries its own title or date near the edges will have them covered. Four codes fit in one row; five to eight need a second row, which covers about another fifth of the sheet. Not yet checked by eye.",
+      "w": 380,
+      "x": 11052,
+      "y": 6480
+    },
+    "preEventNote": {
+      "fill": "green",
+      "maxH": 600,
+      "text": "Poster to pre-event to live, 2026-10-03. Five stages, one link. The link is the main driver before the event and posters widen it. Sharing uses the phone's own share sheet, with copy, text, email, a QR to show, a card image and calendar as plain buttons; no social network's code is on the page. Every screen of an event is one tap from the others. What is counted at each stage follows the written rule: a poster scan belongs to the neighborhood where the poster hangs; a tap on a shared link is a count for the area the organizer published it to, never where the tapper is; looking at the page counts nothing. Live, the organizer and sponsors see totals over a street map with the hexagons on top. Attendees never see counts, and the TV shows none. The street map under the hexagons depends on the map evaluation now running.",
+      "w": 400,
+      "x": 4920,
+      "y": 5140
+    },
+    "run": {
+      "kind": "title1",
+      "maxW": 3430,
+      "text": "Running it: organizer, states, site maps, canon",
+      "w": 240,
+      "x": 0,
+      "y": 13280
+    },
+    "runNote": {
+      "fill": "blue",
+      "maxH": 600,
+      "text": "Organizer dashboard: the Epic TRIANGLE screen as shipped. It has the Your events list with Drafts / Ready / Live / Archived filters and 'Only events I made', a status panel, the Set up \u2192 Live \u2192 Poster out \u2192 Scanning \u2192 Sponsors on \u2192 Report timeline with one Next link, and Send sponsor link. Drafts untouched for 30 days are archived, never deleted. Its tiles use the same held 'Fewer than 5' as every other surface. States: the older-adults-first guideline as components. Site map: a placed layout inside one event, forced light for outdoors. Stalls are named with words, north is fixed, 'You are near\u2026' is always shown, a breadcrumb trail leads back out, and short-link suffixes (M menu, F feedback, H help) come from the recursive-web guideline. It's saved on the phone, so it works without signal. Canon check: open gaps between the shipped code, the guidelines and this canvas.",
+      "w": 420,
+      "x": 1520,
+      "y": 14700
+    },
+    "sessionNote": {
+      "fill": "green",
+      "maxH": 420,
+      "text": "Rule, 2026-10-03: wherever an event title shows, and a sponsor is on the event, and both the organizer and the sponsor have agreed, the sponsor shows by the title. Built on the poster. Still to check against this rule: public event page, events list cards, TV display, recap, forms, SharedReport.",
+      "w": 380,
+      "x": 3316,
+      "y": 6480
+    },
+    "settingsNote": {
+      "fill": "blue",
+      "maxH": 600,
+      "text": "Settings, 2026-10-03: one configuration page. Left: sections (defaults, brand and look, people and access, sponsors, plan, logs). Middle: defaults every new event starts from, as plain switches; changing one never touches existing events. Right: what the plan includes (read only; the plan is set with us), platform timings (10-minute listing delay, 30-day draft archive), and a list of what is fixed for everyone and cannot be changed: the count floor of 5, neighborhood-only maps, the 90 and 30 day deletions, event code colors, and security being the same on every plan. Saving is automatic and says so. Brand look is requested through OurSharedMagnets, not edited here. The platform owner's version of this page also carries the per-brand plan and platform-wide switches; that view is not drawn yet.",
+      "w": 400,
+      "x": 9030,
+      "y": 13540
+    },
+    "trackNote": {
+      "fill": "orange",
+      "maxH": 600,
+      "text": "Track record, 2026-10-03: someone starting out grows, and can show it. This is the page a creator sends to a possible sponsor or a bigger venue: every gathering they hosted, in person and online, as counts over time. In the room (check-ins, poster scans) and from shared links (link taps) are shown side by side. Sponsors who backed them appear only if each agreed. It is shared by a link that expires, and it is built from the creator's own SharedReports, so it is theirs to carry forward. Counts under 5 read 'held'. The words on the page are counts of actions: check-ins, scans, taps, gatherings. The neighborhood map and returning share follow the documented tiers and are named, not hidden. Bar heights on the board are illustrative.",
+      "w": 400,
+      "x": 8730,
+      "y": 10600
+    },
+    "uniformNote": {
+      "fill": "purple",
+      "maxH": 560,
+      "text": "Experiment, 2026-10-03: one look for OSE and ourSharedMosaics. Both boards use the ourSharedMosaics ground as it is: carbon #0A0A0A page, #141414 panels, #2A2A2A rules, #888888 muted text, the centerd header with a small product name above a large title, 12px corners. The only difference is the accent: ourSharedMosaics keeps ember, OSE keeps blue. Live stays teal on both. Open question: the canvas rule today is that navy means the anonymous side and amber-on-black means the named side, and the two are never blended. On one shared ground that signal moves to the accent color and the words, so the anonymous vote area would no longer be a navy island inside an ourSharedMosaics screen.",
+      "w": 400,
+      "x": 4450,
+      "y": 2220
+    },
+    "uniformNote2": {
+      "fill": "purple",
+      "maxH": 560,
+      "text": "Experiment 2, 2026-10-03, replacing the first: the OSE look carried to ourSharedMosaics. Both boards are the ourSharedMosaics screens unchanged in layout, on the OSE ground: navy #141F30 page, #1A2740 panels, #2A3D5A rules, blue-grey #8AA1BC muted text. ourSharedMosaics keeps its ember accent, which reads at 6.5:1 on navy. Live stays teal. The anonymous +1 area is a deeper navy panel, so it still stands apart. What changes for the old rule: 'named' is no longer a black band; it is the ember accent and the words.",
+      "w": 400,
+      "x": 3240,
+      "y": 7940
+    },
+    "venue": {
+      "kind": "title1",
+      "maxW": 3280,
+      "text": "At the venue: TV display and poster",
+      "w": 240,
+      "x": 0,
+      "y": 6220
+    },
+    "twoGround": {
+      "x": -640,
+      "y": 600,
+      "w": 520,
+      "maxH": 360,
+      "fill": "green",
+      "text": "DECIDED 2026-10-08 \u00b7 The two-ground rule is retired. ourSharedMosaics / ourAirwaves moves from carbon black to the shared charcoal and creme base, and follows the same 60-30-10 split: 60% charcoal, 30% creme and greys, 10% amber (OSE keeps blue). Amber is the only thing that tells the sides apart. Client brands may repaint the accent within the brand contract (both themes, AA measured, danger red locked). Closes gate item 5 of the Go note above."
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Color.dc.html",
+    "PlainWeb.dc.html",
+    "Type.dc.html",
+    "UEC.dc.html",
+    "UECCodes.dc.html",
+    "Components.dc.html",
+    "Brands.dc.html",
+    "Mobile.dc.html",
+    "XEventPage.dc.html",
+    "XEventsList.dc.html",
+    "Choice.dc.html",
+    "Triangle.dc.html",
+    "MapSystem.dc.html",
+    "CreateType.dc.html",
+    "CreateDetails.dc.html",
+    "Discover.dc.html",
+    "SponsorHome.dc.html",
+    "SharedReport.dc.html",
+    "PreEventFlow.dc.html",
+    "Display.dc.html",
+    "Poster.dc.html",
+    "PosterArtOnly.dc.html",
+    "PosterNoArt.dc.html",
+    "PosterPlain.dc.html",
+    "PosterMax.dc.html",
+    "PosterOverlay.dc.html",
+    "PosterTwoCodes.dc.html",
+    "PosterOneCode.dc.html",
+    "OWLive.dc.html",
+    "OWProfile.dc.html",
+    "OWPoster.dc.html",
+    "FFVote.dc.html",
+    "FFTally.dc.html",
+    "FFStandings.dc.html",
+    "FFTripleA.dc.html",
+    "FFStable.dc.html",
+    "FFPromo.dc.html",
+    "FFPlaylist.dc.html",
+    "FFRoom.dc.html",
+    "OAStudio.dc.html",
+    "OAArtist.dc.html",
+    "OASports.dc.html",
+    "OASpirit.dc.html",
+    "OABiz.dc.html",
+    "OAAcademic.dc.html",
+    "OAAthlete.dc.html",
+    "OALeader.dc.html",
+    "OSMFlow.dc.html",
+    "OAFootprint.dc.html",
+    "TrackRecord.dc.html",
+    "BeltHome.dc.html",
+    "BeltHandoff.dc.html",
+    "BeltJourney.dc.html",
+    "OrgDashboard.dc.html",
+    "States.dc.html",
+    "SiteMap.dc.html",
+    "ManagerHome.dc.html",
+    "Logs.dc.html",
+    "Settings.dc.html",
+    "CanonCheck.dc.html",
+    "Piece-bqpb.dc.html",
+    "Landing.dc.html",
+    "Visuals.dc.html"
+  ],
+  "pages": [],
+  "title": "OCR Design System"
+}

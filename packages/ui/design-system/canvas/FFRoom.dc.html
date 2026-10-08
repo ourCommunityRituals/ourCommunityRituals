@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fist of Five, the screen in the room</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; padding: 56px 72px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 40px">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <div style="display: flex; align-items: center; gap: 24px">
+      <span style="font-size: 28px; font-weight: 800">Fist of Five</span>
+      <span style="font-size: 28px; color: #A39D94">Round [N] of [N]</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 24px">
+      <span style="font-size: 28px; color: #A39D94">Supported by <span style="color: #F4EEE2; font-weight: 700">[SPONSOR NAME]</span></span>
+      <span style="font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 20px; border-radius: 999px; color: #00C4B4; background: rgba(0,196,180,0.15)">Live</span>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 64px">
+    <div style="display: flex; flex-direction: column; gap: 36px; min-width: 0">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Now playing</span>
+        <span style="font-size: 120px; line-height: 1; font-weight: 800; letter-spacing: -0.02em">[TRACK TITLE]</span>
+        <span style="font-size: 48px; color: #A39D94">[ARTIST]</span>
+      </div>
+
+      <div style="align-self: flex-start; background: #232120; border: 3px solid #D4954B; border-radius: 999px; padding: 20px 32px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em; color: #D4954B">From the playlist of</span>
+        <span style="font-size: 64px; font-weight: 800">[TEAM NAME]</span>
+      </div>
+
+      <div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+        <sc-for list="{{corners}}" as="c" hint-placeholder-count="2">
+          <div style="border: 2px solid #403D3A; border-radius: 999px; padding: 22px 28px; display: flex; flex-direction: column; gap: 10px">
+            <span style="font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em; color: #D4954B">{{c.corner}}</span>
+            <span style="font-size: 48px; font-weight: 800">{{c.name}}</span>
+            <span style="font-size: 28px; color: {{c.fg}}; border: {{c.edge}}; align-self: flex-start; padding: 6px 16px; border-radius: 12px">{{c.score}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; background: #232120; border: 2px solid #403D3A; border-radius: 12px; padding: 40px">
+      <span style="font-size: 48px; font-weight: 800; text-align: center">Scan to vote on this song</span>
+      <div style="background: #FAF6EE; padding: 24px; border-radius: 12px">
+        <svg viewBox="0 0 29 29" width="340" height="340" shape-rendering="crispEdges" role="img" aria-label="QR code placeholder">
+          <rect width="29" height="29" fill="#FAF6EE"></rect>
+          <path fill="#C04048" d="M1 1h7v7H1zM21 1h7v7h-7zM1 21h7v7H1z"></path>
+          <path fill="#FAF6EE" d="M2 2h5v5H2zM22 2h5v5h-5zM2 22h5v5H2z"></path>
+          <path fill="#C04048" d="M3 3h3v3H3zM23 3h3v3h-3zM3 23h3v3H3zM10 1h2v2h-2zM13 2h1v3h-1zM10 5h3v1h-3zM15 1h3v1h-3zM16 3h2v2h-2zM10 10h3v2h-3zM14 9h2v4h-2zM18 10h3v1h-3zM22 10h2v3h-2zM25 11h3v1h-3zM1 10h2v2H1zM4 11h3v1H4zM2 14h4v1H2zM6 16h2v3H6zM1 17h3v1H1zM10 14h1v4h-1zM12 15h4v1h-4zM17 13h2v3h-2zM20 14h3v1h-3zM24 15h2v4h-2zM27 14h1v5h-1zM13 18h2v2h-2zM10 21h3v1h-3zM11 23h1v4h-1zM14 22h3v1h-3zM15 25h2v3h-2zM18 20h2v2h-2zM21 21h4v1h-4zM20 24h2v2h-2zM23 23h1v5h-1zM25 25h3v1h-3zM26 27h2v1h-2z"></path>
+        </svg>
+      </div>
+      <span style="font-size: 28px; font-weight: 700; letter-spacing: 0.05em">LIVE · [SHORT LINK]</span>
+      <span style="font-size: 28px; color: #A39D94; text-align: center">Like it, or not for me. One tap.</span>
+    </div>
+  </div>
+
+  <div style="font-size: 28px; font-weight: 700; text-align: center">We count the room, never the person.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { corners: [
+      { corner: 'Champion', name: '[TEAM NAME]', score: 'Rounds won: [N]', fg: '#F4EEE2', edge: '2px solid #7E7871' },
+      { corner: 'Challenger', name: '[TEAM NAME]', score: 'This round: held until 5 votes', fg: '#A39D94', edge: '2px dashed #7E7871' }
+    ] };
+  }
+}
+</script>
+</body>
+</html>
