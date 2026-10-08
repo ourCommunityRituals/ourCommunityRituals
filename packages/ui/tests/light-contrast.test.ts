@@ -77,7 +77,7 @@ describe('light theme: form-control edges (WCAG 1.4.11, >= 3:1)', () => {
 describe('dark theme keeps its own values', () => {
   // The dark palette's contrast is asserted in dark-contrast.test.ts; this only
   // guards that the light-theme fixes above never leak into dark.
-  it('dark --surface-hover is still navy-800', () => {
-    expect(semanticDark['--surface-hover']).toBe('var(--ocr-navy-800)');
+  it('dark --surface-hover is the charcoal raised step', () => {
+    expect(semanticDark['--surface-hover']).toBe('var(--ocr-charcoal-800)');
   });
 });

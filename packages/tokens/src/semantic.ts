@@ -47,6 +47,7 @@ export const SEMANTIC_ROLES = [
   '--surface',
   '--surface-raised',
   '--border',
+  '--border-strong',
   '--text',
   '--text-muted',
   '--action',
@@ -56,6 +57,8 @@ export const SEMANTIC_ROLES = [
   '--status-warn',
   '--status-danger',
   '--status-danger-hover',
+  '--status-success',
+  '--status-info',
   '--focus-ring',
 ] as const;
 
@@ -71,72 +74,84 @@ export interface BrandTheme {
 // ── ose — the base layer (Wave 1) ────────────────────────────────────────────
 
 const oseDark: RoleMap = {
-  '--ground': 'var(--ocr-navy-950)',
-  '--surface': 'var(--ocr-navy-900)',
-  '--surface-raised': 'var(--ocr-navy-800)',
-  '--border': 'var(--ocr-navy-700)',
-  '--text': 'var(--ocr-navy-100)',
-  '--text-muted': 'var(--ocr-navy-500)',
+  '--ground': 'var(--ocr-charcoal-950)',
+  '--surface': 'var(--ocr-charcoal-900)',
+  '--surface-raised': 'var(--ocr-charcoal-800)',
+  '--border': 'var(--ocr-charcoal-700)',
+  '--border-strong': 'var(--ocr-charcoal-600)',
+  '--text': 'var(--ocr-creme-050)',
+  '--text-muted': 'var(--ocr-charcoal-500)',
   '--action': 'var(--ocr-signal-500)',
   '--action-hover': 'var(--ocr-signal-600)',
-  '--on-action': 'var(--ocr-navy-950)',
+  '--on-action': 'var(--ocr-charcoal-950)',
   '--status-live': 'var(--ocr-teal-400)',
   '--status-warn': 'var(--ocr-warn-400)',
-  '--status-danger': 'var(--ocr-red-500)',
+  '--status-danger': 'var(--ocr-red-350)',
   '--status-danger-hover': 'var(--ocr-red-400)',
+  '--status-success': 'var(--ocr-green-400)',
+  '--status-info': 'var(--ocr-info-300)',
   '--focus-ring': 'var(--ocr-signal-500)',
 };
 
 const oseLight: RoleMap = {
-  '--ground': 'var(--ocr-paper-050)',
-  '--surface': 'var(--ocr-paper-100)',
-  '--surface-raised': 'var(--ocr-paper-200)',
-  '--border': 'var(--ocr-paper-200)',
-  '--text': 'var(--ocr-ink-900)',
-  '--text-muted': 'var(--ocr-ink-500)',
+  '--ground': 'var(--ocr-creme-050)',
+  '--surface': 'var(--ocr-creme-100)',
+  '--surface-raised': 'var(--ocr-creme-150)',
+  '--border': 'var(--ocr-creme-300)',
+  '--border-strong': 'var(--ocr-creme-600)',
+  '--text': 'var(--ocr-charcoal-950)',
+  '--text-muted': 'var(--ocr-creme-700)',
   '--action': 'var(--ocr-signal-700)',
-  '--action-hover': 'var(--ocr-signal-400)',
-  '--on-action': 'var(--ocr-paper-100)',
+  '--action-hover': 'var(--ocr-signal-800)',
+  '--on-action': 'var(--ocr-creme-100)',
   '--status-live': 'var(--ocr-teal-700)',
   '--status-warn': 'var(--ocr-warn-700)',
   '--status-danger': 'var(--ocr-red-700)',
   '--status-danger-hover': 'var(--ocr-red-600)',
+  '--status-success': 'var(--ocr-green-700)',
+  '--status-info': 'var(--ocr-signal-700)',
   '--focus-ring': 'var(--ocr-signal-700)',
 };
 
-// ── ow — Wave 1 alongside OSE. Carbon ground, amber action, broadcast red. ────
+// ── ow — Wave 1 alongside OSE. Shared charcoal/creme base, amber action, broadcast red.
 
 const owDark: RoleMap = {
-  '--ground': 'var(--ocr-carbon-950)',
-  '--surface': 'var(--ocr-carbon-900)',
-  '--surface-raised': 'var(--ocr-carbon-800)',
-  '--border': 'var(--ocr-carbon-700)',
-  '--text': 'var(--ocr-carbon-100)',
-  '--text-muted': 'var(--ocr-carbon-500)',
+  '--ground': 'var(--ocr-charcoal-950)',
+  '--surface': 'var(--ocr-charcoal-900)',
+  '--surface-raised': 'var(--ocr-charcoal-800)',
+  '--border': 'var(--ocr-charcoal-700)',
+  '--border-strong': 'var(--ocr-charcoal-600)',
+  '--text': 'var(--ocr-creme-050)',
+  '--text-muted': 'var(--ocr-charcoal-500)',
   '--action': 'var(--ocr-ember-600)',
   '--action-hover': 'var(--ocr-ember-500)',
-  '--on-action': 'var(--ocr-carbon-950)',
+  '--on-action': 'var(--ocr-charcoal-950)',
   '--status-live': 'var(--ocr-broadcast-500)', // OPEN QUESTION — see header
   '--status-warn': 'var(--ocr-warn-400)',
-  '--status-danger': 'var(--ocr-red-500)',
+  '--status-danger': 'var(--ocr-red-350)',
   '--status-danger-hover': 'var(--ocr-red-400)',
+  '--status-success': 'var(--ocr-green-400)',
+  '--status-info': 'var(--ocr-info-300)',
   '--focus-ring': 'var(--ocr-ember-600)',
 };
 
 const owLight: RoleMap = {
-  '--ground': 'var(--ocr-paper-050)',
-  '--surface': 'var(--ocr-paper-100)',
-  '--surface-raised': 'var(--ocr-paper-200)',
-  '--border': 'var(--ocr-paper-200)',
-  '--text': 'var(--ocr-ink-900)',
-  '--text-muted': 'var(--ocr-ink-500)',
+  '--ground': 'var(--ocr-creme-050)',
+  '--surface': 'var(--ocr-creme-100)',
+  '--surface-raised': 'var(--ocr-creme-150)',
+  '--border': 'var(--ocr-creme-300)',
+  '--border-strong': 'var(--ocr-creme-600)',
+  '--text': 'var(--ocr-charcoal-950)',
+  '--text-muted': 'var(--ocr-creme-700)',
   '--action': 'var(--ocr-ember-800)',
   '--action-hover': 'var(--ocr-ember-800)',
-  '--on-action': 'var(--ocr-paper-100)',
+  '--on-action': 'var(--ocr-creme-100)',
   '--status-live': 'var(--ocr-red-700)', // the AA-safe light-ground pair for broadcast red
   '--status-warn': 'var(--ocr-warn-700)',
   '--status-danger': 'var(--ocr-red-700)',
   '--status-danger-hover': 'var(--ocr-red-600)',
+  '--status-success': 'var(--ocr-green-700)',
+  '--status-info': 'var(--ocr-signal-700)',
   '--focus-ring': 'var(--ocr-ember-800)',
 };
 
@@ -177,6 +192,7 @@ const AA_PAIRS: ReadonlyArray<[SemanticRole, SemanticRole, number]> = [
   ['--action', '--ground', 4.5],
   ['--on-action', '--action', 4.5],
   ['--focus-ring', '--ground', 3.0],
+  ['--border-strong', '--ground', 3.0],
 ];
 
 export interface BrandViolation {

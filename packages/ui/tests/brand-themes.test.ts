@@ -57,12 +57,13 @@ describe('every registered brand theme', () => {
   });
 });
 
-describe('ow (ourWKRP) — ember on the fleet ground', () => {
+describe('ow (ourWKRP) — amber on the shared charcoal/creme ground', () => {
   const dark = resolveBrandPalette('ow', 'dark');
   const light = resolveBrandPalette('ow', 'light');
 
   it('shares the fleet grounds in both modes: ember in dark, burnt amber in light', () => {
-    // OSE-1523: ourWKRP gave up carbon black. One ground for OSE and ourWKRP.
+    // OSE-1523: ourWKRP gave up carbon black. One ground for OSE and ourWKRP,
+    // now the OCR charcoal/creme base from @ocr/tokens.
     const base = { dark: resolveBrandPalette('', 'dark'), light: resolveBrandPalette('', 'light') };
     for (const ground of ['--bg', '--surface', '--card', '--surface-hover', '--border', '--text', '--text-muted']) {
       expect(dark[ground], `dark ${ground}`).toBe(base.dark[ground]);
@@ -93,15 +94,15 @@ describe('ow (ourWKRP) — ember on the fleet ground', () => {
     }
   }
 
-  it('--on-accent flips per theme: navy ink on ember, white on burnt amber', () => {
-    expect(dark['--on-accent']).toBe('#0F1824');
-    expect(light['--on-accent']).toBe('#FFFFFF');
+  it('--on-accent flips per theme: charcoal ink on ember, creme on deep amber', () => {
+    expect(dark['--on-accent']).toBe('#1A1918');
+    expect(light['--on-accent']).toBe('#FAF6EE');
   });
 
   it('brandBlock("ow") carries both modes', () => {
     const css = brandBlock('ow');
     expect(css).toContain('--accent: #D4954B');
-    expect(css).toContain('--accent: #93540F');
+    expect(css).toContain('--accent: #8A5A00');
     expect(css).toContain('@media (prefers-color-scheme: light)');
   });
 });

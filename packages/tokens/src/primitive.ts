@@ -29,6 +29,31 @@
  */
 
 /** Blue-black ground family — OSE. */
+/**
+ * The OCR base, 2026-10-04: charcoal and creme. One neutral pair for every brand
+ * so event art and sponsor marks carry the color. navy, carbon and paper below
+ * are kept for reference; no role points at them any more (paper-100 stays the
+ * poster stock and ink-900 the poster ink).
+ */
+export const charcoal = {
+  '--ocr-charcoal-950': '#1A1918', // dark ground; text on light (15.2:1 under creme-050)
+  '--ocr-charcoal-900': '#232120', // dark surface / card
+  '--ocr-charcoal-800': '#2D2B29', // dark surface-raised
+  '--ocr-charcoal-700': '#403D3A', // dark border (hairline only)
+  '--ocr-charcoal-600': '#7E7871', // dark border-strong (control edges, 3:1+)
+  '--ocr-charcoal-500': '#A39D94', // dark muted text
+} as const;
+
+export const creme = {
+  '--ocr-creme-050': '#F4EEE2', // light ground; text on dark
+  '--ocr-creme-100': '#FAF6EE', // light surface / card
+  '--ocr-creme-150': '#F3ECE0', // light surface-raised / hover: every text and status role clears 4.5:1 on it
+  '--ocr-creme-200': '#EAE2D2', // light surface-raised
+  '--ocr-creme-300': '#D9CFBC', // light border (hairline only)
+  '--ocr-creme-600': '#857C6F', // light border-strong (control edges, 3:1+)
+  '--ocr-creme-700': '#5E584F', // light muted text
+} as const;
+
 export const navy = {
   '--ocr-navy-950': '#0F1824', // ground
   '--ocr-navy-900': '#1A2740', // surface / card
@@ -59,6 +84,7 @@ export const paper = {
 
 /** Blue accent family — OSE action color. */
 export const signal = {
+  '--ocr-signal-800': '#0049B8', // action-hover on light (7.3:1 under creme-100 text)
   '--ocr-signal-700': '#0057D6', // action on light (4.7:1 on paper-050)
   '--ocr-signal-600': '#1785FB', // signature
   '--ocr-signal-500': '#3D9BFF', // action on dark
@@ -83,6 +109,10 @@ export const status = {
   '--ocr-teal-600': '#009688', // hover on light
   '--ocr-warn-400': '#F5B32E', // warn on dark
   '--ocr-warn-700': '#8A5A00', // warn on light
+  '--ocr-red-350': '#F08585', // DESTRUCTIVE on dark (7.0 / 6.4 / 5.6:1 on charcoal ground / surface / raised)
+  '--ocr-green-400': '#34D399', // success on dark
+  '--ocr-green-700': '#137A42', // success on light (4.7:1 on creme-050)
+  '--ocr-info-300': '#8AC2FF', // info on dark (light info reuses signal-700)
   '--ocr-red-500': '#E05252', // DESTRUCTIVE ONLY on dark (4.7:1 on navy-950)
   '--ocr-red-400': '#E87272', // hover on dark
   '--ocr-red-700': '#B03030', // DESTRUCTIVE ONLY on light (5.2:1 on paper-050)
@@ -209,6 +239,8 @@ export const breakpoint = {
 
 /** Every Tier 1 token, one object. */
 export const primitives = {
+  ...charcoal,
+  ...creme,
   ...navy,
   ...carbon,
   ...paper,

@@ -1,5 +1,7 @@
 # Consuming this design system
 
+> **Changing a colour?** Follow [CHANGING-COLORS.md](CHANGING-COLORS.md). Colours are set in `packages/tokens`, not here.
+
 This folder is the **specification**, committed so it is readable offline, in VS Code, and by any agent working in this repo. It is deliberately inert: importing nothing from here changes no rendered output today.
 
 The live, browsable version is the Design System artifact it was published from. This copy and that one are the same files.
@@ -10,7 +12,8 @@ The live, browsable version is the Design System artifact it was published from.
 |---|---|---|
 | `README.md` | The brand book. **Start here.** | Yes |
 | `guidelines/*.md` | Eight sections: the 50–75 reader, colour, UEC and maps, displays and QR, the CSS vocabulary, map archetypes, rotating displays, the recursive web | Yes |
-| `tokens.json` | Type, spacing, radius and the bundle-only roles. **Every colour it shares with `src/tokens.ts` mirrors that file** — `src/tokens.ts` is the single source, and `tests/token-parity.test.ts` fails CI on any drift | Yes — colours only via `src/tokens.ts` |
+| `CHANGING-COLORS.md` | **How to change a colour, step by step.** Read it every time | Yes |
+| `tokens.json` | Type, spacing, radius and the bundle-only roles. **Every colour it shares with `src/tokens.ts` mirrors that file**, and `tests/token-parity.test.ts` fails CI on any drift. `src/tokens.ts` itself takes its colours from `packages/tokens` (see [CHANGING-COLORS.md](CHANGING-COLORS.md)) | Yes — colours only via `src/tokens.ts` |
 | `tokens.css` | Compiled custom properties + type-style classes | **No — generated** |
 | `compile-tokens.mjs` | `node compile-tokens.mjs` regenerates `tokens.css` | Yes |
 | `components/bundle.css` | **Preview-only.** A SUBSET of `src/styles.ts` — see the warning below | Yes |

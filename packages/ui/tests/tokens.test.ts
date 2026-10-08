@@ -50,9 +50,14 @@ describe('token structure', () => {
 });
 
 describe('palette identity (CARTO, Ember-free)', () => {
-  it('accent is CARTO blue, not legacy amber', () => {
+  it('base accent is the OCR signal blue; amber belongs only to the flag side', () => {
     expect(P['--ocr-blue-600']).toBe('#1785FB');
-    expect(Object.values(P)).not.toContain('#D4954B');
+    expect(semanticDark['--accent']).toBe('var(--ocr-signal-500)');
+    expect(semanticLight['--accent']).toBe('var(--ocr-signal-700)');
+    const amber = ['--ocr-ember-500', '--ocr-ember-600', '--ocr-ember-800'].map((k) => `var(${k})`);
+    for (const sem of [semanticDark, semanticLight]) {
+      for (const v of Object.values(sem)) expect(amber).not.toContain(v);
+    }
   });
 
   it('live token is teal — not red or green (colorblind-safe)', () => {

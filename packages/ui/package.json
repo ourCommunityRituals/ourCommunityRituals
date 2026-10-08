@@ -28,7 +28,9 @@
     "typecheck": "tsc --noEmit",
     "compile-tokens": "node design-system/compile-tokens.mjs",
     "check:generated": "node design-system/compile-tokens.mjs --check",
-    "contrast": "tsx scripts/verify-contrast.mjs"
+    "contrast": "tsx scripts/verify-contrast.mjs",
+    "sync:tokens": "tsx scripts/sync-ocr-tokens.ts",
+    "check:tokens": "tsx scripts/sync-ocr-tokens.ts --check"
   },
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
