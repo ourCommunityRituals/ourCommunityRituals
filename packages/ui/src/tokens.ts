@@ -80,9 +80,16 @@ export const UI_FROM_OCR = {
 
 type UiRole = keyof typeof UI_FROM_OCR;
 
+/** A built-in brand's OCR role map; a brand @ocr/tokens does not define is an error. */
+function ocrRolesFor(name: string): NonNullable<(typeof ocrRoles)[string]> {
+  const roles = ocrRoles[name];
+  if (!roles) throw new Error(`@ocr/tokens defines no brand "${name}"`);
+  return roles;
+}
+
 /** var(--ocr-...) for a @ui role in the base (ourSharedEvents) brand. */
 const base = (mode: 'dark' | 'light', role: UiRole): string =>
-  `var(${ocrRoles.ose![mode][UI_FROM_OCR[role]]})`;
+  `var(${ocrRolesFor('ose')[mode][UI_FROM_OCR[role]]})`;
 
 // ── Tier 1: Primitive colour scale ───────────────────────────────────────────
 
@@ -411,8 +418,8 @@ function brandFromOcr(name: string): BrandTheme {
   for (const mode of ['dark', 'light'] as const) {
     for (const [ui, role] of Object.entries(UI_FROM_OCR)) {
       if (role.startsWith('--status-')) continue; // locked: never brand-painted
-      const mine = ocrRoles[name]![mode][role];
-      if (mine !== ocrRoles.ose![mode][role]) out[mode][ui] = ocrPrimitives[mine];
+      const mine = ocrRolesFor(name)[mode][role];
+      if (mine !== ocrRolesFor('ose')[mode][role]) out[mode][ui] = ocrPrimitives[mine];
     }
     // A followed link stays in the brand's accent family.
     const accent = out[mode]['--accent'];

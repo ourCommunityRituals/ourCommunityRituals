@@ -27,15 +27,17 @@ const OUT = join(here, '..', 'src', 'generated', 'ocr-tokens.ts');
 
 const P = primitives as Record<string, string>;
 const ref = (v: string): string => {
-  const m = /^var\((--ocr-[\w-]+)\)$/.exec(v.trim());
-  if (!m || !(m[1]! in P)) throw new Error(`role value ${v} is not a primitive reference`);
-  return m[1]!;
+  const name = /^var\((--ocr-[\w-]+)\)$/.exec(v.trim())?.[1];
+  if (name === undefined || !(name in P)) {
+    throw new Error(`role value ${v} is not a primitive reference`);
+  }
+  return name;
 };
 
 const used = new Set<string>();
 const roles: Record<string, Record<string, Record<string, string>>> = {};
 for (const [brand, theme] of Object.entries(brands)) {
-  roles[brand] = {};
+  const byMode: Record<string, Record<string, string>> = {};
   for (const mode of ['dark', 'light'] as const) {
     const map: Record<string, string> = {};
     for (const role of SEMANTIC_ROLES) {
@@ -43,12 +45,17 @@ for (const [brand, theme] of Object.entries(brands)) {
       used.add(name);
       map[role] = name;
     }
-    roles[brand]![mode] = map;
+    byMode[mode] = map;
   }
+  roles[brand] = byMode;
 }
 
 const prims = Object.fromEntries(
-  [...used].sort().map((k) => [k, P[k]!.toUpperCase()]),
+  [...used].sort().map((k) => {
+    const hex = P[k];
+    if (hex === undefined) throw new Error(`primitive ${k} has no value`);
+    return [k, hex.toUpperCase()];
+  }),
 );
 
 const obj = (o: unknown) => JSON.stringify(o, null, 2).replace(/"/g, "'");
