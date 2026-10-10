@@ -59,24 +59,30 @@ export interface OcrToastDetails {
   action?: string;
 }
 
-export interface OcrToastOptions {
+export interface OcrToastOptions<E = unknown> {
   /** Milliseconds before a success/neutral toast goes (1000-120000). Default 10000. 0 keeps it. Ignored for failure. */
   duration?: number;
   /** One optional action, e.g. { label: 'Turn off', onClick }. Runs, then the toast goes. */
-  action?: { label: string; onClick: (handle: OcrToastHandle) => void };
+  action?: { label: string; onClick: (handle: OcrToastHandle<E>) => void };
   /** Failure only. */
   details?: OcrToastDetails;
 }
 
-export interface OcrToastHandle {
+/**
+ * `E` is the toast's element type. It is `unknown` here so this module type-checks
+ * without the DOM library: the Workers import `@ocr/ui` for `toastScript` and
+ * `toastStyles`, and their TypeScript has no `HTMLElement`. In a page, type the
+ * runtime as `OcrToastApi<HTMLElement>`.
+ */
+export interface OcrToastHandle<E = unknown> {
   dismiss(): void;
-  readonly element: HTMLElement | null;
+  readonly element: E | null;
 }
 
-export interface OcrToastApi {
-  success(message: unknown, options?: OcrToastOptions): OcrToastHandle;
-  failure(message: unknown, options?: OcrToastOptions): OcrToastHandle;
-  neutral(message: unknown, options?: OcrToastOptions): OcrToastHandle;
+export interface OcrToastApi<E = unknown> {
+  success(message: unknown, options?: OcrToastOptions<E>): OcrToastHandle<E>;
+  failure(message: unknown, options?: OcrToastOptions<E>): OcrToastHandle<E>;
+  neutral(message: unknown, options?: OcrToastOptions<E>): OcrToastHandle<E>;
   dismissAll(): void;
   /** The same cleaning every message gets, for callers that want to show text elsewhere. */
   sanitize(input: unknown): string;
