@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Color tiers 1 and 2</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1160px; box-sizing: border-box; padding: 64px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 36px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Color</div>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">Semantic roles, dark and light</h1>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 16px; line-height: 1.5; color: #A39D94">Dark is the default. Light turns on through <span style="color: #F4EEE2">prefers-color-scheme</span>, or you can force either theme with <span style="color: #F4EEE2">data-theme</span>. The color-blind rule: <span style="color: #00C4B4">teal = live</span>, red = destructive, and they are never used as opposites.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 220px repeat(2, minmax(0, 1fr)) 120px; gap: 0; border: 1px solid #403D3A; border-radius: 12px; overflow: hidden">
+    <div style="padding: 12px 18px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Role</div>
+    <div style="padding: 12px 18px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Dark (default)</div>
+    <div style="padding: 12px 18px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Light</div>
+    <div style="padding: 12px 18px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Brand</div>
+    <sc-for list="{{roles}}" as="r" hint-placeholder-count="14">
+      <div style="padding: 9px 18px; border-top: 1px solid #403D3A; display: flex; flex-direction: column; justify-content: center; gap: 2px">
+        <span style="font-size: 16px; font-weight: 600; font-family: ui-monospace, 'SF Mono', Menlo, monospace">{{r.name}}</span>
+        <span style="font-size: 13px; color: #A39D94">{{r.use}}</span>
+      </div>
+      <div style="padding: 9px 18px; border-top: 1px solid #403D3A; display: flex; align-items: center; gap: 12px">
+        <span style="width: 56px; height: 32px; border-radius: 8px; border: 1px solid #403D3A; background: {{r.dark}}"></span>
+        <span style="font-size: 13px; font-family: ui-monospace, 'SF Mono', Menlo, monospace">{{r.dark}}</span>
+        <span style="font-size: 13px; color: #A39D94">{{r.darkPrim}}</span>
+      </div>
+      <div style="padding: 9px 18px; border-top: 1px solid #403D3A; display: flex; align-items: center; gap: 12px">
+        <span style="width: 56px; height: 32px; border-radius: 8px; border: 1px solid #403D3A; background: {{r.light}}"></span>
+        <span style="font-size: 13px; font-family: ui-monospace, 'SF Mono', Menlo, monospace">{{r.light}}</span>
+        <span style="font-size: 13px; color: #A39D94">{{r.lightPrim}}</span>
+      </div>
+      <div style="padding: 9px 18px; border-top: 1px solid #403D3A; display: flex; align-items: center">
+        <span style="font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; color: {{r.tagColor}}; background: {{r.tagBg}}">{{r.tag}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Tier 1 primitives: the charcoal and creme scale</div>
+    <div style="display: flex; gap: 8px">
+      <sc-for list="{{navy}}" as="p" hint-placeholder-count="9">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+          <span style="height: 56px; border-radius: 8px; border: 1px solid #403D3A; background: {{p.hex}}"></span>
+          <span style="font-size: 13px; font-weight: 600">{{p.name}}</span>
+          <span style="font-size: 13px; color: #A39D94; font-family: ui-monospace, 'SF Mono', Menlo, monospace">{{p.hex}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var C = { tag: 'Customizable', tagColor: '#8AC2FF', tagBg: 'rgba(61,155,255,0.12)' };
+    var L = { tag: 'Locked', tagColor: '#F5B32E', tagBg: 'rgba(245,179,46,0.12)' };
+    function row(name, use, dark, darkPrim, light, lightPrim, d) {
+      return Object.assign({ name: name, use: use, dark: dark, darkPrim: darkPrim, light: light, lightPrim: lightPrim }, d);
+    }
+    return {
+      roles: [
+        row('--ground', 'Page ground', '#1A1918', 'charcoal-950', '#F4EEE2', 'creme-050', C),
+        row('--surface', 'Cards, inputs', '#232120', 'charcoal-900', '#FAF6EE', 'creme-100', C),
+        row('--surface-raised', 'Hovered row or card', '#2D2B29', 'charcoal-800', '#EAE2D2', 'creme-200', C),
+        row('--border', 'Decorative dividers', '#403D3A', 'charcoal-700', '#D9CFBC', 'creme-300', C),
+        row('--border-strong', 'Control edges, 3:1', '#7E7871', 'charcoal-600', '#857C6F', 'creme-600', C),
+        row('--text', 'Primary text', '#F4EEE2', 'creme-050', '#1A1918', 'charcoal-950', C),
+        row('--text-muted', 'Secondary text', '#A39D94', 'charcoal-500', '#5E584F', 'creme-700', C),
+        row('--action', 'Primary action, focus', '#3D9BFF', 'signal-500', '#0057D6', 'signal-700', C),
+        row('--on-action', 'Text on action fills', '#1A1918', 'charcoal-950', '#FAF6EE', 'creme-100', C),
+        row('--status-live', 'On-air / active', '#00C4B4', 'teal-400', '#00796B', 'teal-700', L),
+        row('--success', 'Done / accepted', '#34D399', 'green-400', '#137A42', 'green-700', L),
+        row('--status-warn', 'Caution / pending', '#F5B32E', 'warn-400', '#8A5A00', 'warn-700', L),
+        row('--info', 'Informational', '#8AC2FF', 'blue-300', '#0057D6', 'signal-700', L),
+        row('--status-danger', 'Destructive only', '#F08585', 'red-350', '#B03030', 'red-700', L)
+      ],
+      navy: [
+        { name: 'charcoal-950', hex: '#1A1918' }, { name: 'charcoal-900', hex: '#232120' },
+        { name: 'charcoal-800', hex: '#2D2B29' }, { name: 'charcoal-700', hex: '#403D3A' },
+        { name: 'charcoal-600', hex: '#7E7871' }, { name: 'charcoal-500', hex: '#A39D94' },
+        { name: 'creme-300', hex: '#D9CFBC' }, { name: 'creme-100', hex: '#FAF6EE' },
+        { name: 'creme-050', hex: '#F4EEE2' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

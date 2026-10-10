@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Experiment: OSE event page on the ourSharedMosaics ground</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+  <helmet>
+    <style>
+      html, body { margin: 0; height: 100%; }
+    </style>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+  </helmet>
+<div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 10px; position: absolute; left: 0px; top: 0px; right: auto; bottom: auto; margin: 0px; box-sizing: border-box; width: 390px;">
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">What</span>
+      <span style="font-size: 16px; line-height: 1.45">[ONE-LINE DESCRIPTION OF THE NIGHT]</span>
+    </div>
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Where</span>
+        <span style="font-size: 16px">[VENUE NAME]</span>
+        <span style="font-size: 13px; color: #A39D94">[STREET ADDRESS]</span>
+      </div>
+      <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Directions</a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Who</span>
+        <span style="font-size: 16px">All ages</span>
+      </div>
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">How much</span>
+        <span style="font-size: 16px">[YOUR PRICE]</span>
+      </div>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

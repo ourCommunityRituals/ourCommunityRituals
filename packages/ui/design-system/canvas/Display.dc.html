@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Venue display</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; padding: 72px 96px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 48px">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <span style="font-size: 22px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">OurSharedEvents</span>
+    <div style="display: flex; align-items: center; gap: 16px; font-size: 22px; color: #A39D94">
+      <span style="text-transform: uppercase; letter-spacing: 0.08em; font-size: 16px">Sponsored by</span>
+      <span style="color: #F4EEE2; font-weight: 600">[SPONSOR NAME]</span>
+      <span style="color: #7E7871">·</span>
+      <span style="color: #F4EEE2; font-weight: 600">[SPONSOR NAME]</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 96px; align-items: center; flex-grow: 1">
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; gap: 16px; align-items: center">
+        <span style="font-size: 22px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 18px; border-radius: 999px; color: #00C4B4; background: rgba(0,196,180,0.15)">Live now</span>
+        <span style="font-size: 22px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Upcoming event</span>
+      </div>
+      <h1 style="margin: 0; font-size: 120px; line-height: 1; font-weight: 800; letter-spacing: -0.025em">Friday board game night</h1>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 48px">
+        <span>Tonight · 7:00 PM</span>
+        <span style="color: #A39D94">[VENUE NAME] · all ages · [YOUR PRICE]</span>
+      </div>
+    </div>
+
+    <div style="width: 420px; flex-shrink: 0; background: #FAF6EE; border-radius: 12px; padding: 40px 40px 32px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 20px; color: #1A1918">
+      <svg viewBox="0 0 29 29" width="284" height="284" shape-rendering="crispEdges" role="img" aria-label="QR code placeholder for check in">
+        <rect width="29" height="29" fill="#FAF6EE"></rect>
+        <path fill="#1A1918" d="M1 1h7v7H1zM21 1h7v7h-7zM1 21h7v7H1z"></path>
+        <path fill="#FAF6EE" d="M2 2h5v5H2zM22 2h5v5h-5zM2 22h5v5H2z"></path>
+        <path fill="#1A1918" d="M3 3h3v3H3zM23 3h3v3h-3zM3 23h3v3H3zM10 1h2v2h-2zM13 2h1v3h-1zM10 5h3v1h-3zM15 1h3v1h-3zM16 3h2v2h-2zM10 10h3v2h-3zM14 9h2v4h-2zM18 10h3v1h-3zM22 10h2v3h-2zM25 11h3v1h-3zM1 10h2v2H1zM4 11h3v1H4zM2 14h4v1H2zM6 16h2v3H6zM1 17h3v1H1zM10 14h1v4h-1zM12 15h4v1h-4zM17 13h2v3h-2zM20 14h3v1h-3zM24 15h2v4h-2zM27 14h1v5h-1zM13 18h2v2h-2zM10 21h3v1h-3zM11 23h1v4h-1zM14 22h3v1h-3zM15 25h2v3h-2zM18 20h2v2h-2zM21 21h4v1h-4zM20 24h2v2h-2zM23 23h1v5h-1zM25 25h3v1h-3zM26 27h2v1h-2z"></path>
+      </svg>
+      <span style="font-size: 36px; font-weight: 800">Scan to check in</span>
+      <span style="font-size: 22px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; color: #5E584F">oursharedevents.com/s/[CODE]</span>
+      <span style="font-size: 22px; color: #5E584F">No name, no account</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px">
+    <span style="font-size: 22px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Also coming up</span>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px 28px; display: flex; gap: 20px; align-items: center">
+        <span style="width: 72px; height: 72px; flex-shrink: 0; border-radius: 12px; border: 2px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #8AC2FF">REC</span>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 28px; font-weight: 700">Bocce tournament</span><span style="font-size: 22px; color: #A39D94">Sat · 11:00 AM</span></div>
+      </div>
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px 28px; display: flex; gap: 20px; align-items: center">
+        <span style="width: 72px; height: 72px; flex-shrink: 0; border-radius: 12px; border: 2px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #8AC2FF">MKT</span>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 28px; font-weight: 700">Community swap meet</span><span style="font-size: 22px; color: #A39D94">Sun · 9:00 AM</span></div>
+      </div>
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px 28px; display: flex; gap: 20px; align-items: center">
+        <span style="width: 72px; height: 72px; flex-shrink: 0; border-radius: 12px; border: 2px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #8AC2FF">ENT</span>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 28px; font-weight: 700">Tuesday trivia</span><span style="font-size: 22px; color: #A39D94">Tue · 7:30 PM</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

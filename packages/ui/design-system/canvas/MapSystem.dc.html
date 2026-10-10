@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>H3 map system</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 960px; box-sizing: border-box; padding: 64px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">H3 map · resolution 7</div>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">The neighborhood is a hexagon</h1>
+    </div>
+    <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.5; color: #A39D94">Each cell covers about 5 km². The map service accepts nothing finer: if it is sent a raw location, it rejects it with an error. That is why the map can show a whole local economy without pinpointing anyone.</p>
+  </div>
+
+  <div style="display: flex; gap: 40px">
+    <div style="width: 780px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px">
+      <svg width="780" height="526" viewBox="-10 -12 780 526" role="img" aria-label="Hex map of about 60 cells: your cell outlined in white, busier cells in deeper blue, event markers in the busiest cells, and some cells dashed as open niches">
+        <polygon points="79.8,17.0 79.8,63.0 40.0,86.0 0.2,63.0 0.2,17.0 40.0,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="159.5,17.0 159.5,63.0 119.7,86.0 79.8,63.0 79.8,17.0 119.7,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="239.2,17.0 239.2,63.0 199.3,86.0 159.5,63.0 159.5,17.0 199.3,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="318.9,17.0 318.9,63.0 279.0,86.0 239.2,63.0 239.2,17.0 279.0,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="398.5,17.0 398.5,63.0 358.7,86.0 318.9,63.0 318.9,17.0 358.7,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="478.2,17.0 478.2,63.0 438.4,86.0 398.5,63.0 398.5,17.0 438.4,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="557.9,17.0 557.9,63.0 518.0,86.0 478.2,63.0 478.2,17.0 518.0,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="637.6,17.0 637.6,63.0 597.7,86.0 557.9,63.0 557.9,17.0 597.7,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="717.2,17.0 717.2,63.0 677.4,86.0 637.6,63.0 637.6,17.0 677.4,-6.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="119.7,86.0 119.7,132.0 79.8,155.0 40.0,132.0 40.0,86.0 79.8,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="199.3,86.0 199.3,132.0 159.5,155.0 119.7,132.0 119.7,86.0 159.5,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="279.0,86.0 279.0,132.0 239.2,155.0 199.3,132.0 199.3,86.0 239.2,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="358.7,86.0 358.7,132.0 318.9,155.0 279.0,132.0 279.0,86.0 318.9,63.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+        <polygon points="438.4,86.0 438.4,132.0 398.5,155.0 358.7,132.0 358.7,86.0 398.5,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="518.0,86.0 518.0,132.0 478.2,155.0 438.4,132.0 438.4,86.0 478.2,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="597.7,86.0 597.7,132.0 557.9,155.0 518.0,132.0 518.0,86.0 557.9,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="677.4,86.0 677.4,132.0 637.6,155.0 597.7,132.0 597.7,86.0 637.6,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="757.1,86.0 757.1,132.0 717.2,155.0 677.4,132.0 677.4,86.0 717.2,63.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="79.8,155.0 79.8,201.0 40.0,224.0 0.2,201.0 0.2,155.0 40.0,132.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="159.5,155.0 159.5,201.0 119.7,224.0 79.8,201.0 79.8,155.0 119.7,132.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="239.2,155.0 239.2,201.0 199.3,224.0 159.5,201.0 159.5,155.0 199.3,132.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="318.9,155.0 318.9,201.0 279.0,224.0 239.2,201.0 239.2,155.0 279.0,132.0" fill="#2B6BC0" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="398.5,155.0 398.5,201.0 358.7,224.0 318.9,201.0 318.9,155.0 358.7,132.0" fill="#23508A" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="478.2,155.0 478.2,201.0 438.4,224.0 398.5,201.0 398.5,155.0 438.4,132.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="557.9,155.0 557.9,201.0 518.0,224.0 478.2,201.0 478.2,155.0 518.0,132.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+        <polygon points="637.6,155.0 637.6,201.0 597.7,224.0 557.9,201.0 557.9,155.0 597.7,132.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="717.2,155.0 717.2,201.0 677.4,224.0 637.6,201.0 637.6,155.0 677.4,132.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="119.7,224.0 119.7,270.0 79.8,293.0 40.0,270.0 40.0,224.0 79.8,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="199.3,224.0 199.3,270.0 159.5,293.0 119.7,270.0 119.7,224.0 159.5,201.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+        <polygon points="279.0,224.0 279.0,270.0 239.2,293.0 199.3,270.0 199.3,224.0 239.2,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="358.7,224.0 358.7,270.0 318.9,293.0 279.0,270.0 279.0,224.0 318.9,201.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="518.0,224.0 518.0,270.0 478.2,293.0 438.4,270.0 438.4,224.0 478.2,201.0" fill="#23508A" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="597.7,224.0 597.7,270.0 557.9,293.0 518.0,270.0 518.0,224.0 557.9,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="677.4,224.0 677.4,270.0 637.6,293.0 597.7,270.0 597.7,224.0 637.6,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="757.1,224.0 757.1,270.0 717.2,293.0 677.4,270.0 677.4,224.0 717.2,201.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="79.8,293.0 79.8,339.0 40.0,362.0 0.2,339.0 0.2,293.0 40.0,270.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="159.5,293.0 159.5,339.0 119.7,362.0 79.8,339.0 79.8,293.0 119.7,270.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="239.2,293.0 239.2,339.0 199.3,362.0 159.5,339.0 159.5,293.0 199.3,270.0" fill="#232120" stroke="#3D9BFF" stroke-width="2" stroke-dasharray="5 4"></polygon>
+        <polygon points="318.9,293.0 318.9,339.0 279.0,362.0 239.2,339.0 239.2,293.0 279.0,270.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="398.5,293.0 398.5,339.0 358.7,362.0 318.9,339.0 318.9,293.0 358.7,270.0" fill="#23508A" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="478.2,293.0 478.2,339.0 438.4,362.0 398.5,339.0 398.5,293.0 438.4,270.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="557.9,293.0 557.9,339.0 518.0,362.0 478.2,339.0 478.2,293.0 518.0,270.0" fill="#1F3A5E" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="637.6,293.0 637.6,339.0 597.7,362.0 557.9,339.0 557.9,293.0 597.7,270.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="717.2,293.0 717.2,339.0 677.4,362.0 637.6,339.0 637.6,293.0 677.4,270.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="119.7,362.0 119.7,408.0 79.8,431.0 40.0,408.0 40.0,362.0 79.8,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="199.3,362.0 199.3,408.0 159.5,431.0 119.7,408.0 119.7,362.0 159.5,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="279.0,362.0 279.0,408.0 239.2,431.0 199.3,408.0 199.3,362.0 239.2,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="358.7,362.0 358.7,408.0 318.9,431.0 279.0,408.0 279.0,362.0 318.9,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="438.4,362.0 438.4,408.0 398.5,431.0 358.7,408.0 358.7,362.0 398.5,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="518.0,362.0 518.0,408.0 478.2,431.0 438.4,408.0 438.4,362.0 478.2,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="597.7,362.0 597.7,408.0 557.9,431.0 518.0,408.0 518.0,362.0 557.9,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="677.4,362.0 677.4,408.0 637.6,431.0 597.7,408.0 597.7,362.0 637.6,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="757.1,362.0 757.1,408.0 717.2,431.0 677.4,408.0 677.4,362.0 717.2,339.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="79.8,431.0 79.8,477.0 40.0,500.0 0.2,477.0 0.2,431.0 40.0,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="159.5,431.0 159.5,477.0 119.7,500.0 79.8,477.0 79.8,431.0 119.7,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="239.2,431.0 239.2,477.0 199.3,500.0 159.5,477.0 159.5,431.0 199.3,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="318.9,431.0 318.9,477.0 279.0,500.0 239.2,477.0 239.2,431.0 279.0,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="398.5,431.0 398.5,477.0 358.7,500.0 318.9,477.0 318.9,431.0 358.7,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="478.2,431.0 478.2,477.0 438.4,500.0 398.5,477.0 398.5,431.0 438.4,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="557.9,431.0 557.9,477.0 518.0,500.0 478.2,477.0 478.2,431.0 518.0,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="637.6,431.0 637.6,477.0 597.7,500.0 557.9,477.0 557.9,431.0 597.7,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="717.2,431.0 717.2,477.0 677.4,500.0 637.6,477.0 637.6,431.0 677.4,408.0" fill="#232120" stroke="#403D3A" stroke-width="1.5"></polygon>
+        <polygon points="438.4,224.0 438.4,270.0 398.5,293.0 358.7,270.0 358.7,224.0 398.5,201.0" fill="#23508A" stroke="#F4EEE2" stroke-width="3"></polygon>
+        <circle cx="279.0" cy="178.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+        <circle cx="358.7" cy="178.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+        <circle cx="398.5" cy="247.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+        <circle cx="478.2" cy="247.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+        <circle cx="358.7" cy="316.0" r="7" fill="#3D9BFF" stroke="#1A1918" stroke-width="2"></circle>
+        <text x="398.5" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#F4EEE2">You</text>
+      </svg>
+      <div style="display: flex; gap: 22px; flex-wrap: wrap; font-size: 13px; color: #A39D94">
+        <span style="display: flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; border-radius: 4px; border: 3px solid #F4EEE2; box-sizing: border-box; background: #23508A"></span>Your cell</span>
+        <span style="display: flex; align-items: center; gap: 8px"><span style="width: 54px; height: 14px; border-radius: 4px; background: linear-gradient(90deg, #232120, #1F3A5E, #23508A, #2B6BC0)"></span>Events in the next 90 days</span>
+        <span style="display: flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 50%; background: #3D9BFF"></span>Event venue (cell center, not the address)</span>
+        <span style="display: flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; border-radius: 4px; border: 2px dashed #3D9BFF; box-sizing: border-box"></span>Open niche for the selected type</span>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 16px">
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 12px 16px; box-sizing: border-box; border-bottom: 1px solid #403D3A">
+          <span style="font-size: 16px; font-weight: 700">Your cell</span>
+          <span style="font-size: 13px; color: #A39D94; font-family: ui-monospace, 'SF Mono', Menlo, monospace">872664c1b…</span>
+          <a href="#" style="margin-left: auto; font-size: 14px; font-weight: 600; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center">Widen to nearby</a>
+        </div>
+        <sc-for list="{{events}}" as="e" hint-placeholder-count="3">
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid #403D3A">
+            <span style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; color: #8AC2FF">{{e.code}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1">
+              <span style="font-size: 16px; font-weight: 600">{{e.name}}</span>
+              <span style="font-size: 13px; color: #A39D94">{{e.when}}</span>
+            </div>
+          </div>
+        </sc-for>
+        <div style="padding: 12px 16px; font-size: 13px; color: #A39D94; line-height: 1.45">Supported locally by <span style="color: #F4EEE2">[LOCAL SERVICE]</span>, which covers this cell for home repair.</div>
+      </div>
+
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Map rules the code enforces</div>
+        <div style="font-size: 14px; line-height: 1.5"><strong>Cell, not coordinate.</strong> <span style="color: #A39D94">The phone works out the cell, and a request carrying a raw location is rejected.</span></div>
+        <div style="font-size: 14px; line-height: 1.5"><strong>One resolution.</strong> <span style="color: #A39D94">Resolution 7 only, so no zoom level ever narrows past a neighborhood.</span></div>
+        <div style="font-size: 14px; line-height: 1.5"><strong>Categories by code and word.</strong> <span style="color: #A39D94">Each of the 15 categories is a three-letter tile such as REC or TAB, never one of 15 hues. Color stays reserved for status and UEC.</span></div>
+        <div style="font-size: 14px; line-height: 1.5"><strong>Hatched means hidden.</strong> <span style="color: #A39D94">On reports, a cell with fewer than 5 is hatched, and it shows the same way on every surface.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { events: [
+      { code: 'TAB', name: 'Board game night', when: 'Fri · 7:00 PM · [VENUE NAME]' },
+      { code: 'REC', name: 'Bocce tournament', when: 'Sat · 11:00 AM · [VENUE NAME]' },
+      { code: 'MKT', name: 'Community swap meet', when: 'Sun · 9:00 AM · [VENUE NAME]' }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

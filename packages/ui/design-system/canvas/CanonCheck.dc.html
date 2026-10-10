@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Canon check</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; padding: 56px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Canon check · 2026-09-29</span>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">Where the code, the guidelines and this canvas disagree</h1>
+    </div>
+    <div style="border: 2px solid #34D399; border-radius: 12px; padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; max-width: 460px">
+      <span style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #34D399">Decided 2026-09-29</span>
+      <span style="font-size: 16px; font-weight: 700">Contrast is AA everywhere. Text is 13px minimum.</span>
+      <span style="font-size: 14px; line-height: 1.45; color: #A39D94">Every product, brand and custom ourAirwaves page is held to the same floor.</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 16px; font-weight: 700">The physical rules</span>
+      <div style="border: 1px solid #403D3A; border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) 110px; gap: 12px; padding: 12px 16px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">
+          <span>Guideline says</span><span>Shipped code</span><span>This canvas</span><span>Status</span>
+        </div>
+        <sc-for list="{{rules}}" as="r" hint-placeholder-count="8">
+          <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) 110px; gap: 12px; padding: 12px 16px; border-top: 1px solid #403D3A; align-items: center; font-size: 14px; line-height: 1.4">
+            <span style="font-weight: 600">{{r.rule}}</span>
+            <span style="color: #A39D94">{{r.code}}</span>
+            <span style="color: #A39D94">{{r.canvas}}</span>
+            <span style="font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; justify-self: start; color: {{r.fg}}; border: {{r.edge}}">{{r.status}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 16px; font-weight: 700">Two token sources, no sync between them</span>
+      <div style="border: 1px solid #403D3A; border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 12px 16px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">
+          <span>Role</span><span>src/tokens.ts (ships)</span><span>design-system/tokens.css</span>
+        </div>
+        <sc-for list="{{drift}}" as="d" hint-placeholder-count="6">
+          <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-top: 1px solid #403D3A; align-items: center; font-size: 14px">
+            <span style="font-weight: 600; font-family: ui-monospace, 'SF Mono', Menlo, monospace">{{d.role}}</span>
+            <span style="display: flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; flex-shrink: 0; border-radius: 4px; border: 1px solid #7E7871; background: {{d.a}}"></span><span style="color: #A39D94">{{d.aText}}</span></span>
+            <span style="display: flex; align-items: center; gap: 8px"><span style="width: 18px; height: 18px; flex-shrink: 0; border-radius: 4px; border: 1px solid #7E7871; background: {{d.b}}"></span><span style="color: #A39D94">{{d.bText}}</span></span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="border: 1px solid #F5B32E; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 16px; font-weight: 700; color: #F5B32E">Biggest risk: success looks like live</span>
+        <span style="font-size: 14px; line-height: 1.5">The design bundle sets --success to the same teal as --live. The shipped code deliberately made them different (emerald vs teal) so "done" never reads as "on air".</span>
+      </div>
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 16px; font-weight: 700">Recommendation</span>
+        <span style="font-size: 14px; line-height: 1.5; color: #A39D94">With AA decided, src/tokens.ts already matches, so make it the one source. Generate tokens.json and tokens.css from it, and add a CI check like compile-tokens --check so they can't drift again. Update guideline 10's "All text at 7:1" line to AA.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var ok = { status: 'Meets', fg: '#34D399', edge: '1px solid #34D399' };
+    var gap = { status: 'Gap', fg: '#F5B32E', edge: '1px solid #F5B32E' };
+    var part = { status: 'Partly', fg: '#8AC2FF', edge: '1px solid #8AC2FF' };
+    return {
+      rules: [
+        Object.assign({ rule: '48px targets, 56px main action', code: '48px everywhere; no 56px token', canvas: '48–56px, 72px+ on vote' }, part),
+        Object.assign({ rule: '12px between targets', code: 'Not a token', canvas: 'New boards 12px; older 8px' }, part),
+        Object.assign({ rule: '16px inputs and body', code: '16px inputs (OSE-1236)', canvas: '16px inputs throughout' }, ok),
+        { rule: 'Text is 13px minimum', code: 'Still ships nav 10.4, badges 11.2, sections 12.8', canvas: 'Every board raised to 13px+', status: 'Decided', fg: '#34D399', edge: '1px solid #34D399' },
+        { rule: 'Text contrast: AA everywhere (4.5:1 text, 3:1 large text and control edges)', code: 'AA: every role 4.5:1+, edges 3:1', canvas: 'AA on every board', status: 'Decided', fg: '#34D399', edge: '1px solid #34D399' },
+        Object.assign({ rule: '3px focus ring', code: 'Border color change only', canvas: 'Shown on States board' }, gap),
+        Object.assign({ rule: 'No sideways scroll at 375px', code: 'Measured at 11 surfaces', canvas: 'Phones drawn at 390px' }, part),
+        Object.assign({ rule: 'Solid = counted, dashed = planned, held = hidden', code: 'Count floor K=5 on server', canvas: 'Used on every board' }, ok)
+      ],
+      drift: [
+        { role: '--bg', a: '#141F30', aText: '#141F30 navy-925', b: '#0F1824', bText: '#0F1824 navy-950' },
+        { role: '--accent', a: '#52A6FF', aText: '#52A6FF blue-400', b: '#1785FB', bText: '#1785FB + separate --accent-text' },
+        { role: '--text-muted', a: '#8AA1BC', aText: '#8AA1BC (AA)', b: '#A1B4C7', bText: '#A1B4C7 (AAA)' },
+        { role: '--success', a: '#34D399', aText: '#34D399 emerald', b: '#00C4B4', bText: '#00C4B4 = same as live' },
+        { role: '--live-text', a: 'transparent', aText: 'not defined', b: '#00C8B7', bText: '#00C8B7, plus --warn-text' },
+        { role: '--uec-*-ui', a: 'transparent', aText: 'not defined', b: '#E07A5F', bText: '11 on-screen hues for dark and light' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

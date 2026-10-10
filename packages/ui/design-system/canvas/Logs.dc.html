@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Logs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column">
+
+  <div style="padding: 16px 40px; border-bottom: 1px solid #403D3A; display: flex; align-items: center; gap: 24px">
+    <span style="font-size: 18px; font-weight: 700">OurSharedEvents</span>
+    <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Logs</span>
+    <span style="margin-left: auto; font-size: 14px; color: #A39D94">Platform view · every brand</span>
+    <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Download this view</a>
+  </div>
+
+  <div style="padding: 24px 40px 0; display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 800">Everything that happened</h1>
+      <span style="font-size: 14px; line-height: 1.45; color: #A39D94; max-width: 520px; text-align: right">What organizers, sponsors and the system did. Never an attendee: no names, no devices, no addresses of people who scanned.</span>
+    </div>
+
+    <div style="display: flex; gap: 8px">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+        <button type="button" style="min-height: 48px; padding: 0 18px; border-radius: 8px; border: 1px solid {{t.edge}}; background: {{t.fill}}; color: {{t.ink}}; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: 12px; align-items: end">
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #A39D94">When
+        <select style="height: 48px; padding: 0 12px; border-radius: 8px; border: 1px solid #7E7871; background: #232120; color: #F4EEE2; font: inherit; font-size: 16px; font-weight: 400"><option>Last 7 days</option></select>
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #A39D94">Brand
+        <select style="height: 48px; padding: 0 12px; border-radius: 8px; border: 1px solid #7E7871; background: #232120; color: #F4EEE2; font: inherit; font-size: 16px; font-weight: 400"><option>All brands</option></select>
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #A39D94">Who
+        <select style="height: 48px; padding: 0 12px; border-radius: 8px; border: 1px solid #7E7871; background: #232120; color: #F4EEE2; font: inherit; font-size: 16px; font-weight: 400"><option>Anyone</option></select>
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #A39D94">What
+        <select style="height: 48px; padding: 0 12px; border-radius: 8px; border: 1px solid #7E7871; background: #232120; color: #F4EEE2; font: inherit; font-size: 16px; font-weight: 400"><option>Any action</option></select>
+      </label>
+      <button type="button" style="min-height: 48px; padding: 0 16px; border: none; background: none; color: #A39D94; text-decoration: underline; text-underline-offset: 3px; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Clear</button>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; min-height: 0; padding: 18px 40px 0; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px">
+    <div style="border: 1px solid #403D3A; border-radius: 12px; overflow: hidden; background: #232120; align-self: start">
+      <div style="display: grid; grid-template-columns: 150px 220px minmax(0, 1fr) 200px; gap: 16px; padding: 12px 16px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94; border-bottom: 1px solid #403D3A">
+        <span>When</span><span>Who</span><span>What</span><span>Where</span>
+      </div>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+        <div style="display: grid; grid-template-columns: 150px 220px minmax(0, 1fr) 200px; gap: 16px; padding: 12px 16px; border-bottom: 1px solid #403D3A; align-items: center; font-size: 14px">
+          <span style="color: #A39D94">{{r.when}}</span>
+          <span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 4px; color: {{r.fg}}; border: 1px solid {{r.fg}}">{{r.kind}}</span>{{r.who}}</span>
+          <span style="font-weight: 600">{{r.what}}</span>
+          <span style="color: #A39D94">{{r.where}}</span>
+        </div>
+      </sc-for>
+      <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #A39D94">
+        <span>Showing 9 of [N]</span>
+        <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Show more</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Last night's clean-up</span>
+        <sc-for list="{{jobs}}" as="j" hint-placeholder-count="4">
+          <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px"><span>{{j.name}}</span><span style="font-weight: 700; color: {{j.fg}}">{{j.result}}</span></div>
+        </sc-for>
+      </div>
+
+      <div style="border: 1px solid #F5B32E; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #F5B32E">Needs a look</span>
+        <span style="font-size: 14px; line-height: 1.45">Sign-in refused [N] times from one network in an hour.</span>
+        <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Open in Security</a>
+      </div>
+
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">This month's billable use</span>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Venue map images</span><span style="font-weight: 700">[N] of 10,000 free</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Database rows read</span><span style="font-weight: 700">[N]</span></div>
+        <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Open in Cost</a>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var on = { edge: '#3D9BFF', fill: 'rgba(61,155,255,0.12)', ink: '#8AC2FF' };
+    var off = { edge: '#403D3A', fill: 'transparent', ink: '#F4EEE2' };
+    var person = '#8AC2FF', system = '#A39D94', key = '#F5B32E', sponsor = '#D4954B';
+    return {
+      tabs: [
+        Object.assign({ label: 'Activity' }, on),
+        Object.assign({ label: 'System jobs' }, off),
+        Object.assign({ label: 'Security' }, off),
+        Object.assign({ label: 'Cost' }, off)
+      ],
+      rows: [
+        { when: 'Today 2:14 PM', kind: 'Person', fg: person, who: '[MANAGER EMAIL]', what: 'Published an event', where: '[BRAND] · [EVENT TITLE]' },
+        { when: 'Today 2:09 PM', kind: 'Person', fg: person, who: '[MANAGER EMAIL]', what: 'Changed the poster codes', where: '[BRAND] · [EVENT TITLE]' },
+        { when: 'Today 1:40 PM', kind: 'Sponsor', fg: sponsor, who: '[SPONSOR NAME]', what: 'Accepted a placement', where: '[BRAND] · [EVENT TITLE]' },
+        { when: 'Today 11:02 AM', kind: 'Person', fg: person, who: '[MANAGER EMAIL]', what: 'Sent a sponsor link', where: '[BRAND] · [SPONSOR NAME]' },
+        { when: 'Today 3:00 AM', kind: 'System', fg: system, who: 'Nightly job', what: 'Archived 2 drafts untouched for 30 days', where: '[BRAND]' },
+        { when: 'Yesterday 6:31 PM', kind: 'Person', fg: person, who: '[MANAGER EMAIL]', what: 'Took an event offline', where: '[BRAND] · [EVENT TITLE]' },
+        { when: 'Yesterday 4:15 PM', kind: 'Key', fg: key, who: 'Platform key', what: 'Changed a feature setting for every brand', where: 'Platform' },
+        { when: 'Yesterday 9:20 AM', kind: 'Person', fg: person, who: '[MANAGER EMAIL]', what: 'Shared a report', where: '[BRAND] · [EVENT TITLE]' },
+        { when: 'Mon 10:05 AM', kind: 'Person', fg: person, who: '[MANAGER EMAIL]', what: 'Created an event', where: '[BRAND] · [EVENT TITLE]' }
+      ],
+      jobs: [
+        { name: 'Registrations past 90 days', result: '[N] deleted', fg: '#F4EEE2' },
+        { name: 'Survey comments', result: '[N] scrubbed', fg: '#F4EEE2' },
+        { name: 'Email sign-ups past 30 days', result: '[N] deleted', fg: '#F4EEE2' },
+        { name: 'Drafts past 30 days', result: '[N] archived', fg: '#F4EEE2' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

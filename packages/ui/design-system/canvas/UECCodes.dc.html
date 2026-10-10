@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UEC on poster and display codes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+<div style="width: 1440px; height: 820px; box-sizing: border-box; padding: 56px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">UEC v1.1 · mapping decided 2026-10-03</div>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">Every code shows its color, its word and its UEC name</h1>
+    </div>
+    <p style="margin: 0; max-width: 480px; font-size: 16px; line-height: 1.5; color: #A39D94">Each code an organizer puts on a poster or TV prints in one UEC scan color. Color is never the only signal: the word and the UEC name sit beside it in text.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px">
+    <div style="border: 1px solid #403D3A; border-radius: 12px; overflow: hidden">
+      <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; padding: 12px 16px; background: #232120; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">
+        <span>Code the organizer picks</span><span>Word on the card</span><span>UEC code and scan color</span>
+      </div>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+        <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; padding: 11px 16px; border-top: 1px solid #403D3A; align-items: center; font-size: 16px">
+          <span>{{r.pick}}</span>
+          <span style="font-weight: 800; letter-spacing: 0.04em">{{r.word}}</span>
+          <span style="display: flex; align-items: center; gap: 10px">
+            <span style="width: 20px; height: 20px; flex-shrink: 0; border-radius: 4px; border: 1px solid #FAF6EE; background: {{r.hex}}"></span>
+            <span style="font-weight: 600">{{r.uec}}</span>
+            <span style="color: #A39D94">{{r.color}}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <span style="font-size: 16px; font-weight: 700">The code card</span>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <sc-for list="{{cards}}" as="c" hint-placeholder-count="2">
+          <div style="background: #FAF6EE; color: #1A1918; border-top: 8px solid {{c.hex}}; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <span style="display: flex; align-items: baseline; gap: 8px">
+              <span style="font-size: 18px; font-weight: 800">{{c.word}}</span>
+              <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: #5E584F">{{c.name}}</span>
+            </span>
+            <svg viewBox="0 0 29 29" width="120" height="120" shape-rendering="crispEdges" role="img" aria-label="QR code placeholder">
+              <rect width="29" height="29" fill="#FAF6EE"></rect>
+              <path fill="{{c.hex}}" d="M1 1h7v7H1zM21 1h7v7h-7zM1 21h7v7H1z"></path>
+              <path fill="#FAF6EE" d="M2 2h5v5H2zM22 2h5v5h-5zM2 22h5v5H2z"></path>
+              <path fill="{{c.hex}}" d="M3 3h3v3H3zM23 3h3v3h-3zM3 23h3v3H3zM10 1h2v2h-2zM13 2h1v3h-1zM10 5h3v1h-3zM15 1h3v1h-3zM16 3h2v2h-2zM10 10h3v2h-3zM14 9h2v4h-2zM18 10h3v1h-3zM22 10h2v3h-2zM25 11h3v1h-3zM1 10h2v2H1zM4 11h3v1H4zM2 14h4v1H2zM6 16h2v3H6zM1 17h3v1H1zM10 14h1v4h-1zM12 15h4v1h-4zM17 13h2v3h-2zM20 14h3v1h-3zM24 15h2v4h-2zM27 14h1v5h-1zM13 18h2v2h-2zM10 21h3v1h-3zM11 23h1v4h-1zM14 22h3v1h-3zM15 25h2v3h-2zM18 20h2v2h-2zM21 21h4v1h-4zM20 24h2v2h-2zM23 23h1v5h-1zM25 25h3v1h-3zM26 27h2v1h-2z"></path>
+            </svg>
+            <span style="font-size: 13px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; color: #5E584F">/s/[CODE]</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 16px; font-weight: 700">Rules</span>
+        <span style="font-size: 14px; line-height: 1.5; color: #A39D94">The band and the QR modules use the scan color. The UEC name follows the word, and is left out when it only repeats it (SPONSOR, CHECK IN). The TV league screen draws its codes in Live coral, the same as the poster's LEAGUE code. Anything without its own code is Utility.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      rows: [
+        { pick: 'Event page', word: 'EVENT', uec: '07 Utility', color: 'Charcoal', hex: '#2A2A3A' },
+        { pick: 'Anonymous check-in', word: 'CHECK IN', uec: '10 Check-in', color: 'Teal', hex: '#006B6B' },
+        { pick: 'Registration (own form or link)', word: 'REGISTER', uec: '01 Enter', color: 'Green', hex: '#1A6B2F' },
+        { pick: 'Sign-up link', word: 'SIGN UP', uec: '01 Enter', color: 'Green', hex: '#1A6B2F' },
+        { pick: 'Donation link', word: 'DONATE', uec: '11 Shop', color: 'Dark teal', hex: '#1A4A48' },
+        { pick: 'Tickets link', word: 'TICKETS', uec: '11 Shop', color: 'Dark teal', hex: '#1A4A48' },
+        { pick: 'Sponsorship link', word: 'SPONSOR', uec: '03 Sponsor', color: 'Blue', hex: '#1A3A8A' },
+        { pick: 'League link', word: 'LEAGUE', uec: '02 Live', color: 'Coral', hex: '#C04048' },
+        { pick: 'Music, menu, newsletter, other', word: 'MORE', uec: '07 Utility', color: 'Charcoal', hex: '#2A2A3A' }
+      ],
+      cards: [
+        { word: 'DONATE', name: '· SHOP', hex: '#1A4A48' },
+        { word: 'LEAGUE', name: '· LIVE', hex: '#C04048' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

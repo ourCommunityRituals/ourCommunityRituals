@@ -3,3 +3,8 @@
 # generator's LF output) is stable on Windows self-hosted runners, where
 # autocrlf would otherwise convert them to CRLF and report false drift.
 packages/flags/src/generated/*.ts text eol=lf
+
+# @ocr/tokens build output is compared byte-for-byte by check:generated; keep LF on Windows.
+packages/tokens/dist/* text eol=lf
+# compile-tokens --check compares byte-for-byte; keep LF on Windows.
+packages/ui/design-system/tokens.css text eol=lf

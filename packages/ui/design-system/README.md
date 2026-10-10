@@ -4,6 +4,29 @@
 
 This system is extracted from `packages/ui` (`@ocr/ui`) in [ourCommunityRituals/ourCommunityRituals](https://github.com/ourCommunityRituals/ourCommunityRituals) — `tokens.ts`, `styles.ts`, `partials.ts`, `src/react/*` — and then refined. What changed and why is in **Where this differs from @ocr/ui** at the end.
 
+## Decisions of 2026-10-08 (these win where older text below disagrees)
+
+Made with Matt while building the OCR design system on Claude. The live version is the "ourCommunityRituals" Design System page; the mockups are in [`canvas/`](canvas/README.md); the story of how we got here and what is next is in [`HANDOFF.md`](HANDOFF.md).
+
+**Start here: choice, made easy.** Every screen starts from these five rules.
+
+- **Choice.** The app exists to give people a choice: stay anonymous or plant your flag, and which layer to join (casual, serious, competitive, or just for fun).
+- **Choices are buttons.** Big, clear, one tap, labeled with a short verb ("Check in", "Plant your flag", "Join a league"). Several buttons on a screen are fine. Too much reading is the problem, not too much choice.
+- **More info is a tap away.** Details live behind a tap: a menu, a sheet, or "tell me more". Never a wall of text.
+- **The event and sponsor are the focus.** Their art and marks are the largest, most colorful things on the page. The charcoal and creme base stays quiet so they pop.
+- **Ease of use.** Judge every screen by the person holding the phone: readable at a glance, dark-native, usable with one hand, no account needed to start.
+
+**Colors.** Charcoal (`#1A1918`) and creme (`#F4EEE2`) are the base for every product and brand, so event art and sponsor marks carry the color. Blue is the ourSharedEvents accent, amber the plant-your-flag side's. Color balance is 60-30-10: charcoal, creme and greys, accent. Colors are set in `packages/tokens` only; see [`CHANGING-COLORS.md`](CHANGING-COLORS.md).
+
+**Visuals: use what's provided, never force it.** The interface is becoming more visual, and more of it will be video.
+
+- When an event header, thumbnail, poster or sponsor mark is provided, show it big, near the top, in full color. The event visual comes first; the sponsor sits right beside it, not in a footer. The sponsor slot is the same size and place for every sponsor (the fairness covenant still holds).
+- Design for the organizer's own image: most events bring one, usually a phone photo or a flyer. Photos fill the frame (crop to fill). Flyers show whole (fit inside the frame, ground around them) so their date and address are never cut off.
+- When nothing is provided (rare), use an OCR stock visual chosen by event type, credited ("Photo: brokenbat"). Stock never pretends to be the event's own photo and never stands in for a sponsor's mark: no logo means the sponsor's name set in type.
+- Show the H3 map when location helps the decision. Give it room: tall, full screen one tap away, cells in neutral creme tones or UEC colors (not the button color), labels readable.
+- A visual slot takes an image or a short muted video loop in the same frame. Motion stops under reduced motion, and nothing important lives only in the video.
+- Visual slots hold a fixed shape while media loads, so the page never jumps.
+
 ## Who we design for first
 
 Two readers set every value in this system, and neither is the person building it.
@@ -14,7 +37,7 @@ Two readers set every value in this system, and neither is the person building i
 
 Five rules follow, and they are checkable:
 
-1. **One decision per screen.** One primary action, one question at a time. Forms are single-column with one field pattern.
+1. **One primary action per screen, choices welcome.** One primary button, one question at a time; other choices sit beside it as clear secondary buttons (updated 2026-10-08: choice is the point, reading is the problem). Forms are single-column with one field pattern.
 2. **Do the thinking.** Every field that can be pre-filled is pre-filled. Dates offer "this Saturday", not a calendar grid. If the answer can be derived, derive it and show the person what you chose so they can change it.
 3. **Mistakes are expected, not punished.** Nothing destructive happens without an undo. Validation waits until the person leaves a field, never while they type. Errors say what to do next, at body size.
 4. **Nothing below 13px, controls at 16px.** And error text is never smaller than body text — the person reading it already made a mistake and needs it most.
@@ -49,7 +72,7 @@ This is the rule the whole palette hangs on. **A token is either a ground or som
 | **INK** — anything read | `--text` `--text-muted` `--accent-text` `--error` `--live-text` `--warn-text` | **4.5:1 (AA)** on every ground |
 | **LINE** — boundaries | `--border` decorative · `--border-strong` meaningful | 3:1 for `--border-strong` (WCAG 1.4.11) |
 
-So the CARTO signature blue stays the brand — `#1785FB` as the primitive, read one step lighter (`#52A6FF`) as the dark-theme fill under a primary button, `#0000EE` (the default web link blue) in light. Links and stat values use `--accent-text` instead. The brand keeps its colour and the type gets legible; before the split, one token had to do both jobs and failed at one of them.
+So the blue stays the ourSharedEvents accent on the charcoal and creme base: `#3D9BFF` as the dark-theme fill under a primary button, `#0057D6` in light (updated 2026-10-08; colors come from `packages/tokens`). Links and stat values use `--accent-text` instead. The brand keeps its colour and the type gets legible; before the split, one token had to do both jobs and failed at one of them.
 
 Three tiers, as in `@ocr/ui`: Tier 1 primitives (`--ocr-*`) are never referenced by a component. Tier 2 semantic roles are what everything consumes. Tier 3 client brands re-map roles via `[data-brand="x"]`. Dark is the default; light arrives via `prefers-color-scheme` or `data-theme="light"`.
 
@@ -63,7 +86,7 @@ Hover no longer lifts the background. A fill lift from `--surface` to `--surface
 
 One system stack, no webfonts, so a poster renders instantly on a cheap phone. The scale is rebased for the 50–75 reader: **controls and body at 16px, error text at 16px, nothing below 13px.** `@ocr/ui` already used 16px on `.search-bar` and `.sort-select` to stop iOS zooming the page on focus — the right value for the wrong reason. It is now the rule, and it also means an older user never loses their place to a surprise zoom.
 
-The primary button label is 18px/700, so the primary action is the biggest label on the screen, which is where it belongs. Its label reads `--on-accent`: navy on the dark fill (7.02:1), white on the light fill (6.30:1) — AA at any size.
+The primary button label is 18px/700, so the primary action is the biggest label on the screen, which is where it belongs. Its label reads `--on-accent`: charcoal on the dark fill, creme on the light fill, AA at any size.
 
 ### Spacing and targets
 
@@ -77,7 +100,7 @@ Animation is minimal and functional: a 2s pulse on live indicators, a 0.8s spinn
 
 ### Imagery
 
-**The product surfaces carry none.** Flat `--bg`, no gradients, no textures, no photography. The QR code (white `.qr-frame`, module fill from `--uec-*-scan`) and the H3 hex corridor map are the visual signatures.
+**Updated 2026-10-08: the product shows what organizers and sponsors provide.** Event photos, flyers, posters and sponsor marks are shown big when provided, stock by event type when not (see Decisions of 2026-10-08 above). The system itself still adds no gradients, textures or decorative imagery of its own, and the page around the visuals stays flat `--bg`. The QR code (white `.qr-frame`, module fill from `--uec-*-scan`) and the H3 hex corridor map remain the visual signatures.
 
 **The poster is the one exception**, and it is a real one: a poster is artwork with the event's details laid over it, because a poster has to stop someone walking past. That brings a rule the rest of the system never needs — type is never set directly on an image, since you cannot know what is behind any given pixel. Either an opaque tinted panel, or a scrim at **75% minimum**, which is where `--text` clears AAA against a worst-case white pixel. See `assets/Posters/README.md`.
 

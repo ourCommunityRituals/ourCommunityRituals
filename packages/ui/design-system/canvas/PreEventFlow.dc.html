@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Poster to pre-event to live</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; padding: 48px 72px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Poster → pre-event → live</span>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">One link, shared every way, counted without knowing who</h1>
+    </div>
+    <p style="margin: 0; max-width: 500px; font-size: 16px; line-height: 1.5; color: #A39D94">Sponsors, organizers, attendees, their family and friends, and strangers who meet the link on social media all travel the same path. Nothing on it follows a person.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px">
+    <sc-for list="{{stages}}" as="s" hint-placeholder-count="5">
+      <div style="background: #232120; border: 1px solid #403D3A; border-top: 6px solid {{s.hex}}; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">{{s.n}} · {{s.when}}</span>
+        <span style="font-size: 18px; font-weight: 800">{{s.title}}</span>
+        <span style="font-size: 14px; line-height: 1.45">{{s.does}}</span>
+        <span style="font-size: 13px; line-height: 1.45; color: #A39D94">Counted: {{s.counted}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr); gap: 20px">
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Share, every way</span>
+      <button type="button" style="min-height: 56px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 800 18px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Share</button>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{ways}}" as="w" hint-placeholder-count="6">
+          <button type="button" style="min-height: 48px; border: 1px solid #7E7871; border-radius: 8px; background: #1A1918; color: #F4EEE2; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">{{w}}</button>
+        </sc-for>
+      </div>
+      <span style="font-size: 13px; line-height: 1.45; color: #A39D94">"Share" opens the phone's own share sheet, so it reaches any app the person uses. No social network's code is on the page.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Move between screens</span>
+      <sc-for list="{{screens}}" as="k" hint-placeholder-count="5">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px solid #403D3A">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; font-weight: 600">{{k.name}}</span>
+            <span style="font-size: 13px; color: #A39D94">{{k.who}}</span>
+          </div>
+          <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Open</a>
+        </div>
+      </sc-for>
+      <span style="font-size: 13px; line-height: 1.45; color: #A39D94">Every screen of an event is one tap from the others, and Back always returns where you were.</span>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; min-height: 0">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Live, for the organizer and sponsors</span>
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: #00C4B4; background: rgba(0,196,180,0.15)">Live</span>
+      </div>
+      <svg viewBox="0 0 420 210" width="100%" height="210" role="img" aria-label="Street map with neighborhood hexagons on top, the busiest shaded deepest">
+        <rect width="420" height="210" fill="#1A1918"></rect>
+        <path d="M0 60 H420 M0 140 H420 M90 0 V210 M210 0 V210 M330 0 V210 M0 180 L420 30" stroke="#403D3A" stroke-width="3" fill="none"></path>
+        <path d="M0 100 C120 80 300 120 420 96" stroke="#23508A" stroke-width="10" fill="none"></path>
+        <polygon points="150,45 190,68 190,112 150,135 110,112 110,68" fill="#2B6BC0" fill-opacity="0.75" stroke="#3D9BFF" stroke-width="2"></polygon>
+        <polygon points="230,45 270,68 270,112 230,135 190,112 190,68" fill="#23508A" fill-opacity="0.75" stroke="#3D9BFF" stroke-width="2"></polygon>
+        <polygon points="190,113 230,136 230,180 190,203 150,180 150,136" fill="#1F3A5E" fill-opacity="0.75" stroke="#3D9BFF" stroke-width="2"></polygon>
+        <polygon points="310,45 350,68 350,112 310,135 270,112 270,68" fill="none" stroke="#7E7871" stroke-width="2" stroke-dasharray="5 4"></polygon>
+        <text x="150" y="96" text-anchor="middle" font-size="15" font-weight="700" fill="#F4EEE2">[TOWN]</text>
+        <text x="310" y="96" text-anchor="middle" font-size="13" fill="#A39D94">held</text>
+      </svg>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{counts}}" as="c" hint-placeholder-count="3">
+          <div style="border: 1px solid #403D3A; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 22px; font-weight: 800">{{c.value}}</span>
+            <span style="font-size: 13px; color: #A39D94">{{c.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size: 13px; line-height: 1.45; color: #A39D94">The street map sits under the hexagons. Attendees never see these counts; the TV in the room shows none.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      stages: [
+        { n: '1', when: 'weeks before', title: 'Poster goes up', hex: '#2A2A3A', does: 'Printed and placed. Each code keeps its color, word and short link.', counted: 'a scan, in the neighborhood where the poster hangs.' },
+        { n: '2', when: 'the pre-event window', title: 'The link travels', hex: '#3D9BFF', does: 'Sent to family and friends, posted in feeds, passed on by strangers.', counted: 'a tap, in the area the link was published for, never where the tapper is.' },
+        { n: '3', when: 'any time', title: 'The page answers', hex: '#1A6B2F', does: 'What, where, when, who, how much. The sponsor is by the title.', counted: 'nothing, just for looking.' },
+        { n: '4', when: 'the day', title: 'The event is live', hex: '#C04048', does: 'Check in with one tap. The TV rotates the event, sponsors and codes.', counted: 'check-ins and scans, as totals.' },
+        { n: '5', when: 'after', title: 'The report proves it', hex: '#5E1A9A', does: 'What happened, for the organizer and each sponsor.', counted: 'totals only; under 5 is held.' }
+      ],
+      ways: ['Copy link', 'Text it', 'Email it', 'Show a QR', 'Save the card image', 'Add to calendar'],
+      screens: [
+        { name: 'Event page', who: 'everyone' },
+        { name: 'Poster', who: 'organizer, to print or post' },
+        { name: 'TV display', who: 'the room' },
+        { name: 'Sponsor card', who: 'everyone' },
+        { name: 'Report', who: 'organizer and sponsors' }
+      ],
+      counts: [
+        { value: '[N]', label: 'Poster scans' },
+        { value: '[N]', label: 'Link taps' },
+        { value: '[N]', label: 'Check-ins' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

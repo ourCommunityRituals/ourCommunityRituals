@@ -14,7 +14,7 @@
  * avoids it:
  *   --live   = teal  (#00C4B4) — distinguishable across protanopia,
  *              deuteranopia, and tritanopia; distinct in lightness from blue
- *   --danger = red   (#EA6D6D) — used only for DESTRUCTIVE ACTIONS, never
+ *   --danger = red   (#F08585 dark) — used only for DESTRUCTIVE ACTIONS, never
  *              as a semantic opposite to --live
  *
  * All foreground/background pairs target WCAG AA (4.5:1 normal text, 3:1 large).
@@ -42,9 +42,64 @@
  * contrast verification (an inaccessible white-label palette does not ship).
  */
 
+import { ocrPrimitives, ocrRoles, type OcrRole } from './generated/ocr-tokens';
+
+// ── OCR-level source: @ocr/tokens ────────────────────────────────────────────
+//
+// The fleet's colors are set once, in packages/tokens (the OCR design system:
+// charcoal and creme base, blue for ourSharedEvents, amber for the flag side).
+// @ocr/ui keeps its own role names (--bg, --accent, ...) because every spoke
+// template uses them; each one is mapped below to an @ocr/tokens role. The
+// values arrive through src/generated/ocr-tokens.ts (see
+// scripts/sync-ocr-tokens.ts) so @ocr/ui still works when a spoke's CI stages
+// packages/ui on its own. How to change a color: design-system/CHANGING-COLORS.md.
+
+/** @ocr/ui role name -> the @ocr/tokens role it takes its value from. */
+export const UI_FROM_OCR = {
+  '--bg': '--ground',
+  '--surface': '--surface',
+  '--card': '--surface',
+  '--surface-hover': '--surface-raised',
+  '--border': '--border',
+  '--border-strong': '--border-strong',
+  '--text': '--text',
+  '--text-primary': '--text',
+  '--text-muted': '--text-muted',
+  '--text-secondary': '--text-muted',
+  '--accent': '--action',
+  '--accent-hover': '--action-hover',
+  '--on-accent': '--on-action',
+  '--live': '--status-live',
+  '--danger': '--status-danger',
+  '--danger-hover': '--status-danger-hover',
+  '--error': '--status-danger',
+  '--warn': '--status-warn',
+  '--info': '--status-info',
+  '--success': '--status-success',
+} as const satisfies Record<string, OcrRole>;
+
+type UiRole = keyof typeof UI_FROM_OCR;
+
+/** A built-in brand's OCR role map; a brand @ocr/tokens does not define is an error. */
+function ocrRolesFor(name: string): NonNullable<(typeof ocrRoles)[string]> {
+  const roles = ocrRoles[name];
+  if (!roles) throw new Error(`@ocr/tokens defines no brand "${name}"`);
+  return roles;
+}
+
+/** var(--ocr-...) for a @ui role in the base (ourSharedEvents) brand. */
+const base = (mode: 'dark' | 'light', role: UiRole): string =>
+  `var(${ocrRolesFor('ose')[mode][UI_FROM_OCR[role]]})`;
+
 // ── Tier 1: Primitive colour scale ───────────────────────────────────────────
 
 export const primitives = {
+  // OCR-level primitives from @ocr/tokens (charcoal/creme base and the role
+  // colors). Generated; where a name also appears below, the value is identical
+  // (gated by tests/ocr-tokens.test.ts). The navy, light and grey scales below
+  // are kept for reference and older templates; no semantic role points at them.
+  ...ocrPrimitives,
+
   // CARTO blue scale
   '--ocr-blue-600': '#1785FB', // CARTO signature blue
   '--ocr-blue-500': '#3D9BFF', // hover / lighter
@@ -129,67 +184,59 @@ export type PrimitiveName = keyof typeof primitives;
 // ── Tier 2: Semantic tokens (dark default) ────────────────────────────────────
 
 export const semanticDark = {
-  '--bg': 'var(--ocr-navy-925)', // OSE-1325: lifted one step from navy-950 (#0F1824 → #141F30)
-  '--surface': 'var(--ocr-navy-900)',
-  '--border': 'var(--ocr-navy-700)',
-  // Edge of a form control (input, search, select). Dark keeps its current look:
-  // same colour as --border. Light needs 3:1 for WCAG 1.4.11.
-  '--border-strong': 'var(--ocr-navy-600)',
-  '--text': 'var(--ocr-navy-100)',
-  '--text-muted': 'var(--ocr-navy-450)',
-  '--accent': 'var(--ocr-blue-400)',
-  '--accent-hover': 'var(--ocr-blue-300)',
-  // A link already followed. Dark keeps one link colour (no dark value was
-  // agreed in OSE-1523); light uses the web's visited purple.
-  '--accent-visited': 'var(--ocr-blue-400)',
-  '--live': 'var(--ocr-teal-400)', // on-air / active — teal, not green
+  // Every value but --accent-visited and --live-hover comes from @ocr/tokens via UI_FROM_OCR.
+  '--bg': base('dark', '--bg'),
+  '--surface': base('dark', '--surface'),
+  '--card': base('dark', '--card'),
+  '--surface-hover': base('dark', '--surface-hover'),
+  '--border': base('dark', '--border'),
+  '--border-strong': base('dark', '--border-strong'),
+  '--text': base('dark', '--text'),
+  '--text-primary': base('dark', '--text-primary'),
+  '--text-muted': base('dark', '--text-muted'),
+  '--text-secondary': base('dark', '--text-secondary'),
+  '--accent': base('dark', '--accent'),
+  '--accent-hover': base('dark', '--accent-hover'),
+  // A followed link. Dark keeps one link colour (OSE-1523).
+  '--accent-visited': base('dark', '--accent'),
+  '--on-accent': base('dark', '--on-accent'),
+  '--live': base('dark', '--live'),
   '--live-hover': 'var(--ocr-teal-300)',
-  '--surface-hover': 'var(--ocr-navy-800)',
-  '--danger': 'var(--ocr-red-350)', // destructive actions only
-  '--danger-hover': 'var(--ocr-red-300)',
-  '--error': 'var(--ocr-red-350)', // alias — form validation / error banners
-  '--warn': 'var(--ocr-amber-400)', // caution / pending — amber (OSE-1328)
-  '--info': 'var(--ocr-blue-300)', // informational — blue, lighter than --accent (OSE-1328)
-  // OSE-654 role vocabulary — the swap seam brand themes re-map.
-  '--card': 'var(--ocr-navy-900)', // card surface (= surface by default; brands may differ)
-  '--text-primary': 'var(--ocr-navy-100)', // alias of --text (explicit role name)
-  '--text-secondary': 'var(--ocr-navy-450)', // secondary shares the muted tone
-  '--success': 'var(--ocr-green-400)', // done / accepted / completed — emerald (OSE-1328)
-  // Dark --accent (#1785FB) is light-ish, so text on it must be DARK: white was
-  // 3.63:1 (sub-AA); navy-950 is 4.92:1 — full AA (CCR-PR567 re-run item 5).
-  '--on-accent': 'var(--ocr-navy-950)', // #0F1824 — text on solid --accent (blue) surfaces
+  '--danger': base('dark', '--danger'),
+  '--danger-hover': base('dark', '--danger-hover'),
+  '--error': base('dark', '--error'),
+  '--warn': base('dark', '--warn'),
+  '--info': base('dark', '--info'),
+  '--success': base('dark', '--success'),
 } as const;
 
 // ── Tier 2: Light mode override ───────────────────────────────────────────────
 
-// Plain-web light (OSE-1523): a white page, grey bands and thin rules. A panel
-// is a band on the page, not a raised card.
 export const semanticLight = {
-  '--bg': 'var(--ocr-light-100)', // white page
-  '--surface': 'var(--ocr-grey-100)', // panel / band
-  '--border': 'var(--ocr-grey-300)', // rule
-  '--border-strong': 'var(--ocr-grey-600)', // control edge (WCAG 1.4.11)
-  '--text': 'var(--ocr-grey-900)',
-  '--text-muted': 'var(--ocr-grey-700)',
-  '--accent': 'var(--ocr-link-600)',
-  '--accent-hover': 'var(--ocr-link-800)',
+  // Every value but --accent-visited and --live-hover comes from @ocr/tokens via UI_FROM_OCR.
+  '--bg': base('light', '--bg'),
+  '--surface': base('light', '--surface'),
+  '--card': base('light', '--card'),
+  '--surface-hover': base('light', '--surface-hover'),
+  '--border': base('light', '--border'),
+  '--border-strong': base('light', '--border-strong'),
+  '--text': base('light', '--text'),
+  '--text-primary': base('light', '--text-primary'),
+  '--text-muted': base('light', '--text-muted'),
+  '--text-secondary': base('light', '--text-secondary'),
+  '--accent': base('light', '--accent'),
+  '--accent-hover': base('light', '--accent-hover'),
+  // A followed link: the web's visited purple (OSE-1523).
   '--accent-visited': 'var(--ocr-visited-700)',
-  '--live': 'var(--ocr-teal-700)',
+  '--on-accent': base('light', '--on-accent'),
+  '--live': base('light', '--live'),
   '--live-hover': 'var(--ocr-teal-600)',
-  // Lighter than the band, not darker: the fixed status colours (live teal,
-  // success) sit at 4.6:1 on the band and would fall under AA on a darker hover.
-  '--surface-hover': 'var(--ocr-grey-050)',
-  '--danger': 'var(--ocr-red-700)',
-  '--danger-hover': 'var(--ocr-red-600)',
-  '--error': 'var(--ocr-red-700)', // alias — form validation / error banners
-  '--warn': 'var(--ocr-amber-700)', // caution / pending — amber (OSE-1328)
-  '--info': 'var(--ocr-blue-700)', // informational — blue (OSE-1328)
-  // OSE-654 role vocabulary — light-mode values.
-  '--card': 'var(--ocr-grey-100)',
-  '--text-primary': 'var(--ocr-grey-900)',
-  '--text-secondary': 'var(--ocr-grey-700)',
-  '--success': 'var(--ocr-green-700)', // done / accepted / completed — emerald (OSE-1328)
-  '--on-accent': 'var(--ocr-light-100)', // #FFFFFF — text on solid --accent (blue) surfaces
+  '--danger': base('light', '--danger'),
+  '--danger-hover': base('light', '--danger-hover'),
+  '--error': base('light', '--error'),
+  '--warn': base('light', '--warn'),
+  '--info': base('light', '--info'),
+  '--success': base('light', '--success'),
 } as const;
 
 // ── Shared structural tokens (not colour, not theme-sensitive) ────────────────
@@ -366,6 +413,21 @@ export interface BrandTheme {
  * (src/brand.ts) — gated by tests/brand-themes.test.ts, which also holds each
  * theme to the contrast floors in BOTH modes on the brand's own grounds.
  */
+function brandFromOcr(name: string): BrandTheme {
+  const out: BrandTheme = { dark: {}, light: {} };
+  for (const mode of ['dark', 'light'] as const) {
+    for (const [ui, role] of Object.entries(UI_FROM_OCR)) {
+      if (role.startsWith('--status-')) continue; // locked: never brand-painted
+      const mine = ocrRolesFor(name)[mode][role];
+      if (mine !== ocrRolesFor('ose')[mode][role]) out[mode][ui] = ocrPrimitives[mine];
+    }
+    // A followed link stays in the brand's accent family.
+    const accent = out[mode]['--accent'];
+    if (accent) out[mode]['--accent-visited'] = accent;
+  }
+  return out;
+}
+
 export const brandThemes: Record<string, BrandTheme> = {
   acme: {
     // Violet brand — the minimal example: only the accent changes. Dark values
@@ -383,29 +445,12 @@ export const brandThemes: Record<string, BrandTheme> = {
     },
   },
 
-  // ourWKRP — the fleet's ground with an ember accent (OSE-1523, PO 2026-10-03).
-  // ourWKRP gave up its carbon black: dark is the same navy as OSE and light the
-  // same plain-web page, so the two products share one ground. "Named" is
-  // signalled by the ember accent and by words. Only the accent family is
-  // re-mapped; --live stays the fleet's teal and --danger its red.
-  //
-  // Ember #D4954B is too light for a light ground, so light uses a burnt amber.
-  // Every pair is re-derived by tests/brand-themes.test.ts and
-  // scripts/verify-contrast.mjs.
-  ow: {
-    dark: {
-      '--accent': '#D4954B', // ember-600
-      '--accent-hover': '#E8A849', // ember-500
-      '--accent-visited': '#D4954B',
-      '--on-accent': '#0F1824', // navy ink on ember
-    },
-    light: {
-      '--accent': '#93540F', // burnt amber — ember darkened for a light ground
-      '--accent-hover': '#7A4608',
-      '--accent-visited': '#7A4608',
-      '--on-accent': '#FFFFFF',
-    },
-  },
+  // The flag side (ourWKRP / ourAirwaves): amber on the shared charcoal/creme
+  // base. Derived from @ocr/tokens' `ow` brand: every customizable role where it
+  // differs from the base brand, plus its visited links in the same amber.
+  // Status roles stay locked to the fleet values (--live stays teal: red means
+  // destructive, not on-air).
+  ow: brandFromOcr('ow'),
 };
 
 /**

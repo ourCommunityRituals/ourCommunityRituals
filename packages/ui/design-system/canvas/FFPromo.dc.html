@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fist of Five, before the tourney</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 390px; height: 1000px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column">
+  <div style="padding: 10px 20px; border-bottom: 1px solid #403D3A; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #A39D94">
+    <span style="text-transform: uppercase; letter-spacing: 0.08em">Supported by</span>
+    <span style="color: #F4EEE2; font-weight: 600">[SPONSOR NAME]</span>
+  </div>
+
+  <div style="padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 8px">
+    <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Fist of Five · the best team taste</span>
+    <h1 style="margin: 0; font-size: 28px; line-height: 1.1; font-weight: 800">[TEAM NAME] vs [TEAM NAME]</h1>
+    <span style="font-size: 16px">Saturday, October 24 · 8:00 PM · [VENUE NAME]</span>
+    <span style="align-self: flex-start; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; color: #F5B32E; border: 1px solid #F5B32E">Doors in 6 hours</span>
+  </div>
+
+  <div style="padding: 0 20px; display: flex; flex-direction: column; gap: 12px">
+    <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Tale of the tape</span>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{teams}}" as="t" hint-placeholder-count="2">
+        <div style="background: #232120; border: 1px solid #D4954B; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #D4954B">{{t.corner}}</span>
+          <span style="font-size: 18px; font-weight: 800; line-height: 1.15">{{t.name}}</span>
+          <span style="font-size: 13px; color: #A39D94">{{t.record}}</span>
+          <span style="font-size: 14px; line-height: 1.4">“{{t.promo}}”</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">On the line</span>
+        <span style="font-size: 16px; font-weight: 600">The Triple A belt</span>
+      </div>
+      <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; text-decoration: none">Where it has been</a>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">How the night works</span>
+      <span style="font-size: 16px; line-height: 1.5">Each team plays its playlist, song for song. You vote on every song from your phone, or by scanning the screen in the room: like it, or not for me. The room decides.</span>
+    </div>
+  </div>
+
+  <div style="padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+    <button type="button" style="min-height: 56px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 800 18px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">I'm coming</button>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <button type="button" style="min-height: 48px; border: 1px solid #7E7871; border-radius: 8px; background: #232120; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Share the card</button>
+      <button type="button" style="min-height: 48px; border: 1px solid #7E7871; border-radius: 8px; background: #232120; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Add to calendar</button>
+    </div>
+  </div>
+
+  <div style="margin-top: auto; padding: 14px 20px 20px; border-top: 1px solid #403D3A; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center">
+    <span style="font-size: 16px; font-weight: 700">We count the room, never the person.</span>
+    <span style="font-size: 13px; line-height: 1.45; color: #A39D94">Teams pick their own names. Songs are credited to the team, never to a member.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { teams: [
+      { corner: 'Champion', name: '[TEAM NAME]', record: 'Won [N] · lost [N]', promo: '[TEAM’S OWN LINE ABOUT WHY THEY WILL WIN]' },
+      { corner: 'Challenger', name: '[TEAM NAME]', record: 'Won [N] · lost [N]', promo: '[TEAM’S OWN LINE ABOUT WHY THEY WILL WIN]' }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

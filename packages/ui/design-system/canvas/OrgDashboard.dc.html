@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Organizer, your events</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 960px; box-sizing: border-box; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column">
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; border-bottom: 1px solid #403D3A">
+    <div style="display: flex; align-items: center; gap: 16px">
+      <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">OurSharedEvents</span>
+      <span style="font-size: 22px; font-weight: 700">Your events</span>
+    </div>
+    <button type="button" style="min-height: 48px; padding: 0 20px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 700 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Create an event</button>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; min-height: 0">
+    <div style="width: 520px; flex-shrink: 0; border-right: 1px solid #403D3A; padding: 24px 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-wrap: wrap; gap: 12px">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+          <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 999px; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; border: {{f.edge}}; background: {{f.bg}}; color: {{f.fg}}">{{f.name}}</button>
+        </sc-for>
+      </div>
+      <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; font-size: 16px; color: #F4EEE2"><input type="checkbox" style="width: 20px; height: 20px; accent-color: #3D9BFF; margin: 0">Only events I made</label>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{events}}" as="e" hint-placeholder-count="5">
+          <div style="display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 8px; background: {{e.bg}}; border: {{e.edge}}">
+            <span style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid #7E7871; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #8AC2FF">{{e.code}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1">
+              <span style="font-size: 16px; font-weight: 600">{{e.name}}</span>
+              <span style="font-size: 14px; color: #A39D94">{{e.when}}</span>
+            </div>
+            <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: {{e.pillFg}}; background: {{e.pillBg}}; border: {{e.pillEdge}}">{{e.status}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #A39D94">Drafts left for 30 days are put away in Archived, never deleted. You can bring any back.</p>
+      <a href="#" style="min-height: 44px; display: inline-flex; align-items: center; font-size: 16px; font-weight: 600; text-decoration: none">Show more</a>
+    </div>
+
+    <div style="flex-grow: 1; padding: 24px 40px; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-size: 28px; font-weight: 800">Friday board game night</h1>
+          <span style="font-size: 16px; color: #A39D94">Fri, Oct 23 · 7:00 PM CDT · [VENUE NAME] · TAB Tabletop</span>
+        </div>
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 999px; color: #8AC2FF; background: rgba(138,194,255,0.12)">Ready</span>
+      </div>
+
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px">
+        <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Where it's at</span>
+        <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <span style="height: 8px; border-radius: 4px; box-sizing: border-box; background: {{s.bar}}; border: {{s.edge}}"></span>
+              <span style="font-size: 14px; font-weight: 600; color: {{s.fg}}">{{s.name}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid #403D3A">
+          <span style="font-size: 16px; font-weight: 700">Next:</span>
+          <a href="#" style="font-size: 16px; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center">Print the poster so people can scan in</a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+        <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px">
+          <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Status</span>
+          <button type="button" style="min-height: 56px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 700 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Go live now</button>
+          <button type="button" style="min-height: 48px; border: 1px solid #7E7871; border-radius: 8px; background: transparent; color: #F4EEE2; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Back to draft</button>
+          <div style="height: 12px"></div>
+          <button type="button" style="min-height: 48px; border: 1px solid #F08585; border-radius: 8px; background: transparent; color: #F08585; font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Archive this event</button>
+          <span style="font-size: 13px; line-height: 1.45; color: #A39D94">Archiving hides it from the map. You can reopen it later.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 20px">
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+            <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 28px; font-weight: 800">[N]</span><span style="font-size: 14px; color: #A39D94">Poster scans</span></div>
+            <div style="background: #232120; border: 1px dashed #7E7871; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 22px; font-weight: 800; color: #A39D94; padding: 5px 0">Fewer than 5</span><span style="font-size: 14px; color: #A39D94">Early sign-ups · held</span></div>
+          </div>
+          <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px">
+            <div style="display: flex; align-items: center; min-height: 56px; padding: 0 16px; border-bottom: 1px solid #403D3A"><span style="font-size: 16px; font-weight: 700">Sponsors</span><a href="#" style="margin-left: auto; font-size: 14px; font-weight: 600; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center">Add sponsor</a></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #403D3A; font-size: 16px"><span style="flex-grow: 1">[LOCAL GAME SHOP]</span><span style="font-size: 14px; color: #34D399">Accepted</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 16px"><span style="flex-grow: 1">[NEIGHBORHOOD PIZZERIA]</span><span style="font-size: 14px; color: #F5B32E">Waiting</span><a href="#" style="font-size: 14px; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center">Send sponsor link</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var off = { edge: '1px solid #7E7871', bg: 'transparent', fg: '#F4EEE2' };
+    var on = { edge: '2px solid #3D9BFF', bg: 'rgba(61,155,255,0.12)', fg: '#3D9BFF' };
+    var P = {
+      draft: { status: 'Draft', pillFg: '#F5B32E', pillBg: 'rgba(245,179,46,0.12)', pillEdge: 'none' },
+      ready: { status: 'Ready', pillFg: '#8AC2FF', pillBg: 'rgba(138,194,255,0.12)', pillEdge: 'none' },
+      live: { status: 'Live', pillFg: '#00C4B4', pillBg: 'rgba(0,196,180,0.15)', pillEdge: 'none' },
+      arch: { status: 'Archived', pillFg: '#A39D94', pillBg: 'transparent', pillEdge: '1px dashed #7E7871' }
+    };
+    var row = { bg: 'transparent', edge: '1px solid #403D3A' };
+    var sel = { bg: '#232120', edge: '2px solid #3D9BFF' };
+    var done = { bar: '#3D9BFF', edge: 'none', fg: '#F4EEE2' };
+    var todo = { bar: 'transparent', edge: '2px dashed #7E7871', fg: '#A39D94' };
+    return {
+      filters: [Object.assign({ name: 'All' }, off), Object.assign({ name: 'Drafts' }, off), Object.assign({ name: 'Ready' }, on), Object.assign({ name: 'Live' }, off), Object.assign({ name: 'Archived' }, off)],
+      events: [
+        Object.assign({ code: 'TAB', name: 'Friday board game night', when: 'Fri · 7:00 PM' }, P.ready, sel),
+        Object.assign({ code: 'REC', name: 'Bocce tournament', when: 'Sat · 11:00 AM' }, P.live, row),
+        Object.assign({ code: 'SOC', name: 'Neighborhood potluck', when: 'Not scheduled yet' }, P.draft, row),
+        Object.assign({ code: 'MKT', name: 'Community swap meet', when: 'Sun · 9:00 AM' }, P.ready, row),
+        Object.assign({ code: 'ENT', name: 'Summer trivia', when: 'Ended Aug 30' }, P.arch, row)
+      ],
+      steps: [
+        Object.assign({ name: 'Set up' }, done), Object.assign({ name: 'Live' }, todo), Object.assign({ name: 'Poster out' }, todo),
+        Object.assign({ name: 'Scanning' }, todo), Object.assign({ name: 'Sponsors on' }, done), Object.assign({ name: 'Report' }, todo)
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

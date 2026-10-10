@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Components</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1918;color:#F4EEE2;-webkit-font-smoothing:antialiased}
+a{color:#3D9BFF}a:hover{color:#8AC2FF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1160px; box-sizing: border-box; padding: 64px 80px; background: #1A1918; color: #F4EEE2; display: flex; flex-direction: column; gap: 36px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Components</div>
+      <h1 style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -0.015em">The shared vocabulary</h1>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 16px; line-height: 1.5; color: #A39D94">One /ui.css file plus 15 HTML partials. Cards have no shadows and no left-accent borders, and every control meets the 48px tap target.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Buttons · .btn</div>
+      <button type="button" style="min-height: 48px; padding: 14px 20px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Check in</button>
+      <button type="button" style="min-height: 48px; padding: 14px 20px; border: 1px solid #403D3A; border-radius: 8px; background: #1A1918; color: #F4EEE2; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">See the poster</button>
+      <button type="button" style="min-height: 48px; padding: 14px 20px; border: none; border-radius: 8px; background: #F08585; color: #1A1918; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Take event offline</button>
+      <button type="button" style="min-height: 44px; padding: 8px; border: none; background: none; color: #A39D94; text-decoration: underline; text-underline-offset: 3px; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; align-self: center">Not now</button>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Form · .input</div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="c-venue" style="font-size: 14px; color: #A39D94">Venue</label>
+        <input id="c-venue" type="text" value="Eagles Hall" style="min-height: 44px; padding: 12px 14px; box-sizing: border-box; background: #1A1918; border: 1px solid #7E7871; border-radius: 8px; color: #F4EEE2; font-size: 16px; font-family: inherit">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="c-date" style="font-size: 14px; color: #A39D94">When</label>
+        <input id="c-date" type="text" value="This Saturday · 6:00 PM CDT" style="min-height: 44px; padding: 12px 14px; box-sizing: border-box; background: #1A1918; border: 2px solid #3D9BFF; border-radius: 8px; color: #F4EEE2; font-size: 16px; font-family: inherit">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="c-zip" style="font-size: 14px; color: #A39D94">ZIP code</label>
+        <input id="c-zip" type="text" value="6040" style="min-height: 44px; padding: 12px 14px; box-sizing: border-box; background: #1A1918; border: 1px solid #F08585; border-radius: 8px; color: #F4EEE2; font-size: 16px; font-family: inherit">
+        <span style="font-size: 13px; color: #F08585">Enter 5 digits. We check this when you leave the field.</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 24px">
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Status pills, always labeled</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: #00C4B4; background: rgba(0,196,180,0.15)">Live now</span>
+          <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: #A39D94; background: #1A1918">Offline</span>
+          <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: #34D399; background: rgba(52,211,153,0.12)">Accepted</span>
+          <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: #F5B32E; background: rgba(245,179,46,0.12)">Draft</span>
+          <span style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; color: #8AC2FF; background: rgba(138,194,255,0.12)">Ready</span>
+        </div>
+      </div>
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A39D94">Filter chips</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #3D9BFF; background: rgba(61,155,255,0.12); color: #3D9BFF; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">This week</button>
+          <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #7E7871; background: transparent; color: #F4EEE2; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Weekend</button>
+          <button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #7E7871; background: transparent; color: #F4EEE2; font: 400 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Free</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 8px; display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 12px 16px; box-sizing: border-box; border-bottom: 1px solid #403D3A">
+        <span style="font-size: 16px; font-weight: 700">Sponsors</span>
+        <span style="font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #A39D94; background: #1A1918">3</span>
+        <a href="#" style="margin-left: auto; font-size: 14px; font-weight: 600; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center">Add sponsor</a>
+      </div>
+      <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 16px">
+        <div style="display: flex; justify-content: space-between"><span>[SPONSOR NAME]</span><span style="color: #34D399; font-size: 13px">Accepted</span></div>
+        <div style="display: flex; justify-content: space-between"><span>[SPONSOR NAME]</span><span style="color: #F5B32E; font-size: 13px">Waiting</span></div>
+      </div>
+      <div style="padding: 0 16px 14px; font-size: 13px; color: #A39D94">.card--sectioned · a 56px header with one action</div>
+    </div>
+
+    <div style="background: #232120; border: 1px solid #403D3A; border-radius: 8px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#A39D94" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>
+      <h3 style="margin: 0; font-size: 18px; font-weight: 700">No events yet</h3>
+      <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #A39D94; max-width: 34ch">Your first event shows up here once you save it, even as a draft.</p>
+      <button type="button" style="margin-top: 8px; min-height: 48px; padding: 14px 20px; border: none; border-radius: 8px; background: #3D9BFF; color: #1A1918; font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Create an event</button>
+      <span style="font-size: 13px; color: #A39D94">.empty-state · always has a next step</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 24px">
+      <div style="background: rgba(240,133,133,0.1); border: 1px solid #F08585; color: #F08585; border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.45">We couldn't save the sponsor. Your changes are still here, so try again.</div>
+      <div style="background: #232120; border: 1px solid #403D3A; border-radius: 8px; overflow: hidden">
+        <nav aria-label="Main" style="display: flex; justify-content: space-around; padding: 10px 0; background: #1A1918; border-top: 1px solid #403D3A">
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 48px; padding: 6px 16px; font-size: 13px; color: #3D9BFF; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>Map</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 48px; padding: 6px 16px; font-size: 13px; color: #A39D94; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18"></path></svg>Events</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 48px; padding: 6px 16px; font-size: 13px; color: #A39D94; text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6"></rect><rect x="14" y="4" width="6" height="6"></rect><rect x="4" y="14" width="6" height="6"></rect><path d="M14 14h2v2h-2zM18 18h2v2h-2z"></path></svg>Scan</a>
+        </nav>
+      </div>
+      <span style="font-size: 13px; color: #A39D94">.error-banner (reserves its space) · .bottom-nav (safe-area aware)</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
