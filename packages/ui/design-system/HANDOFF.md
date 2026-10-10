@@ -26,8 +26,8 @@ The two Claude links need Matt's login. The files in this repo are the copies Cl
 
 ## What is next, in order
 
-1. **Push and merge the colors branch.** `git push -u origin feat/ocr-design-system-colors`, open a PR, merge.
-2. **Bump the ourSharedEvents pin.** After the merge, set `ourSharedEvents/.ocr-hub-ref` to the merge commit in a PR in ourSharedEvents. Expect visual baselines to change (navy to charcoal/creme). ourWKRP picks up hub main by itself.
+1. **Push and merge the colors branch.** Done 2026-10-10: PR #52, merged as `e165d1c`.
+2. **Bump the spoke pins, after a QR print test on creme.** Both spokes are pinned (ADR-008): each stages exactly the hub commit in its own `.ocr-hub-ref`, and neither picks up hub main by itself. On 2026-10-10 ourSharedEvents was at `265a549` (PR #50) and ourWKRP at `b96b2c8` (before #50). Set each pin to `e165d1c` or later in a PR in that repo. Expect visual baselines to change (navy to charcoal/creme). Before the ourSharedEvents bump, print a poster on creme with all seven UEC colours and scan it with three phones (see Open questions): printed posters cannot be fixed afterwards.
 3. **Build the visuals in `packages/ui`** (new branch on top of the colors work), matching `canvas/Visuals.dc.html`:
    - a media frame: fixed shape, photo crops to fill, flyer fits whole, image or short muted loop, stops under reduced motion, stock fallback with a credit line;
    - a sponsor panel near the top beside the event, same size for every sponsor, logo or name set in type (replaces the 13px footer `.sponsor-slot`);
