@@ -37,7 +37,7 @@ export function bottomNav(items: NavItem[]): string {
 export interface ButtonOpts {
   label: string;
   href?: string;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   block?: boolean;
   disabled?: boolean;
   onclick?: string;
@@ -51,6 +51,44 @@ export function button(o: ButtonOpts): string {
   const dis = o.disabled ? ' disabled' : '';
   const click = o.onclick ? ` onclick="${esc(o.onclick)}"` : '';
   return `<button class="${cls}"${dis}${click}>${esc(o.label)}</button>`;
+}
+
+export interface BackButtonOpts {
+  /** Where Back goes when there is no page to go back to (and with no script). */
+  fallbackHref: string;
+  /** The page's CSP nonce, for the one-line script. */
+  nonce?: string;
+  lang?: 'en' | 'es';
+  /** A draft preview: shown, but switched off. */
+  inert?: boolean;
+  testid?: string;
+}
+
+const BACK_LABELS = { en: 'Back', es: 'Volver' } as const;
+
+/**
+ * Back, the last control on every public page (OSE-1689; built in
+ * ourSharedEvents as lib/back-button.ts, #927 and #928). Outlined and full
+ * width, in the same place on every page so a visitor learns where it is.
+ *
+ * With a referrer and some tab history it goes back there. Opened fresh from a
+ * QR code or a shared link there is neither, and a new tab can count a blank
+ * first entry, so it opens fallbackHref instead, which is also what it does
+ * with no script. The script reads document.referrer and history.length in the
+ * browser only; it sends and stores nothing.
+ */
+export function backButton(o: BackButtonOpts): string {
+  const label = BACK_LABELS[o.lang ?? 'en'];
+  const testid = esc(o.testid ?? 'page-back');
+  const cls = 'btn btn-outline btn-block';
+  if (o.inert) {
+    return `<nav class="back-nav" aria-label="${label}"><a class="${cls}" data-testid="${testid}" data-preview-inert="true" aria-disabled="true">${label}</a></nav>`;
+  }
+  const nonce = o.nonce ? ` nonce="${esc(o.nonce)}"` : '';
+  return (
+    `<nav class="back-nav" aria-label="${label}"><a class="${cls}" data-testid="${testid}" href="${escUrl(o.fallbackHref)}">${label}</a></nav>` +
+    `<script${nonce}>(function(){var a=document.querySelector('[data-testid="${testid}"]');if(!a||!document.referrer||window.history.length<2)return;a.addEventListener('click',function(e){e.preventDefault();window.history.back();});})();</script>`
+  );
 }
 
 export function card(inner: { title?: string; sub?: string; body?: string }): string {

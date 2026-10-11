@@ -40,6 +40,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-secondary:hover{background:var(--surface-hover)}
 .btn-danger{background:var(--danger);color:var(--on-accent)}
 .btn-block{width:100%}
+.btn-outline{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-outline:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.back-nav{margin:1.5rem 0 .5rem}
 
 /* Cards */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
