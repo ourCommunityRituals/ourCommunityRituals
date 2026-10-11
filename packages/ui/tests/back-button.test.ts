@@ -45,8 +45,10 @@ describe('backButton()', () => {
   });
 
   it('carries the page nonce on its script when given one', () => {
-    expect(backButton({ fallbackHref: '/', nonce: 'abc123' })).toMatch(/<script nonce="abc123">/);
-    expect(backButton({ fallbackHref: '/' })).toMatch(/<script>/);
+    // Plain string checks: a regex over script tags is what CodeQL's
+    // js/bad-tag-filter flags, even in a test.
+    expect(backButton({ fallbackHref: '/', nonce: 'abc123' })).toContain('<script nonce="abc123">');
+    expect(backButton({ fallbackHref: '/' })).toContain('<script>');
   });
 
   it('says Volver in Spanish', () => {
@@ -59,7 +61,7 @@ describe('backButton()', () => {
     const html = backButton({ fallbackHref: '/events', inert: true });
     expect(html).toMatch(/aria-disabled="true"/);
     expect(html).not.toMatch(/href=/);
-    expect(html).not.toMatch(/<script/);
+    expect(html.toLowerCase()).not.toContain('<script');
   });
 
   it('escapes what it is given and refuses a javascript: fallback', () => {
