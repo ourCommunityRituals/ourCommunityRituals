@@ -54,7 +54,7 @@ on:
 
 # Least-privilege by default. No job in this workflow writes to the repo, the
 # API, or the package registry; the only elevated credential is the explicit
-# OCR_PROPAGATE_TOKEN used to READ the private OCR-docs brain. Declaring this
+# OCR_HUB_READ used to READ the private OCR-docs brain. Declaring this
 # here stops the workflow inheriting whatever the repo default happens to be.
 permissions:
   contents: read
@@ -95,7 +95,7 @@ jobs:
           repository: ourCommunityRituals/OCR-docs
           ref: main
           path: OCR-docs
-          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          token: ${{ secrets.OCR_HUB_READ }}
           clean: false
           fetch-depth: 1
           persist-credentials: false
@@ -247,7 +247,7 @@ jobs:
           repository: ourCommunityRituals/OCR-docs
           ref: main
           path: OCR-docs
-          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          token: ${{ secrets.OCR_HUB_READ }}
           clean: false
           fetch-depth: 1
           persist-credentials: false
@@ -316,7 +316,7 @@ jobs:
           repository: ourCommunityRituals/OCR-docs
           ref: main
           path: OCR-docs
-          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          token: ${{ secrets.OCR_HUB_READ }}
           clean: false
           fetch-depth: 1
           persist-credentials: false
@@ -399,7 +399,7 @@ jobs:
           repository: ourCommunityRituals/OCR-docs
           ref: main
           path: OCR-docs
-          token: ${{ secrets.OCR_PROPAGATE_TOKEN }}
+          token: ${{ secrets.OCR_HUB_READ }}
           clean: false
           fetch-depth: 1
           persist-credentials: false
