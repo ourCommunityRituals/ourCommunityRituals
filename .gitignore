@@ -20,6 +20,12 @@ ourWKRP/
 # ─── Self-hosted GitHub Actions runner ────────────────────────────────
 actions-runner/
 
+# --- Local-only tooling ------------------------------------------------
+# Hub clone cache used by ourSharedEvents/scripts/ci-stage-ocr-workspace.sh
+_ocr-workspace-cache/
+# Per-machine dev-server config for the desktop app preview
+.claude/launch.json
+
 # ─── Build + tooling artifacts ────────────────────────────────────────
 node_modules/
 **/node_modules/
