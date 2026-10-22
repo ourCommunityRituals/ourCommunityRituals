@@ -42,7 +42,7 @@ import { join, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const METRICS = ['own-tokens', 'own-stylesheet', 'raw-hex', 'foreign-stylesheet'];
-const SKIP_DIRS = new Set(['node_modules', '.git', '.ocr-standards', 'dist', 'coverage', '.wrangler']);
+const SKIP_DIRS = new Set(['node_modules', '.git', '.ocr-standards', 'dist', 'coverage', '.wrangler', '.claude']);
 
 /** Token names @ocr/ui defines, read from its source (tokens.ts) without a TS toolchain. */
 export function uiTokenNames(tokensSource) {

@@ -25,6 +25,8 @@ actions-runner/
 _ocr-workspace-cache/
 # Per-machine dev-server config for the desktop app preview
 .claude/launch.json
+# Git worktrees for WIP (see docs/decisions/wip-worktrees.md)
+.claude/worktrees/
 
 # ─── Build + tooling artifacts ────────────────────────────────────────
 node_modules/

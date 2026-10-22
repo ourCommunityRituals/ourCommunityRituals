@@ -27,6 +27,8 @@ export default tseslint.config(
       '**/dist/**',
       'packages/flags/src/generated/**',
       'OCR-docs/**',
+      // WIP git worktrees: each holds a full checkout, not source of this repo.
+      '**/.claude/worktrees/**',
       // The design system's two GENERATED artifacts only. `tokens.css` is emitted by
       // compile-tokens.mjs (drift-gated by `pnpm ui:check:generated`), and bundle.js is
       // an opaque prebuilt artifact this repo has no build script for — see that folder's
