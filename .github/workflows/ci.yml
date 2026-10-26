@@ -207,7 +207,7 @@ jobs:
       - name: 'Quality — token contrast (@ocr/ui verify-contrast)'
         run: pnpm ui:contrast
 
-      # ── Quality: @ocr/tokens and @ocr/runner-fleet ────────────────────────
+      # ── Quality: @ocr/tokens (runner-fleet is archived, see archive/self-hosted-runner) ──
       # Both declared full script sets and neither was called by any workflow —
       # found by the absent-tier antibody in ci-workflow.test.ts, not by hand.
       # @ocr/tokens is the third token source in the fleet (with src/tokens.ts and
@@ -218,9 +218,6 @@ jobs:
 
       - name: 'Quality — vitest (@ocr/tokens)'
         run: pnpm tokens:test
-
-      - name: 'Quality — vitest (@ocr/runner-fleet)'
-        run: pnpm runner-fleet:test
 
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'

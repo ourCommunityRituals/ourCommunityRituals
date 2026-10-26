@@ -27,6 +27,9 @@ export default tseslint.config(
       '**/dist/**',
       'packages/flags/src/generated/**',
       'OCR-docs/**',
+      // Retired code kept for reference (archive/self-hosted-runner). It is not a workspace
+      // package, so CI does not install its dependencies and type-aware lint cannot run on it.
+      'archive/**',
       // WIP git worktrees: each holds a full checkout, not source of this repo.
       '**/.claude/worktrees/**',
       // The design system's two GENERATED artifacts only. `tokens.css` is emitted by

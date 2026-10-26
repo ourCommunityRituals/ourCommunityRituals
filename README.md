@@ -12,7 +12,7 @@ This repo is not an app. The product repos (OurSharedEvents, ourWKRP, ourAirwave
 | `packages/ui` | Shared stylesheet, HTML partials and the design system. |
 | `packages/flags` | Feature-flag runtime binding for the Brain flags contract. |
 | `packages/data-provider` | Shared DataProvider types and Cache API utilities for Workers. |
-| `packages/runner-fleet` | Self-hosted runner fleet manager (see `docs/OCR_VISION.md` for its status). |
+| *(archived)* | The self-hosted runner tooling is not a package any more. It is kept in `archive/self-hosted-runner/`; see the README there. |
 
 ## Getting started
 
