@@ -37,7 +37,7 @@ concurrency:
 
 jobs:
   # Invoke the bracket exactly as a spoke would, but against the LOCAL copy and
-  # relying on the default runs-on (ubuntu-latest). A green run here is the
+  # relying on the default runs-on (ubuntu-24.04). A green run here is the
   # real-run evidence ADR-005 requires before the change fans out to spokes.
   s0-bracket:
     name: 'S0 bracket — default (ubuntu) runner'

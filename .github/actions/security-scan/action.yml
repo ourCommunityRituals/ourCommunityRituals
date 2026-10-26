@@ -48,7 +48,7 @@ runs:
         # `python -m semgrep`: deprecated since 1.38.0, exits 2 without scanning.
         #
         # cygpath is a Git-Bash/Windows-only tool — it does NOT exist on
-        # ubuntu-latest, and under `bash -eo pipefail` a bare call would abort the
+        # ubuntu-24.04, and under `bash -eo pipefail` a bare call would abort the
         # scan. Guard on its presence: the PATH fixup is only needed on the
         # self-hosted Windows runner. On hosted Linux, pip installs semgrep onto
         # PATH already, so the branch is correctly skipped (OSE-953 migration).
