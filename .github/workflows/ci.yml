@@ -1,6 +1,6 @@
 # ourCommunityRituals root workspace CI.
 #
-# Runs on GitHub-hosted `ubuntu-latest` runners (migrated off the self-hosted
+# Runs on GitHub-hosted `ubuntu-24.04` runners (migrated off the self-hosted
 # BLOODRAVEN box — see EPIC OSE-953). These jobs are pure Node/pnpm/Python
 # checks with no Windows or persistent-workspace coupling: they check out the
 # Brain fresh via actions/checkout rather than reading a manually-placed sibling
@@ -70,7 +70,7 @@ defaults:
 jobs:
   gate:
     name: 'Gate — L0 security + drift + tests'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout workspace
@@ -221,7 +221,7 @@ jobs:
 
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [gate]
     timeout-minutes: 5
     steps:
@@ -288,7 +288,7 @@ jobs:
     # into this job's workspace (below), so it is self-contained on the
     # ephemeral hosted runner — no reliance on a manually-placed sibling copy.
     name: 'Brain parity — flags-contract.yaml ↔ OCR-docs pyramid'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [gate]
     timeout-minutes: 5
     steps:
@@ -373,7 +373,7 @@ jobs:
     # matches the canonical. Drift = must run `py shared/sync_to_repos.py`
     # from OCR-docs before merging.
     name: 'Shared security_gate.py drift check'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [gate]
     timeout-minutes: 3
     steps:

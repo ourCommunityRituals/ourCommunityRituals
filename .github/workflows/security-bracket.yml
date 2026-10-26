@@ -36,10 +36,10 @@ on:
         # box under Smart App Control; ubuntu-latest is the fix, and the
         # security-scan composite is OS-portable (cygpath PATH fixup is guarded).
         # Spokes that still need a self-hosted label pass runs-on: self-hosted.
-        description: 'Runner label. Hosted (ubuntu-latest) by default.'
+        description: 'Runner label. Hosted (ubuntu-24.04) by default.'
         type: string
         required: false
-        default: 'ubuntu-latest'
+        default: 'ubuntu-24.04'
 
 jobs:
   security-scan:

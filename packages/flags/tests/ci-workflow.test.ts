@@ -129,9 +129,12 @@ describe('OSE-953 — hosted-runner migration topology (all jobs off self-hosted
     expect(selfHosted, `these jobs are still self-hosted: ${JSON.stringify(selfHosted)}`).toEqual([]);
   });
 
-  it('every job runs on ubuntu-latest', () => {
+  // Pinned, not `ubuntu-latest`: GitHub moves that alias to a new Ubuntu without any commit here.
+  // It moved to 26.04 on 2026-10, and Playwright could not install Chromium there, which broke
+  // every repository that floated on it. Move this pin on purpose, in one reviewed change.
+  it('every job runs on ubuntu-24.04 (a pinned image, not the floating latest alias)', () => {
     for (const [name, j] of Object.entries(jobsWithRunsOn)) {
-      expect(j['runs-on'], `${name} must run on ubuntu-latest`).toBe('ubuntu-latest');
+      expect(j['runs-on'], `${name} must run on ubuntu-24.04`).toBe('ubuntu-24.04');
     }
   });
 
