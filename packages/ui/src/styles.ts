@@ -341,6 +341,41 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .now-playing{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:8px}
 .sponsor-slot{margin-top:32px;padding:16px;border-top:1px solid var(--border);font-size:var(--text-min);color:var(--text-muted)}
 .sponsor-slot .sponsor-name{color:var(--text);font-weight:500}
+
+/* Detail card: one fact (when, where) as a small label, a main line, a sub line,
+   and its choices as .btn in an actions row that wraps under the text on a phone.
+   Stack several in a .detail-list. */
+.detail-list{display:flex;flex-direction:column;gap:12px}
+.detail-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);text-align:left}
+.detail-card-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 14rem}
+.detail-card-label{font-size:var(--text-min);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.detail-card-main{font-size:1.05rem;font-weight:700;line-height:1.3;color:var(--text);overflow-wrap:anywhere}
+.detail-card-sub{font-size:.95rem;line-height:1.35;color:var(--text-muted);overflow-wrap:anywhere}
+.detail-card-actions{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 auto}
+.detail-card-actions .btn{flex:1 1 7.5rem;padding:10px 16px;font-size:1rem}
+
+/* Share row: one full-width share button, then (where the phone has no share
+   sheet) a grid of share chips, each a full tap target, and a status line that
+   says what happened ("Link copied"). Plain links: no SDK, no tracker. */
+.share-row>.btn{width:100%;font-size:1rem}
+.share-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:8px;margin-top:12px}
+.share-chip{display:inline-flex;align-items:center;justify-content:center;min-height:var(--tap-min);padding:8px 12px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:1rem;font-weight:600;text-decoration:none;cursor:pointer}
+.share-chip:hover{border-color:var(--accent)}
+.share-status{min-height:1.25em;margin-top:6px;font-size:.9rem;color:var(--text-muted)}
+
+/* Sponsor panel: a small "Sponsored by" label, then one bordered block per
+   sponsor: its header image full width at 3:1, its logo and name, its short text.
+   The same block, logo box and image shape for every sponsor at every tier, so
+   money buys frequency, never size. No tier-keyed rule belongs here. */
+.sponsor-panel{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.sponsor-panel-label{font-size:var(--text-min);font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;color:var(--text-muted)}
+.sponsor-panel-block{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.sponsor-panel-header{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;background:var(--surface-hover)}
+.sponsor-panel-id{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px 8px}
+.sponsor-panel-id:last-child{padding-bottom:12px}
+.sponsor-panel-id img{height:40px;width:auto;max-width:140px;object-fit:contain}
+.sponsor-panel-name{font-size:1rem;font-weight:700;color:var(--text)}
+.sponsor-panel-text{padding:0 16px 14px;font-size:.95rem;line-height:1.4;text-align:center;color:var(--text-muted);overflow-wrap:anywhere}
 @media(min-width:768px){.display-card{max-width:480px}.qr-frame{padding:32px}.qr-frame canvas,.qr-frame img,.qr-placeholder{width:260px;height:260px}}
 
 /* Form field pattern — label + input + hint/error */
@@ -459,6 +494,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .input:focus-visible,.search-bar:focus-visible,.sort-select:focus-visible{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
 .toggle input:focus-visible+.toggle-track{outline:2px solid var(--accent);outline-offset:2px}
 .genre-tag:focus-visible,.contributor-item:focus-visible,.search-result:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.share-chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
 /* Accessibility: reduced motion (WCAG 2.3.3 — Animation from Interactions, Level AAA)
    Removes infinite animations for users with vestibular or cognitive sensitivities.
