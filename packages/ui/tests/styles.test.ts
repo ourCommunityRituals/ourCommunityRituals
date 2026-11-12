@@ -136,9 +136,9 @@ describe('componentStyles — sponsor panel weight, sponsor link, printed cards 
 
   it('the thumbnail is at least 64px tall and the name at least 20px', () => {
     const img = /(?:^|;)height:(\d+px)/.exec(rule('.sponsor-panel-id img'));
-    expect(px(img![1])).toBeGreaterThanOrEqual(64);
+    expect(px(img?.[1] ?? '0')).toBeGreaterThanOrEqual(64);
     const name = /font-size:([\d.]+(?:rem|px))/.exec(rule('.sponsor-panel-name'));
-    expect(px(name![1])).toBeGreaterThanOrEqual(20);
+    expect(px(name?.[1] ?? '0')).toBeGreaterThanOrEqual(20);
   });
 
   it('sponsors sit side by side where there is room; the label spans the row', () => {
