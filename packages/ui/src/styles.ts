@@ -353,6 +353,9 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .detail-card-sub{font-size:.95rem;line-height:1.35;color:var(--text-muted);overflow-wrap:anywhere}
 .detail-card-actions{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 auto}
 .detail-card-actions .btn{flex:1 1 7.5rem;padding:10px 16px;font-size:1rem}
+/* A .btn that is only a picture of a button: the same shape on a page that is not
+   tapped (a printed sheet). Put it on a <span>, never on a link or a <button>. */
+.btn-static{cursor:default;pointer-events:none}
 
 /* Share row: one full-width share button, then (where the phone has no share
    sheet) a grid of share chips, each a full tap target, and a status line that
@@ -363,19 +366,41 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .share-chip:hover{border-color:var(--accent)}
 .share-status{min-height:1.25em;margin-top:6px;font-size:.9rem;color:var(--text-muted)}
 
-/* Sponsor panel: a small "Sponsored by" label, then one bordered block per
-   sponsor: its header image full width at 3:1, its logo and name, its short text.
-   The same block, logo box and image shape for every sponsor at every tier, so
-   money buys frequency, never size. No tier-keyed rule belongs here. */
-.sponsor-panel{display:flex;flex-direction:column;align-items:stretch;gap:6px}
-.sponsor-panel-label{font-size:var(--text-min);font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;color:var(--text-muted)}
+/* Sponsor panel: a "Sponsored by" label on one tight line, then one bordered block
+   per sponsor, side by side where there is room: its header image full width at
+   3:1, its thumbnail and name (in a .sponsor-panel-main, an <a> to the sponsor's
+   own site where it has one), its short text. The label is the smallest thing in
+   the panel; the thumbnail and name take the room. The same block, thumbnail box
+   and image shape for every sponsor at every tier, so money buys frequency, never
+   size. No tier-keyed rule belongs here. */
+.sponsor-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:4px 8px}
+.sponsor-panel-label{grid-column:1/-1;font-size:var(--text-min);font-weight:500;line-height:1.2;letter-spacing:.04em;text-transform:uppercase;text-align:center;color:var(--text-muted)}
 .sponsor-panel-block{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.sponsor-panel-main{display:flex;flex-direction:column;color:inherit;text-decoration:none}
+a.sponsor-panel-main:hover .sponsor-panel-name{text-decoration:underline;text-underline-offset:3px}
+a.sponsor-panel-main:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
 .sponsor-panel-header{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;background:var(--surface-hover)}
-.sponsor-panel-id{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px 8px}
-.sponsor-panel-id:last-child{padding-bottom:12px}
-.sponsor-panel-id img{height:40px;width:auto;max-width:140px;object-fit:contain}
-.sponsor-panel-name{font-size:1rem;font-weight:700;color:var(--text)}
-.sponsor-panel-text{padding:0 16px 14px;font-size:.95rem;line-height:1.4;text-align:center;color:var(--text-muted);overflow-wrap:anywhere}
+.sponsor-panel-id{display:flex;align-items:center;justify-content:center;gap:14px;min-height:var(--tap-min);padding:10px 14px}
+.sponsor-panel-id img{flex:none;height:72px;width:auto;max-width:min(45%,200px);object-fit:contain;border-radius:var(--radius-sm)}
+.sponsor-panel-name{font-size:1.25rem;font-weight:700;line-height:1.25;color:var(--text);overflow-wrap:anywhere}
+.sponsor-panel-text{padding:0 14px 12px;font-size:.95rem;line-height:1.4;text-align:center;color:var(--text-muted);overflow-wrap:anywhere}
+/* On paper: the When / Where cards sit side by side, each with its text and its
+   buttons on one row; buttons drop their tap height (nothing is tapped), and cards
+   and sponsor blocks lose their fill and take the page's own ink, so a dark theme
+   never prints light text on white. */
+@media print{
+.detail-list{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px}
+.detail-card{flex-wrap:nowrap;padding:8px 12px;gap:6px 12px;background:transparent;break-inside:avoid}
+.detail-card-text{flex:1 1 auto}
+.detail-card-actions{flex:0 1 auto}
+.detail-card-actions .btn{min-height:0;padding:4px 12px}
+.sponsor-panel{display:flex;flex-wrap:wrap}
+.sponsor-panel-label{flex:0 0 100%}
+.sponsor-panel-block{flex:1 1 0;min-width:0;background:transparent;break-inside:avoid}
+.sponsor-panel-id{padding:6px 14px}
+.detail-card-label,.detail-card-main,.detail-card-sub,.sponsor-panel-label,.sponsor-panel-name,.sponsor-panel-text,.btn-static{color:inherit}
+.btn-static{border-color:currentColor}
+}
 @media(min-width:768px){.display-card{max-width:480px}.qr-frame{padding:32px}.qr-frame canvas,.qr-frame img,.qr-placeholder{width:260px;height:260px}}
 
 /* Form field pattern — label + input + hint/error */
