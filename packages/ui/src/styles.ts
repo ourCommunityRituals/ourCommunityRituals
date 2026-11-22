@@ -374,8 +374,11 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
    the on-accent ink once chosen. Each item is a full tap target with text at 1rem,
    wide enough for a one-word name on one line. Where the items are labels (no
    focus of their own), the track is the keyboard's stop for scrolling the row
-   (tabindex=0, WCAG 2.1.1), so it takes the ring too. Owner, 2026-11-22 (OSE-2207). */
-.icon-slider{display:flex;flex-direction:column;gap:8px}
+   (tabindex=0, WCAG 2.1.1), so it takes the ring too. The row never sets the width
+   of what holds it (contain:inline-size): inside a grid or flex form it takes the
+   column it is given and scrolls, rather than pushing the form wider than a phone.
+   Owner, 2026-11-22 (OSE-2207). */
+.icon-slider{display:flex;flex-direction:column;gap:8px;min-width:0;contain:inline-size}
 .icon-slider-heading{font-size:1rem;font-weight:600;color:var(--text)}
 .icon-slider-track{display:flex;gap:8px;min-width:0;overflow-x:auto;scroll-snap-type:x proximity;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px;-webkit-overflow-scrolling:touch}
 .icon-slider-track::-webkit-scrollbar{display:none}

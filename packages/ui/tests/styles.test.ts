@@ -232,6 +232,12 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
     expect(rule('.icon-slider-item')).toContain('scroll-snap-align:start');
   });
 
+  it('never widens what holds it: in a two-column form it takes its column and scrolls', () => {
+    // Without this a 20-item row inside the admin's grid form set the form 2,000px wide on a phone.
+    expect(rule('.icon-slider')).toContain('contain:inline-size');
+    expect(rule('.icon-slider')).toContain('min-width:0');
+  });
+
   it('each item and each arrow is a full tap target with text at the 1rem floor', () => {
     expect(rule('.icon-slider-item')).toContain('min-height:var(--tap-min)');
     expect(rule('.icon-slider-item')).toContain('font-size:1rem');
