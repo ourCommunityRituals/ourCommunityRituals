@@ -191,3 +191,66 @@ describe('componentStyles — sponsor panel weight, sponsor link, printed cards 
     for (const r of panelRules) expect(r).not.toMatch(/tier|title|platinum|gold|silver|bronze/i);
   });
 });
+
+// OSE-2207 (owner 2026-11-22): a sideways row of choices picked by icon, one
+// component for every page that picks a category. Born-red: run against main
+// 862171e (no .icon-slider rules); every test below went red.
+describe('componentStyles — icon slider (OSE-2207)', () => {
+  const css = componentStyles.replace(/\/\*[\s\S]*?\*\//g, '');
+  const rule = (sel: string): string => {
+    for (const before of ['\n', '}', '{']) {
+      const at = css.indexOf(`${before}${sel}{`);
+      if (at === -1) continue;
+      const start = at + before.length + sel.length + 1;
+      return css.slice(start, css.indexOf('}', start));
+    }
+    return '';
+  };
+  const SELECTORS = [
+    '.icon-slider', '.icon-slider-track', '.icon-slider-item', '.icon-slider-item:hover',
+    '.icon-slider-icon', '.icon-slider-nav', '.icon-slider-arrow', '.icon-slider-arrow svg',
+    '.icon-slider-arrow:hover', '.icon-slider-arrow:disabled',
+  ];
+  for (const sel of SELECTORS) {
+    it(`defines ${sel}`, () => {
+      expect(rule(sel)).not.toBe('');
+    });
+  }
+
+  it('takes every colour from tokens (no hex, rgb or named colour)', () => {
+    const block = css.slice(css.indexOf('.icon-slider{'), css.indexOf('.sponsor-panel{'));
+    expect(block.length).toBeGreaterThan(0);
+    expect(block).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i);
+    for (const d of block.matchAll(/[{;](?:color|background|border(?:-color)?):([^;}]*)/g)) {
+      expect(d[1], d[0]).toMatch(/var\(--|^none$|^inherit$|^transparent$|^\d+px solid var\(--/);
+    }
+  });
+
+  it('the row scrolls sideways and the swipe snaps to an item', () => {
+    expect(rule('.icon-slider-track')).toContain('overflow-x:auto');
+    expect(rule('.icon-slider-track')).toContain('scroll-snap-type:x');
+    expect(rule('.icon-slider-item')).toContain('scroll-snap-align:start');
+  });
+
+  it('each item and each arrow is a full tap target with text at the 1rem floor', () => {
+    expect(rule('.icon-slider-item')).toContain('min-height:var(--tap-min)');
+    expect(rule('.icon-slider-item')).toContain('font-size:1rem');
+    expect(rule('.icon-slider-arrow')).toContain('width:var(--tap-min);height:var(--tap-min)');
+  });
+
+  it('the chosen item takes the accent fill and its icon the on-accent ink', () => {
+    expect(rule('.icon-slider-item.is-on,.icon-slider-item[aria-pressed=true],.icon-slider-item[aria-current]')).toMatch(
+      /background:var\(--accent\).*color:var\(--on-accent\)/
+    );
+    expect(css).toMatch(/\.icon-slider-item\.is-on \.icon-slider-icon[^{]*\{color:inherit\}/);
+  });
+
+  it('items and arrows show a 3px keyboard focus ring', () => {
+    expect(css).toMatch(/\.icon-slider-item:focus-visible,\.icon-slider-arrow:focus-visible\{outline:3px solid var\(--accent\)/);
+  });
+
+  it('smooth scrolling stops under reduced motion, and the arrows flip in a right-to-left page', () => {
+    expect(css).toMatch(/prefers-reduced-motion:reduce\)\{\.icon-slider-track\{scroll-behavior:auto\}/);
+    expect(css).toContain('[dir=rtl] .icon-slider-arrow svg{transform:scaleX(-1)}');
+  });
+});
