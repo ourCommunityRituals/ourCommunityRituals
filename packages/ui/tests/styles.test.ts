@@ -207,7 +207,7 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
     return '';
   };
   const SELECTORS = [
-    '.icon-slider', '.icon-slider-track', '.icon-slider-item', '.icon-slider-item:hover',
+    '.icon-slider', '.icon-slider-heading', '.icon-slider-track', '.icon-slider-item', '.icon-slider-item:hover',
     '.icon-slider-icon', '.icon-slider-nav', '.icon-slider-arrow', '.icon-slider-arrow svg',
     '.icon-slider-arrow:hover', '.icon-slider-arrow:disabled',
   ];
@@ -235,6 +235,7 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
   it('each item and each arrow is a full tap target with text at the 1rem floor', () => {
     expect(rule('.icon-slider-item')).toContain('min-height:var(--tap-min)');
     expect(rule('.icon-slider-item')).toContain('font-size:1rem');
+    expect(rule('.icon-slider-heading')).toContain('font-size:1rem');
     expect(rule('.icon-slider-arrow')).toContain('width:var(--tap-min);height:var(--tap-min)');
   });
 
@@ -245,8 +246,10 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
     expect(css).toMatch(/\.icon-slider-item\.is-on \.icon-slider-icon[^{]*\{color:inherit\}/);
   });
 
-  it('items and arrows show a 3px keyboard focus ring', () => {
-    expect(css).toMatch(/\.icon-slider-item:focus-visible,\.icon-slider-arrow:focus-visible\{outline:3px solid var\(--accent\)/);
+  it('items, arrows and the scrolling track show a 3px keyboard focus ring', () => {
+    expect(css).toMatch(
+      /\.icon-slider-item:focus-visible,\.icon-slider-arrow:focus-visible,\.icon-slider-track:focus-visible\{outline:3px solid var\(--accent\)/
+    );
   });
 
   it('smooth scrolling stops under reduced motion, and the arrows flip in a right-to-left page', () => {

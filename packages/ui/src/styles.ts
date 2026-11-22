@@ -372,8 +372,11 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
    <button>; .is-on, aria-pressed="true" or aria-current marks the chosen one. The
    icon is an inline SVG drawn in currentColor, so it takes the accent at rest and
    the on-accent ink once chosen. Each item is a full tap target with text at 1rem,
-   wide enough for a one-word name on one line. Owner, 2026-11-22 (OSE-2207). */
+   wide enough for a one-word name on one line. Where the items are labels (no
+   focus of their own), the track is the keyboard's stop for scrolling the row
+   (tabindex=0, WCAG 2.1.1), so it takes the ring too. Owner, 2026-11-22 (OSE-2207). */
 .icon-slider{display:flex;flex-direction:column;gap:8px}
+.icon-slider-heading{font-size:1rem;font-weight:600;color:var(--text)}
 .icon-slider-track{display:flex;gap:8px;min-width:0;overflow-x:auto;scroll-snap-type:x proximity;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px;-webkit-overflow-scrolling:touch}
 .icon-slider-track::-webkit-scrollbar{display:none}
 .icon-slider-item{flex:0 0 auto;width:7.5rem;min-height:var(--tap-min);display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:1rem;font-weight:500;line-height:1.2;text-align:center;text-decoration:none;overflow-wrap:break-word;cursor:pointer;scroll-snap-align:start;touch-action:manipulation}
@@ -386,7 +389,7 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .icon-slider-arrow svg{width:24px;height:24px}
 .icon-slider-arrow:hover{background:var(--surface-hover)}
 .icon-slider-arrow:disabled{cursor:default;opacity:.45}
-.icon-slider-item:focus-visible,.icon-slider-arrow:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.icon-slider-item:focus-visible,.icon-slider-arrow:focus-visible,.icon-slider-track:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 [dir=rtl] .icon-slider-arrow svg{transform:scaleX(-1)}
 @media(prefers-reduced-motion:reduce){.icon-slider-track{scroll-behavior:auto}}
 
