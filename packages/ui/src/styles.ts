@@ -366,6 +366,36 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
 .share-chip:hover{border-color:var(--accent)}
 .share-status{min-height:1.25em;margin-top:6px;font-size:.9rem;color:var(--text-muted)}
 
+/* Icon slider: one row of choices, each a picture over its name, that scrolls
+   sideways (a swipe; or the two arrows under it, which a page's script reveals and
+   wires). An item may be the <label> of a radio kept elsewhere, a link or a
+   <button>; .is-on, aria-pressed="true" or aria-current marks the chosen one. The
+   icon is an inline SVG drawn in currentColor, so it takes the accent at rest and
+   the on-accent ink once chosen. Each item is a full tap target with text at 1rem,
+   wide enough for a one-word name on one line. Where the items are labels (no
+   focus of their own), the track is the keyboard's stop for scrolling the row
+   (tabindex=0, WCAG 2.1.1), so it takes the ring too. The row never sets the width
+   of what holds it (contain:inline-size): inside a grid or flex form it takes the
+   column it is given and scrolls, rather than pushing the form wider than a phone.
+   Owner, 2026-11-22 (OSE-2207). */
+.icon-slider{display:flex;flex-direction:column;gap:8px;min-width:0;contain:inline-size}
+.icon-slider-heading{font-size:1rem;font-weight:600;color:var(--text)}
+.icon-slider-track{display:flex;gap:8px;min-width:0;overflow-x:auto;scroll-snap-type:x proximity;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px;-webkit-overflow-scrolling:touch}
+.icon-slider-track::-webkit-scrollbar{display:none}
+.icon-slider-item{flex:0 0 auto;width:7.5rem;min-height:var(--tap-min);display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:1rem;font-weight:500;line-height:1.2;text-align:center;text-decoration:none;overflow-wrap:break-word;cursor:pointer;scroll-snap-align:start;touch-action:manipulation}
+.icon-slider-item:hover{background:var(--surface-hover)}
+.icon-slider-icon{flex:none;width:40px;height:40px;color:var(--accent)}
+.icon-slider-item.is-on,.icon-slider-item[aria-pressed=true],.icon-slider-item[aria-current]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.icon-slider-item.is-on .icon-slider-icon,.icon-slider-item[aria-pressed=true] .icon-slider-icon,.icon-slider-item[aria-current] .icon-slider-icon{color:inherit}
+.icon-slider-nav{display:flex;justify-content:center;gap:16px}
+.icon-slider-arrow{display:inline-flex;align-items:center;justify-content:center;width:var(--tap-min);height:var(--tap-min);padding:0;background:var(--surface);border:1px solid var(--border-strong);border-radius:50%;color:var(--text);cursor:pointer}
+.icon-slider-arrow svg{width:24px;height:24px}
+.icon-slider-arrow:hover{background:var(--surface-hover)}
+.icon-slider-arrow:disabled{cursor:default;opacity:.45}
+.icon-slider-item:focus-visible,.icon-slider-arrow:focus-visible,.icon-slider-track:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[dir=rtl] .icon-slider-arrow svg{transform:scaleX(-1)}
+@media(prefers-reduced-motion:reduce){.icon-slider-track{scroll-behavior:auto}}
+
 /* Sponsor panel: a "Sponsored by" label on one tight line, then one bordered block
    per sponsor, side by side where there is room: its header image full width at
    3:1, its thumbnail and name (in a .sponsor-panel-main, an <a> to the sponsor's
