@@ -1,0 +1,141 @@
+# Mutation testing (StrykerJS) for the shared packages: the check on whether
+# the tests have teeth. docs/testing/mutation-testing.md explains the layers.
+#
+# The other gates catch a test that is skipped or failing; they cannot see one
+# that is hollow. Stryker plants one small fault at a time in a package's source
+# (a `<` to `<=`, a `true` to `false`, a removed call) and reruns the tests
+# that cover it. A mutant that survives is a fault the tests would let ship.
+#
+# One job per pass, each judged by its own per-file floors:
+#   flags (unit)          evaluator + in-memory adapter      packages/flags/mutation-floors.json
+#   flags (integration)   SQLite, Postgres, D1 adapters on a real engine
+#                                                            packages/flags/mutation-floors.integration.json
+#   tokens (unit)         contrast, surface, semantic, emit  packages/tokens/mutation-floors.json
+#   ui (unit)             escaping, partials, brand, toast…  packages/ui/mutation-floors.json
+#
+# The end-to-end layer for @ocr/ui is judged in the spokes, where the pinned
+# hub is served by a real Worker: ourWKRP (scripts/ci/e2e-mutation.mjs) and
+# ourSharedEvents (scripts/ci/layer-mutation.mjs).
+#
+# On a pull request each job also checks that no floor was lowered or dropped
+# against the base branch (scripts/ci/mutation-file-floor.mjs --ratchet).
+#
+# Not a required check (that is an owner setting). Needs no secret, writes
+# nothing, never deploys.
+name: Mutation testing
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/flags/**'
+      - 'packages/tokens/**'
+      - 'packages/ui/**'
+      - 'scripts/ci/mutation-file-floor.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/mutation-testing.yml'
+  schedule:
+    # 04:17 UTC, an hour after the nightly workspace CI.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-testing-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  mutation:
+    name: 'Mutation (${{ matrix.pass }})'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pass: flags unit
+            package: flags
+            script: mutation:flags
+            floors: mutation-floors.json
+          - pass: flags integration
+            package: flags
+            script: mutation:flags:integration
+            floors: mutation-floors.integration.json
+          - pass: tokens unit
+            package: tokens
+            script: mutation:tokens
+            floors: mutation-floors.json
+          - pass: ui unit
+            package: ui
+            script: mutation:ui
+            floors: mutation-floors.json
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # A pull request may raise a floor or add one, never lower or drop one.
+      # The base branch's floors come from a second, sparse checkout (the
+      # first one keeps no credentials, so a later `git fetch` could not reach
+      # a private repo). A floors file that is new in this pull request has
+      # nothing to compare.
+      - name: Checkout the base branch's floors
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .mutation-base
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: packages/${{ matrix.package }}/${{ matrix.floors }}
+          sparse-checkout-cone-mode: false
+
+      - name: Floor ratchet against the base branch
+        if: github.event_name == 'pull_request'
+        env:
+          PKG: ${{ matrix.package }}
+          FLOORS: ${{ matrix.floors }}
+        run: |
+          base="$GITHUB_WORKSPACE/.mutation-base/packages/$PKG/$FLOORS"
+          if [ -f "$base" ]; then
+            cd "packages/$PKG"
+            node ../../scripts/ci/mutation-file-floor.mjs --ratchet "$base" --floors "$FLOORS"
+          else
+            echo "packages/$PKG/$FLOORS is new in this pull request; nothing to compare."
+          fi
+
+      - name: Stryker pass and per-file floors
+        env:
+          SCRIPT: ${{ matrix.script }}
+        run: pnpm run "$SCRIPT"
+
+      - name: Upload the mutation report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: mutation-${{ matrix.package }}-${{ strategy.job-index }}
+          path: packages/${{ matrix.package }}/reports/
+          if-no-files-found: ignore
+          retention-days: 14

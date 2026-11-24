@@ -1,0 +1,8 @@
+{
+  "$comment": "Per-file mutation floors for the integration pass (stryker.integration.conf.mjs): the adapters judged by the adapter spec on a real engine. Never lowered (scripts/ci/mutation-file-floor.mjs --ratchet). See docs/testing/mutation-testing.md.",
+  "floors": {
+    "src/adapters/d1.ts": 80.0,
+    "src/adapters/postgres.ts": 83.56,
+    "src/adapters/sqlite.ts": 83.33
+  }
+}

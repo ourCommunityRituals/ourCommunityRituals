@@ -1,0 +1,7 @@
+{
+  "$comment": "Per-file mutation floors for this package: the score each file scored when last measured, never lowered (scripts/ci/mutation-file-floor.mjs --ratchet). Raise a floor when tests improve. See docs/testing/mutation-testing.md.",
+  "floors": {
+    "src/adapters/memory.ts": 73.33,
+    "src/evaluator.ts": 98.0
+  }
+}
