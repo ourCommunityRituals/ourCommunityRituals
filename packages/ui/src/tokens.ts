@@ -451,6 +451,35 @@ export const brandThemes: Record<string, BrandTheme> = {
   // Status roles stay locked to the fleet values (--live stays teal: red means
   // destructive, not on-air).
   ow: brandFromOcr('ow'),
+
+  // Practice bocce family for the staging demo (OSE-2219). Stand-in names, one
+  // accent per brand; grounds, text and every locked status token stay the
+  // fleet's. Dark accents are light-on-dark, light accents dark-on-light.
+  // Parent company: navy.
+  'lakeside-co': {
+    dark: { '--accent': '#8FB0EE', '--accent-hover': '#B4CBF5', '--accent-visited': '#8FB0EE' },
+    light: { '--accent': '#1F3A68', '--accent-hover': '#172C50', '--accent-visited': '#172C50' },
+  },
+  // Clubhouse: court green.
+  'lakeside-club': {
+    dark: { '--accent': '#7FD3A1', '--accent-hover': '#A6E2BF', '--accent-visited': '#7FD3A1' },
+    light: { '--accent': '#1E5B3A', '--accent-hover': '#164429', '--accent-visited': '#164429' },
+  },
+  // Semi-pro league: maroon.
+  'lakeside-semipro': {
+    dark: { '--accent': '#FF8F9E', '--accent-hover': '#FFB3BD', '--accent-visited': '#FF8F9E' },
+    light: { '--accent': '#7A1F2B', '--accent-hover': '#5E1721', '--accent-visited': '#5E1721' },
+  },
+  // Bar leagues: brick orange.
+  'lakeside-league': {
+    dark: { '--accent': '#FF9A6B', '--accent-hover': '#FFBA99', '--accent-visited': '#FF9A6B' },
+    light: { '--accent': '#9E3C14', '--accent-hover': '#7D2F0F', '--accent-visited': '#7D2F0F' },
+  },
+  // Broadcast network: purple.
+  'lakeside-network': {
+    dark: { '--accent': '#B9A0FF', '--accent-hover': '#D2C2FF', '--accent-visited': '#B9A0FF' },
+    light: { '--accent': '#4B2A8A', '--accent-hover': '#3A2070', '--accent-visited': '#3A2070' },
+  },
 };
 
 /**
