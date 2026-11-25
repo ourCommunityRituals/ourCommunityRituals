@@ -41,12 +41,19 @@ on:
         required: false
         default: 'ubuntu-24.04'
 
+# CCR F2: least privilege. The scan only reads the checkout and writes a
+# results file; it needs no write scope and no git credentials on disk.
+permissions:
+  contents: read
+
 jobs:
   security-scan:
     name: 'Semgrep (${{ inputs.phase }})'
     runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Run hardened security scan
         uses: ./.github/actions/security-scan
         with:

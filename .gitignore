@@ -79,3 +79,8 @@ fleet-dashboard.html
 # --- Mutation testing (StrykerJS; docs/mutation-testing.md) ---------------
 packages/*/reports/
 packages/*/.stryker-tmp*/
+
+# --- Local agent permissions (CCR F1) --------------------------------------
+# Per-machine Claude Code allow lists. Never commit them: shared rules belong
+# in a reviewed .claude/settings.json.
+.claude/settings.local.json
