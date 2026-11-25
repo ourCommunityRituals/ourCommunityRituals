@@ -75,3 +75,7 @@ fleet-dashboard.html
 # against them and consumers import ./dist/tokens.css directly.
 !packages/tokens/dist/
 !packages/tokens/dist/**
+
+# --- Mutation testing (StrykerJS; docs/mutation-testing.md) ---------------
+packages/*/reports/
+packages/*/.stryker-tmp*/

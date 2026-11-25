@@ -1,0 +1,14 @@
+{
+  "$comment": "Per-file mutation floors for this package: the score each file scored when last measured, never lowered (scripts/ci/mutation-file-floor.mjs --ratchet). Raise a floor when tests improve. See docs/testing/mutation-testing.md.",
+  "floors": {
+    "src/brand.ts": 62.5,
+    "src/contract.ts": 77.61,
+    "src/contrast.ts": 70.0,
+    "src/css.ts": 25.0,
+    "src/esc.ts": 100.0,
+    "src/partials.ts": 40.49,
+    "src/styles.ts": 50.0,
+    "src/toast.ts": 60.6,
+    "src/tokens.ts": 42.53
+  }
+}

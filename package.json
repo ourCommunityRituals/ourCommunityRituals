@@ -18,11 +18,15 @@
     "tokens:check:generated": "pnpm --filter @ocr/tokens check:generated",
     "tokens:check:raw": "pnpm --filter @ocr/tokens check:raw",
     "ui:test": "pnpm --filter @ocr/ui test",
-  "ui:typecheck": "pnpm --filter @ocr/ui typecheck",
-  "ui:check:generated": "pnpm --filter @ocr/ui check:generated",
+    "ui:typecheck": "pnpm --filter @ocr/ui typecheck",
+    "ui:check:generated": "pnpm --filter @ocr/ui check:generated",
     "ui:contrast": "pnpm --filter @ocr/ui contrast",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "mutation:flags": "cd packages/flags && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json",
+    "mutation:flags:integration": "cd packages/flags && stryker run stryker.integration.conf.mjs && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation-integration/mutation.json --floors mutation-floors.integration.json",
+    "mutation:tokens": "cd packages/tokens && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json",
+    "mutation:ui": "cd packages/ui && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json"
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {
@@ -43,6 +47,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@stryker-mutator/core": "10.1.1",
+    "@stryker-mutator/vitest-runner": "10.1.1",
     "eslint": "^9.36.0",
     "globals": "^16.3.0",
     "typescript-eslint": "^8.45.0"
