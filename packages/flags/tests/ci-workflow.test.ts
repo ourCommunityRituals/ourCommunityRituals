@@ -52,11 +52,11 @@ describe('COST-211 — single authoritative install + shared pnpm store', () => 
     // Scan actual step `run:` commands (not workflow prose like input
     // descriptions). A `pnpm install` NOT immediately followed by
     // ` --frozen-lockfile` would drop the integrity check.
-    // `--frozen-lockfile=false` is fine — still the frozen-lockfile flag, and it
-    // only fires under the force_install dispatch branch.
+    // `--frozen-lockfile=false` turns the check off, so it counts as bare too
+    // (CCR F9): a forced install uses `--force`, which keeps the lockfile.
     const bare = Object.keys(jobs)
       .flatMap(runsOf)
-      .filter((r) => /pnpm install(?! --frozen-lockfile)/.test(r));
+      .filter((r) => /pnpm install(?! --frozen-lockfile(?!=false))/.test(r));
     expect(bare, `found a pnpm install without --frozen-lockfile: ${JSON.stringify(bare)}`).toEqual([]);
   });
 
