@@ -16,6 +16,8 @@ ourSharedMagnets/
 ourSharedPulse/
 ourSharedRecords/
 ourWKRP/
+# Local ourSharedEvents working folders (ose-*), never part of the hub (CCR F8)
+ose-*/
 
 # ─── Self-hosted GitHub Actions runner ────────────────────────────────
 actions-runner/

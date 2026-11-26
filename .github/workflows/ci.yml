@@ -168,9 +168,12 @@ jobs:
         # shell (semgrep run-shell-injection; OSE-1089).
         env:
           FORCE_INSTALL: ${{ inputs.force_install }}
+        # A forced install refetches every package but still installs exactly
+        # what pnpm-lock.yaml names. It never resolves new versions, so a manual
+        # run cannot test code the lockfile does not record (CCR F9).
         run: |
           if [ "$FORCE_INSTALL" = "true" ]; then
-            pnpm install --frozen-lockfile=false
+            pnpm install --frozen-lockfile --force
           else
             pnpm install --frozen-lockfile
           fi
