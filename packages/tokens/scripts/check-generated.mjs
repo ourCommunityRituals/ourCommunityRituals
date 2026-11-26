@@ -15,7 +15,7 @@ for (const [file, expected] of [
   ['tokens.css', tokensCss()],
   ['tokens.json', tokensJson()],
 ]) {
-  let actual = '';
+  let actual;
   try {
     actual = readFileSync(join(dist, file), 'utf8');
   } catch {
