@@ -115,8 +115,11 @@ jobs:
           path: OCR-docs
           token: ${{ secrets.OCR_HUB_READ }}
           clean: false
-          fetch-depth: 1
+          # Full history, so brain-pin can prove the pin is on main (CCR F3).
+          fetch-depth: 0
           persist-credentials: false
+      - name: Pin the brain to .ocr-brain-ref (CCR F3)
+        uses: ./.github/actions/brain-pin
 
       - name: Setup Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -264,8 +267,11 @@ jobs:
           path: OCR-docs
           token: ${{ secrets.OCR_HUB_READ }}
           clean: false
-          fetch-depth: 1
+          # Full history, so brain-pin can prove the pin is on main (CCR F3).
+          fetch-depth: 0
           persist-credentials: false
+      - name: Pin the brain to .ocr-brain-ref (CCR F3)
+        uses: ./.github/actions/brain-pin
 
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
@@ -333,8 +339,11 @@ jobs:
           path: OCR-docs
           token: ${{ secrets.OCR_HUB_READ }}
           clean: false
-          fetch-depth: 1
+          # Full history, so brain-pin can prove the pin is on main (CCR F3).
+          fetch-depth: 0
           persist-credentials: false
+      - name: Pin the brain to .ocr-brain-ref (CCR F3)
+        uses: ./.github/actions/brain-pin
 
       # Brain pyramid is a Python test suite; provision Python on the hosted
       # runner (ubuntu ships python3, but pin the version for reproducibility).
@@ -416,8 +425,11 @@ jobs:
           path: OCR-docs
           token: ${{ secrets.OCR_HUB_READ }}
           clean: false
-          fetch-depth: 1
+          # Full history, so brain-pin can prove the pin is on main (CCR F3).
+          fetch-depth: 0
           persist-credentials: false
+      - name: Pin the brain to .ocr-brain-ref (CCR F3)
+        uses: ./.github/actions/brain-pin
 
       # Drift check is a Python script; provision Python on the hosted runner.
       - name: Setup Python

@@ -1,0 +1,21 @@
+name: 'Brain pin'
+description: >-
+  Moves the OCR-docs checkout at ./OCR-docs (main, full history) to the commit
+  pinned in .ocr-brain-ref (CCR F3, owner decision 2026-11-26). The pin must be
+  on OCR-docs main and may not move back from the base branch's pin, so a brain
+  change reaches the hub only through a reviewed PR that bumps .ocr-brain-ref.
+
+runs:
+  using: composite
+  steps:
+    - name: Move the brain to the pinned commit
+      shell: bash
+      env:
+        BASE_REF: ${{ github.base_ref }}
+      run: |
+        base_pin=""
+        if [ -n "$BASE_REF" ]; then
+          git -C "$GITHUB_WORKSPACE" fetch --no-tags --depth=1 origin "refs/heads/${BASE_REF}"
+          base_pin="$(git -C "$GITHUB_WORKSPACE" show FETCH_HEAD:.ocr-brain-ref 2>/dev/null | tr -d '[:space:]' || true)"
+        fi
+        bash "$GITHUB_WORKSPACE/scripts/ci/brain-pin.sh" OCR-docs "$GITHUB_WORKSPACE/.ocr-brain-ref" "$base_pin"
