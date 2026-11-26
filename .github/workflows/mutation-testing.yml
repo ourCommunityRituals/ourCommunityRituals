@@ -83,8 +83,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      # StrykerJS 10 needs Node 22 or newer; the workspace's .nvmrc is 20.
-      # Only this workflow runs Stryker, so only it moves up.
+      # StrykerJS 10 needs Node 22 or newer, the same as the workspace .nvmrc.
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:

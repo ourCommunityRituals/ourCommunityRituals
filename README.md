@@ -16,7 +16,7 @@ This repo is not an app. The product repos (OurSharedEvents, ourWKRP, ourAirwave
 
 ## Getting started
 
-You need Node 20 or newer and pnpm 9.
+You need Node 22 or newer and pnpm 9.
 
 ```bash
 pnpm install
