@@ -8,6 +8,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Wait 7 days after a release before proposing it, so a malicious or
+    # broken release has time to be caught upstream (Semgrep
+    # dependabot-missing-cooldown, blocking in the S0 bracket).
+    cooldown:
+      default-days: 7
     groups:
       actions:
         patterns: ["*"]
@@ -15,4 +20,6 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
