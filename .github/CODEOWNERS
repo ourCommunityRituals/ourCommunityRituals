@@ -1,0 +1,14 @@
+# Files that control CI, agents and what every spoke runs need a person's
+# review (CCR security re-sweep 2026-11-26, M2). Agent sessions open PRs under
+# the owner's login, and GitHub does not count an author's own review, so these
+# paths name the separate human reviewer account, as OCR-docs does.
+# Binds only when "Require review from Code Owners" is on for main.
+/.github/               @mzdano
+/.claude/               @mzdano
+/CLAUDE.md              @mzdano
+/scripts/               @mzdano
+# Run inside every spoke's CI (the design check), so a change here changes
+# their gates.
+/packages/ui/scripts/   @mzdano
+# Colours change only through CHANGING-COLORS.md (CLAUDE.md).
+/packages/tokens/       @mzdano
