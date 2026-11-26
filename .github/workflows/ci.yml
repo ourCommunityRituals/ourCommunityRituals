@@ -85,6 +85,24 @@ jobs:
       - name: Context banner
         uses: ./.github/actions/context-banner
 
+      # Dependabot PRs and fork PRs do not receive Actions secrets, so
+      # OCR_HUB_READ is empty there and the brain checkout below would stop with
+      # "Input required and not supplied: token". Name that cause instead.
+      # The job still fails: a gate that cannot read the brain has not passed.
+      - name: Check the brain read token is available
+        env:
+          HAS_TOKEN: ${{ secrets.OCR_HUB_READ != '' }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          if [ "$HAS_TOKEN" != "true" ]; then
+            if [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
+              echo "::error title=Brain token missing::OCR_HUB_READ is not available to Dependabot runs. Add it as a Dependabot secret (Settings > Secrets and variables > Dependabot), then re-run this check."
+            else
+              echo "::error title=Brain token missing::OCR_HUB_READ is not available to this run (fork PR, or the secret is unset), so the OCR-docs brain cannot be read."
+            fi
+            exit 1
+          fi
+
       # Fetch the OCR-docs brain into the workspace so the L0 security gate, the
       # codegen drift check, and generate-from-yaml.mjs resolve
       # OCR-docs/ocr-docs-brain/flags-contract.yaml WITHOUT relying on a
