@@ -74,7 +74,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout workspace
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           clean: false
           fetch-depth: 1
@@ -90,7 +90,7 @@ jobs:
       # OCR-docs/ocr-docs-brain/flags-contract.yaml WITHOUT relying on a
       # manually-placed copy on the self-hosted runner. OCR-docs/ is gitignored.
       - name: Checkout OCR-docs brain
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ourCommunityRituals/OCR-docs
           ref: main
@@ -101,12 +101,12 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           # pnpm version is pinned via package.json `packageManager`
           # (pnpm@9.15.0). Also setting `version:` here triggers
@@ -117,7 +117,7 @@ jobs:
       # Python via the action (pinned 3.11) rather than relying on whatever the
       # host ships — portable across runners and does not weaken the gate.
       - name: Setup Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
 
@@ -134,7 +134,7 @@ jobs:
         run: echo "HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
       - name: Cache pnpm store
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: pnpm-store-${{ runner.os }}-${{ steps.lockhash.outputs.HASH }}
@@ -225,7 +225,7 @@ jobs:
     needs: [gate]
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           clean: false
           fetch-depth: 1
@@ -239,7 +239,7 @@ jobs:
       # ephemeral hosted runner this job has its own fresh VM, so it must fetch
       # the brain itself (mirrors the gate / brain-parity jobs).
       - name: Checkout OCR-docs brain
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ourCommunityRituals/OCR-docs
           ref: main
@@ -249,10 +249,10 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
-      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           # Version from package.json `packageManager`; see gate job above.
           run_install: false
@@ -269,7 +269,7 @@ jobs:
         id: lockhash
         run: echo "HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - name: Cache pnpm store
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: pnpm-store-${{ runner.os }}-${{ steps.lockhash.outputs.HASH }}
@@ -293,7 +293,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout workspace
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           clean: false
           fetch-depth: 1
@@ -308,7 +308,7 @@ jobs:
       # in-workspace `OCR-docs/` checkout, so this job silently `exit 0`'d and
       # went green WITHOUT running the pyramid — a false-green (COST-201).
       - name: Checkout OCR-docs brain
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ourCommunityRituals/OCR-docs
           ref: main
@@ -321,7 +321,7 @@ jobs:
       # Brain pyramid is a Python test suite; provision Python on the hosted
       # runner (ubuntu ships python3, but pin the version for reproducibility).
       - name: Setup Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
 
@@ -378,7 +378,7 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Checkout workspace
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           clean: false
           fetch-depth: 1
@@ -391,7 +391,7 @@ jobs:
       # probe silently `exit 0`'d when `../OCR-docs` was absent, letting the
       # drift check pass without running — a false-green (COST-201).
       - name: Checkout OCR-docs brain
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ourCommunityRituals/OCR-docs
           ref: main
@@ -403,7 +403,7 @@ jobs:
 
       # Drift check is a Python script; provision Python on the hosted runner.
       - name: Setup Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
 
