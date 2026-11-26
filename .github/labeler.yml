@@ -1,9 +1,15 @@
-# Path-based PR labels for actions/labeler@v4 (read by .github/workflows/label.yml).
+# Path-based PR labels for actions/labeler@v7 (read by .github/workflows/label.yml).
 # The labeler runs on pull_request_target and reads this file from the base branch,
 # so a change here takes effect for PRs opened after it lands on main.
+# v5 and later need the `changed-files` form below; the v4 form (a bare list of
+# globs under each label) is no longer read. This file and the action version in
+# label.yml must change together.
 docs:
-  - 'docs/**'
+  - changed-files:
+      - any-glob-to-any-file: 'docs/**'
 packages:
-  - 'packages/**'
+  - changed-files:
+      - any-glob-to-any-file: 'packages/**'
 ci:
-  - '.github/**'
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
