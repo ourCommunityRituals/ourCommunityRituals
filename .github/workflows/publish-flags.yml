@@ -82,7 +82,13 @@ jobs:
             echo "DRY RUN — packing only, not publishing"
             npm publish --dry-run
           else
-            # Idempotent: a re-run at an already-published version exits non-zero;
-            # bump packages/flags/package.json version to publish again.
-            npm publish
+            # package.json also changes when Dependabot bumps a dev dependency,
+            # with the version unchanged. Skip in that case instead of failing
+            # main with a 409; bump the version in package.json to publish.
+            VERSION="$(npm pkg get version | tr -d '"')"
+            if npm view "@ourcommunityrituals/flags@${VERSION}" version >/dev/null 2>&1; then
+              echo "::notice::@ourcommunityrituals/flags@${VERSION} is already published; nothing to do."
+            else
+              npm publish
+            fi
           fi
