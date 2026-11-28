@@ -243,6 +243,15 @@ jobs:
       - name: 'Quality — vitest (@ocr/tokens)'
         run: pnpm tokens:test
 
+      # ── Quality: @ocr/signals (OCR observability, level 1: logs) ──
+      # The never-who invariant (tests/never-who.invariant.test.ts) runs in this
+      # suite: no person-shaped value may reach a written log line.
+      - name: 'Quality — TypeScript (@ocr/signals)'
+        run: pnpm signals:typecheck
+
+      - name: 'Quality — vitest (@ocr/signals)'
+        run: pnpm signals:test
+
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
     runs-on: ubuntu-24.04
