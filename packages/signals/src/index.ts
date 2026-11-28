@@ -6,6 +6,7 @@
  * Level 3: counters and histograms to Workers Analytics Engine.
  * Level 4: W3C trace context between OCR Workers, and span lines.
  * Level 5: correlation of logs and spans by trace, and rollups by any view dimension.
+ * Level 6: synthetic checks (api, multi-step, browser) against OCR's own staging hosts.
  * Rules and how-to: packages/signals/docs/.
  */
 
@@ -73,3 +74,16 @@ export {
 export type { Span, SpanLine, SpanOutcome, TraceContext, Tracer, TracerOptions, TracerStats } from './traces';
 export { correlate, rollup, tierAt, TIERS } from './correlate';
 export type { MetricRow, PlanChange, RollupOptions, RollupRow, SpanNode, TierCode, TraceView } from './correlate';
+export { runCheck, validateChecks, STAGING_HOSTS, SYNTHETIC_HEADER } from './synthetics';
+export type {
+  ApiCheck,
+  BrowserCheck,
+  Check,
+  CheckResult,
+  Expect,
+  MultiCheck,
+  RunOptions,
+  Step,
+  StepFailure,
+  StepResult,
+} from './synthetics';
