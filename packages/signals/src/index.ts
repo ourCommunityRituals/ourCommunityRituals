@@ -1,7 +1,8 @@
 /**
  * @ocr/signals — OCR's own observability.
  *
- * Level 1 (this release): privacy-safe structured logs.
+ * Level 1: privacy-safe structured logs.
+ * Level 2: cardinality budgets for metric labels.
  * Rules and how-to: packages/signals/docs/.
  */
 
@@ -23,3 +24,25 @@ export {
   CREDENTIAL_HEADERS,
 } from './redact/credentials';
 export { isPersonalKey, scrubText, PERSONAL_KEYS, ERROR_TEXT_MAX } from './redact/personal';
+export {
+  createCardinalityGuard,
+  validateMetrics,
+  worstCaseSeries,
+  labelSize,
+  DIMENSIONS,
+  BANNED_LABELS,
+  OTHER,
+} from './cardinality';
+export type {
+  Admitted,
+  BoundedLabel,
+  CardinalityGuard,
+  CardinalityReport,
+  EnumLabel,
+  FoldReason,
+  LabelBudget,
+  LabelReport,
+  MetricRegistry,
+  MetricReport,
+  MetricSpec,
+} from './cardinality';

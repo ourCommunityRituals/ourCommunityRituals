@@ -13,7 +13,7 @@ Design and the full eight-level plan: [OCR Signals design](https://claude.ai/art
 
 ## What is in this release
 
-Level 1 of 8: **privacy-safe structured logs.**
+Levels 1 and 2 of 8: **privacy-safe structured logs** and **cardinality budgets** for metric labels.
 
 | Piece | File | What it does |
 | --- | --- | --- |
@@ -23,6 +23,7 @@ Level 1 of 8: **privacy-safe structured logs.**
 | Errors | `src/error.ts` | Error class plus a scrubbed, shortened message |
 | Credential masking | `src/redact/credentials.ts` | Ported from OSE `lib/log-redact.ts` |
 | Personal masking | `src/redact/personal.ts` | OW's key list plus email, IP, id, phone and URL scrubbing |
+| Cardinality | `src/cardinality.ts` | Label budgets, `DIMENSIONS`, `createCardinalityGuard()` |
 
 ## Quick start
 
@@ -63,6 +64,7 @@ One line comes out per call:
 
 - [docs/RULES.md](docs/RULES.md): the privacy and cardinality rules, and what enforces each.
 - [docs/ADDING-AN-EVENT.md](docs/ADDING-AN-EVENT.md): how to declare an event and pick field kinds.
+- [docs/CARDINALITY.md](docs/CARDINALITY.md): label budgets, the shared dimensions, what is checked and when.
 - [docs/ROADMAP.md](docs/ROADMAP.md): the eight levels and what each will add.
 
 ## Checks
