@@ -16,6 +16,7 @@ The owner is the CEO. He asks the product owner "how's the team looking?"; the P
 | Role card: the rules one role needs, pre-read, 4 KB at most | `team/roles/<role>.md` | yes |
 | Agent definition: points at the card | `.claude/agents/team-<role>.md` | yes |
 | Card checker | `scripts/team/check-role-cards.mjs` | yes |
+| Knowledge graph, per-role tool manifest, eval scorer and score history | `packages/team/`, `team/tools.json` | yes |
 | Team memory, run log, eval sets and scores | the owner's private project files, `team/` | no |
 
 Security findings and eval answer keys never go in this repo.

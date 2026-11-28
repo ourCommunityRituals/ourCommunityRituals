@@ -1,0 +1,57 @@
+# Agent team: event triggers (OCR-252). PREPARED AND SWITCHED OFF.
+#
+# Maps a GitHub event to the team roles that should wake for it
+# (packages/team/src/events.mjs) and prints them. Every job runs only when the
+# repository variable TEAM_EVENTS_ON is 'true'. It is unset, so every job is
+# skipped. There is no step that calls a model yet: that step needs the
+# owner's Claude Console workload identity federation setup and his approval
+# of API spend. Until both, this file only proves the routing.
+#
+# No secrets, read-only token, no writes. packages/team/tests/workflow.test.mjs
+# fails if any job loses its gate, if a secret or a write permission appears,
+# or if a model-calling step is added while the gate is the only thing
+# between it and every PR.
+
+name: Team events
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened]
+  workflow_run:
+    workflows: ['OCR Workspace CI']
+    types: [completed]
+  repository_dispatch:
+    types: [linear-story-moved]
+  workflow_dispatch:
+    inputs:
+      event:
+        description: 'Team event to route (pr_opened, ci_red, staging_deployed, linear_moved)'
+        required: true
+        default: pr_opened
+
+permissions:
+  contents: read
+
+concurrency:
+  group: team-events-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  route:
+    name: 'Team — route event to roles'
+    if: vars.TEAM_EVENTS_ON == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - name: Route
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: node packages/team/src/cli.mjs route --event-name "$EVENT_NAME" --payload "$GITHUB_EVENT_PATH"

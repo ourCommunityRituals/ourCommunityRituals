@@ -1,0 +1,222 @@
+{
+  "$comment": "Per-role tools, least access (OCR-246). An agent definition (.claude/agents/team-<role>.md) may ask only for tools listed here for its role; packages/team checks it in CI. 'shared' commands are open to every role; 'deny' wins over every allow. Team agents are read-only: Write and Edit are never granted. Changing this file needs the owner's review.",
+  "deny": {
+    "merge": [
+      "\\bgh\\s+pr\\s+merge\\b",
+      "\\bgit\\s+merge\\b",
+      "\\bgh\\s+api\\b.*\\/merge\\b"
+    ],
+    "deploy": [
+      "\\bwrangler\\s+(deploy|publish|versions\\s+deploy|rollback)\\b",
+      "\\bnpm\\s+run\\s+deploy",
+      "\\bgh\\s+workflow\\s+run\\b"
+    ],
+    "production": [
+      "--env[ =]production\\b",
+      "\\bPRODUCTION_LIVE\\b",
+      "\\bwrangler\\s+d1\\s+(execute|migrations\\s+apply)\\b.*--remote\\b",
+      "(?<![\\w.-])(?!stg\\.)(?:[\\w-]+\\.)*oursharedevents\\.com\\b",
+      "(?<![\\w.-])(?!stg\\.)(?:[\\w-]+\\.)*ourwkrp\\.com\\b"
+    ],
+    "secrets": [
+      "\\bwrangler\\s+secret\\b",
+      "\\bgh\\s+secret\\b",
+      "\\bdoppler\\s+secrets\\b",
+      "\\bprintenv\\b",
+      "(^|\\s)env(\\s|$)",
+      "\\.env\\b",
+      "\\.dev\\.vars\\b",
+      "credentials",
+      "\\.npmrc\\b",
+      "id_rsa|id_ed25519"
+    ],
+    "repo-controls": [
+      "\\bgh\\s+api\\b.*\\b(protection|rulesets|collaborators|actions\\/permissions|hooks)\\b",
+      "\\bgh\\s+variable\\s+set\\b",
+      "\\bgh\\s+repo\\s+(edit|delete|archive)\\b",
+      "-X\\s*(POST|PUT|PATCH|DELETE)\\b"
+    ],
+    "force-push": [
+      "\\bgit\\s+push\\b",
+      "\\bgit\\s+reset\\s+--hard\\b"
+    ],
+    "writes": [
+      "\\bfind\\b.*\\s-(delete|exec|execdir|ok|fprint)\\b",
+      "\\bsed\\b.*\\s-i",
+      "\\bgit\\s+(commit|checkout|switch|stash|rebase|tag|branch\\s+-[dD])\\b",
+      "\\brm\\s",
+      "\\btee\\b",
+      "--output\\b"
+    ]
+  },
+  "shared": [
+    "node scripts/team/check-role-cards.mjs",
+    "node packages/team/src/cli.mjs",
+    "git log",
+    "git show",
+    "git diff",
+    "git status",
+    "git ls-files",
+    "grep",
+    "rg",
+    "ls",
+    "cat",
+    "head",
+    "tail",
+    "wc",
+    "find",
+    "sed -n",
+    "sort",
+    "uniq",
+    "jq"
+  ],
+  "roles": {
+    "architect": {
+      "why": "Code and the brain agree; every link between products is allowed.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "commands": [
+        "python3 scripts/check_brain_contract.py",
+        "python3 scripts/check_cross_repo_imports.py",
+        "gh pr view",
+        "gh pr diff"
+      ]
+    },
+    "back-end": {
+      "why": "Routes, D1 and migrations: sound, brand-scoped, fast. Local reads only; never a remote database.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "commands": [
+        "gh pr view",
+        "gh pr diff",
+        "npx wrangler d1 migrations list --local"
+      ]
+    },
+    "data-scientist": {
+      "why": "Privacy at every hop: runs the brain's data checks and reads PRs that touch data.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "commands": [
+        "python3 scripts/check_brain_contract.py",
+        "node scripts/ci/env-parity.mjs",
+        "gh pr view",
+        "gh pr diff"
+      ]
+    },
+    "designer": {
+      "why": "One visual language: tokens, contrast, screenshots of staging.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "mcp__plugin_playwright_playwright__browser_navigate",
+        "mcp__plugin_playwright_playwright__browser_take_screenshot",
+        "mcp__plugin_playwright_playwright__browser_resize",
+        "mcp__plugin_playwright_playwright__browser_snapshot"
+      ],
+      "commands": [
+        "pnpm ui:contrast",
+        "node scripts/check-spoke-styles.mjs",
+        "gh pr view",
+        "gh pr diff"
+      ]
+    },
+    "front-end": {
+      "why": "Every page works on a phone, one screen per tab, every language: drives Playwright on staging.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "mcp__plugin_playwright_playwright__browser_navigate",
+        "mcp__plugin_playwright_playwright__browser_take_screenshot",
+        "mcp__plugin_playwright_playwright__browser_resize",
+        "mcp__plugin_playwright_playwright__browser_snapshot",
+        "mcp__plugin_playwright_playwright__browser_click"
+      ],
+      "commands": [
+        "npx playwright test --list",
+        "gh pr view",
+        "gh pr diff",
+        "curl -sI https://stg.oursharedevents.com",
+        "curl -sI https://stg.ourwkrp.com"
+      ]
+    },
+    "integrator": {
+      "why": "Surfaces and products work together end to end on staging.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "mcp__plugin_playwright_playwright__browser_navigate",
+        "mcp__plugin_playwright_playwright__browser_snapshot",
+        "mcp__plugin_playwright_playwright__browser_click"
+      ],
+      "commands": [
+        "gh run list",
+        "gh run view",
+        "gh pr view",
+        "curl -s https://stg.oursharedevents.com",
+        "curl -s https://stg.ourwkrp.com"
+      ]
+    },
+    "product-owner": {
+      "why": "Tends the product from the owner's view: reads PRs, Linear and every role's report.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "commands": [
+        "gh pr list",
+        "gh pr view"
+      ]
+    },
+    "sre": {
+      "why": "CI tells the truth up the pyramid: reads CI runs and logs, classifies failures.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "commands": [
+        "gh run list",
+        "gh run view",
+        "node scripts/ci/classify-ci-failure.mjs",
+        "gh pr checks"
+      ]
+    },
+    "tester": {
+      "why": "Every story tested at the right layer: reads PRs, lists tests, never runs against production.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "commands": [
+        "gh pr view",
+        "gh pr diff",
+        "gh pr checks",
+        "npx vitest list",
+        "npx playwright test --list"
+      ]
+    }
+  }
+}

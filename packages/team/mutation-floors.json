@@ -1,0 +1,15 @@
+{
+  "$comment": "Per-file mutation floors for @ocr/team: the score each file scored when last measured (28 Nov 2026, first run), never lowered (scripts/ci/mutation-file-floor.mjs --ratchet). Raise a floor when tests improve. See docs/testing/mutation-testing.md.",
+  "floors": {
+    "src/cost.mjs": 97.4,
+    "src/dashboard.mjs": 84.8,
+    "src/evals.mjs": 94.8,
+    "src/events.mjs": 89.0,
+    "src/graph.mjs": 91.3,
+    "src/guard.mjs": 98.3,
+    "src/log.mjs": 90.9,
+    "src/sources.mjs": 93.1,
+    "src/tools.mjs": 94.1,
+    "src/trust.mjs": 97.1
+  }
+}
