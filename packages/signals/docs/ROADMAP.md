@@ -5,9 +5,9 @@ Eight levels, each its own pull request with tests and docs. Full design:
 
 | # | Level | State | Adds |
 | --- | --- | --- | --- |
-| 1 | Logs | This release | Envelope, schemas, two redaction layers, never-who invariant |
-| 2 | Cardinality | Next | Label budgets per metric, overflow to `other`, CI check on undeclared labels |
-| 3 | Metrics | Planned | Counters and histograms to Workers Analytics Engine; OSE's cost line becomes a metric |
+| 1 | Logs | Shipped (hub #98) | Envelope, schemas, two redaction layers, never-who invariant |
+| 2 | Cardinality | This release | Label budgets per metric, worst-case check at definition, overflow to `other`, per-label report ([CARDINALITY.md](CARDINALITY.md)) |
+| 3 | Metrics | Next | Counters and histograms to Workers Analytics Engine; OSE's cost line becomes a metric |
 | 4 | Traces | Planned | W3C `traceparent` between OCR Workers; span lines |
 | 5 | Correlation | Planned | Shared ids across logs, metrics and spans; first console view |
 | 6 | Synthetic checks | Planned | API, multi-step and browser checks on staging, marked synthetic |
