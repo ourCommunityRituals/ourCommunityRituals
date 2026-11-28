@@ -4,6 +4,7 @@
  * Level 1: privacy-safe structured logs.
  * Level 2: cardinality budgets for metric labels.
  * Level 3: counters and histograms to Workers Analytics Engine.
+ * Level 4: W3C trace context between OCR Workers, and span lines.
  * Rules and how-to: packages/signals/docs/.
  */
 
@@ -58,3 +59,14 @@ export type {
   MetricStats,
   MetricUnit,
 } from './metrics';
+export {
+  childOf,
+  createTracer,
+  formatTraceparent,
+  inject,
+  newSpanId,
+  newTraceId,
+  parseTraceparent,
+  traceFrom,
+} from './traces';
+export type { Span, SpanLine, SpanOutcome, TraceContext, Tracer, TracerOptions, TracerStats } from './traces';

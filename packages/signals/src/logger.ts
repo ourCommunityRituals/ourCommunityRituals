@@ -225,6 +225,7 @@ export function isClientId(value: string): boolean {
   );
 }
 
-function defaultSink(line: LogLine): void {
+/** One JSON object per line on stdout. The only console write a sink makes. */
+export function defaultSink(line: LogLine): void {
   console.log(JSON.stringify(line));
 }
