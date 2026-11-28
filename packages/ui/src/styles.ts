@@ -564,6 +564,96 @@ a.sponsor-panel-main:focus-visible{outline:3px solid var(--accent);outline-offse
   .search-result,.set-list .track-card,.genre-tag,.drop-zone,.view-btn,.attr-btn{transition:none}
 }
 
+/* ── Deeper Dive (owner, 2026-11-27) ─────────────────────────────────────────
+   One component on every surface: an arrow and a label ("Deeper Dive", or the
+   fold's own words) that opens a short paragraph on tap and closes on the next
+   tap. Markup: <details class="deeper-dive"><summary>Deeper Dive</summary><p>…</p></details>.
+   Must-knows (price, cash only, sign up first, age limits) are never put behind
+   it. .needs-you lights the arrow up when what it holds is needed to finish. */
+.deeper-dive>summary{list-style:none;display:inline-flex;align-items:center;gap:.375rem;min-height:var(--tap-min);cursor:pointer;color:var(--accent-text);font-size:.9375rem;font-weight:600}
+.deeper-dive>summary::-webkit-details-marker{display:none}
+.deeper-dive>summary::before{content:'▸';font-size:1.125rem;line-height:1}
+.deeper-dive[open]>summary::before{content:'▾'}
+.deeper-dive>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.deeper-dive>p{margin:0 0 .5rem;padding:.75rem;background:var(--surface-hover);border:1px solid var(--border-strong);border-radius:8px;font-size:.9375rem;line-height:1.5;color:var(--text);font-weight:400}
+.deeper-dive.needs-you>summary{background:color-mix(in srgb, var(--accent) 12%, var(--surface));box-shadow:inset 0 0 0 2px var(--accent);border-radius:8px;padding:0 .75rem}
+
+/* ── Named surfaces (ourSharedEvents admin: create event, add sponsor) ────────
+   Owner, 2026-11-27: each create screen fits one phone screen with no scroll.
+   Lifted from admin.html so the spoke carries no stylesheet growth. Tokenised,
+   nothing here sets a colour. */
+.wizard-field-label{font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.wizard-step>.wizard-field-label{margin-top:1.25rem}
+.wizard-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.wizard-chip{min-height:var(--tap-min);padding:0 1rem;border:2px solid var(--border-strong);border-radius:999px;background:var(--surface);color:var(--text);font-family:inherit;font-size:1rem;cursor:pointer}
+.wizard-chip[aria-pressed='true']{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 12%, var(--surface));font-weight:700}
+.wizard-fold{margin-top:.75rem;border-top:1px solid var(--border)}
+.wizard-fold>summary{list-style:none;color:var(--accent-text);font-weight:600;justify-content:space-between}
+.wizard-fold>summary::after{content:'▸';margin-left:.5rem}
+.wizard-fold[open]>summary::after{content:'▾'}
+.wizard-fold>summary::-webkit-details-marker{display:none}
+.wizard-fold>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wizard-fold[open]{padding-bottom:.75rem}
+.wizard-fold.needs-you>summary{color:var(--accent-text);background:color-mix(in srgb, var(--accent) 12%, var(--surface));border-radius:8px;padding:0 .75rem;box-shadow:inset 0 0 0 2px var(--accent)}
+.wizard-fold.needs-you>summary::after{font-size:1.25rem}
+.launch-wizard .create-form.wizard-compact,.launch-wizard .wizard-compact .type-picker{grid-template-columns:repeat(2,minmax(0,1fr));gap:.625rem}
+.wizard-compact .wizard-field-label{margin:.25rem 0 0}
+.wizard-compact .wizard-chips{flex-wrap:nowrap}
+.wizard-compact .wizard-chip{flex:1 1 0;padding:0 .5rem}
+.launch-wizard .wizard-compact label{margin-bottom:.25rem}
+.wizard-label-row{display:flex;flex-wrap:wrap;align-items:center;column-gap:.75rem}
+.wizard-label-row .deeper-dive{font-weight:400}
+.wizard-label-row .deeper-dive[open]{flex-basis:100%}
+#wizard-step-2 .wizard-card-desc{display:none}
+#wizard-step-2 .wizard-signup-grid{margin-bottom:0}
+#wizard-step-2 .wizard-signup-grid,#wizard-step-2 .wizard-publish .wizard-signup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#wizard-step-2 .wizard-publish{margin-top:0;padding-top:0;border-top:0}
+.launch-wizard .wizard-go-live{margin-bottom:.75rem;padding:0;background:none;border:0}
+.wizard-go-live>p{margin:0}
+.wizard-go-live>.create-msg:empty{display:none}
+#wizard-step-3 .wizard-summary{padding:.75rem;margin-bottom:.5rem}
+#wizard-map-note{font-size:.875rem;margin-bottom:.5rem}
+.wizard-checklist li{display:flex;flex-wrap:wrap;align-items:center;column-gap:.5rem}
+.wizard-checklist li>.wizard-copy-btn{display:inline-flex;min-height:48px;padding:.25rem .75rem;margin-left:auto}
+.launch-wizard[data-live='0'] #wizard-finish-btn{order:1;margin-left:0;background:var(--surface);color:var(--text);border:1px solid var(--border-strong);font-size:1rem;font-weight:600}
+.wizard-step .wizard-links-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.wizard-links-grid .wizard-card-desc,.wizard-links-grid .wizard-card-url{display:none}
+.wizard-links-grid .wizard-link-card{padding:.75rem;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.5rem}
+.wizard-links-grid .wizard-link-card img{width:88px;height:88px}
+.wizard-links-grid .wizard-copy-btn{min-width:0;width:100%;padding:.5rem .25rem;font-size:.9375rem}
+.launch-wizard[data-step='3'] .wizard-preview,.launch-wizard[data-step='3'] .wizard-step-caption{display:none}
+.spon-levels{display:grid;gap:.5rem;margin-bottom:.25rem}
+.spon-level{padding:.625rem .75rem;border:1px solid var(--border-strong);border-radius:12px;background:var(--surface)}
+.spon-level-name{margin:0 0 .375rem;font-weight:700}
+.spon-levels .spon-level{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.25rem .5rem;padding:.375rem .75rem}
+.spon-levels .spon-level>.spon-level-name{margin:0;white-space:nowrap}
+.spon-levels .wizard-chip{padding:0 .75rem}
+.spon-levels .spon-level .wizard-chips{flex-wrap:nowrap}
+.spon-step-caption{margin:0 0 .75rem;color:var(--text-muted)}
+.spon-step-caption strong{color:var(--text)}
+.spon-form-wrap:not(.is-editing)[data-spon-at='1'] .spon-step[data-spon-step='2'],.spon-form-wrap:not(.is-editing)[data-spon-at='2'] .spon-step[data-spon-step='1'],.spon-form-wrap.is-editing .spon-step-caption{display:none}
+.spon-form-wrap .form-actions{flex-wrap:wrap;align-items:center}
+.spon-form-wrap .form-actions>.create-msg{flex:1 1 100%;order:3}
+.spon-form-wrap .form-actions>.create-msg:empty{display:none}
+.spon-form-wrap:not(.is-editing) .form-actions{flex-wrap:nowrap}
+.spon-form-wrap:not(.is-editing) .form-actions>.btn{flex:1 1 0;min-width:0;padding-left:.5rem;padding-right:.5rem}
+.spon-form-wrap:not(.is-editing) .form-actions>.create-btn{flex-grow:2}
+body.sponsor-focus #spon-summary{display:none}
+body.sponsor-focus #main-content>:not(#sponsors-card){display:none!important}
+body.sponsor-focus #sponsors-card .card-header .card-action,body.sponsor-focus #spon-switch,body.sponsor-focus #sponsors-list{display:none!important}
+@media(max-width:639px){
+  .wizard-progress{display:none}
+  .launch-wizard[data-step='1'] .wizard-preview{display:none}
+  .launch-wizard h2{display:inline-block;margin:0 .5rem .5rem 0;font-size:1.375rem}
+  .wizard-step-caption{display:inline-block;margin:0 0 .5rem;font-size:.9375rem}
+  .wizard-nav{margin-top:.75rem}
+  .wizard-links-grid .wizard-link-card img,.wizard-links-grid [id^='wizardQr']{display:none}
+  .wizard-step-help.wizard-question{font-size:1.0625rem}
+  *+.wizard-step-help.wizard-question{margin-top:1rem}
+  .wizard-publish-option,.wizard-signup-option{padding:.75rem}
+  body.wizard-active .admin-header .tier-badge,body.wizard-active .admin-header .phase-badge,body.sponsor-focus .admin-header .tier-badge,body.sponsor-focus .admin-header .phase-badge{display:none}
+}
+
 /* A secondary line under a name (a sponsor's location): its own line, muted, at the text floor. */
 .sub-line{display:block;color:var(--text-muted);font-size:var(--text-min);overflow-wrap:anywhere}
 
