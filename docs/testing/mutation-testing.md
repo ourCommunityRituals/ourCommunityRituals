@@ -14,6 +14,7 @@ that survives is a fault the tests would let ship.
 | Integration | `@ocr/flags` | `stryker.integration.conf.mjs` | the shared adapter spec on real SQLite (better-sqlite3, also for D1's statement shape) and Postgres (pg-mem) | `mutation-floors.integration.json` |
 | Unit | `@ocr/tokens` | `stryker.conf.mjs` | token and contrast tests | `mutation-floors.json` |
 | Unit | `@ocr/ui` | `stryker.conf.mjs` | escaping, partials, brand, toast and token tests | `mutation-floors.json` |
+| Unit | `@ocr/team` | `stryker.conf.mjs` | the agent team's graph, tool-manifest, eval-score and history tests | `mutation-floors.json` |
 | End to end | `@ocr/ui` | in the spokes | Playwright journeys against a Worker that serves the pinned hub | ourWKRP `mutation/e2e-mutants.json`, ourSharedEvents `mutation/layer-mutants.json` |
 
 The end-to-end layer lives in the spokes because only there does the shared UI
@@ -40,9 +41,10 @@ that the checker fails on each fault it exists to catch.
     pnpm mutation:flags:integration
     pnpm mutation:tokens
     pnpm mutation:ui
+    pnpm mutation:team
 
 Each pass takes under two minutes. `.github/workflows/mutation-testing.yml`
-runs all four nightly, on demand, and on a pull request that touches a
+runs all five nightly, on demand, and on a pull request that touches a
 package. Reports are uploaded as artifacts (`reports/` in each package).
 
 ## First run (2026-11-24)

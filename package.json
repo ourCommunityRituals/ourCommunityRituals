@@ -23,12 +23,14 @@
     "ui:contrast": "pnpm --filter @ocr/ui contrast",
     "signals:test": "pnpm --filter @ocr/signals test",
     "signals:typecheck": "pnpm --filter @ocr/signals typecheck",
+    "team:test": "pnpm --filter @ocr/team test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "mutation:flags": "cd packages/flags && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json",
     "mutation:flags:integration": "cd packages/flags && stryker run stryker.integration.conf.mjs && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation-integration/mutation.json --floors mutation-floors.integration.json",
     "mutation:tokens": "cd packages/tokens && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json",
-    "mutation:ui": "cd packages/ui && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json"
+    "mutation:ui": "cd packages/ui && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json",
+    "mutation:team": "cd packages/team && stryker run && node ../../scripts/ci/mutation-file-floor.mjs reports/mutation/mutation.json"
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {

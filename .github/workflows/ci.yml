@@ -252,6 +252,20 @@ jobs:
       - name: 'Quality — vitest (@ocr/signals)'
         run: pnpm signals:test
 
+      # ── Quality: @ocr/team (the agent team's own tooling, OCR-245..247) ──
+      # Graph builder, per-role tool manifest, eval scorer and score history.
+      # The two checks after the tests run the real files: the public knowledge
+      # graph must validate (every role owns rules and has one agent, no dangling
+      # edge), and every team agent must stay inside team/tools.json.
+      - name: 'Quality — vitest (@ocr/team)'
+        run: pnpm team:test
+
+      - name: 'Quality — team knowledge graph validates'
+        run: node packages/team/src/cli.mjs graph
+
+      - name: 'Quality — team agents within their tool manifest'
+        run: node packages/team/src/cli.mjs tools-check
+
   invariants:
     name: 'Vision invariants (Tier Equity / Inert Monetization / Deprecation Lock)'
     runs-on: ubuntu-24.04

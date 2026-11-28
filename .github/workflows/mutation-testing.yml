@@ -12,6 +12,7 @@
 #                                                            packages/flags/mutation-floors.integration.json
 #   tokens (unit)         contrast, surface, semantic, emit  packages/tokens/mutation-floors.json
 #   ui (unit)             escaping, partials, brand, toast…  packages/ui/mutation-floors.json
+#   team (unit)           agent-team graph, tools, evals     packages/team/mutation-floors.json
 #
 # The end-to-end layer for @ocr/ui is judged in the spokes, where the pinned
 # hub is served by a real Worker: ourWKRP (scripts/ci/e2e-mutation.mjs) and
@@ -31,6 +32,7 @@ on:
       - 'packages/flags/**'
       - 'packages/tokens/**'
       - 'packages/ui/**'
+      - 'packages/team/**'
       - 'scripts/ci/mutation-file-floor.mjs'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -75,6 +77,10 @@ jobs:
           - pass: ui unit
             package: ui
             script: mutation:ui
+            floors: mutation-floors.json
+          - pass: team unit
+            package: team
+            script: mutation:team
             floors: mutation-floors.json
     steps:
       - name: Checkout workspace

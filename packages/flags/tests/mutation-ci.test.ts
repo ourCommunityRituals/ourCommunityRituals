@@ -1,7 +1,7 @@
 /**
  * The mutation gate for the shared packages: the per-file floor checker
  * (scripts/ci/mutation-file-floor.mjs), the Stryker configs and floors files
- * in packages/{flags,tokens,ui}, and .github/workflows/mutation-testing.yml.
+ * in packages/{flags,tokens,ui,team}, and .github/workflows/mutation-testing.yml.
  *
  * It lives here beside ci-workflow.test.ts, the other test of this workspace's
  * CI, because @ocr/flags' suite is the one the gate job runs on every PR.
@@ -43,6 +43,7 @@ const PASSES = [
   { pkg: 'flags', config: 'stryker.integration.conf.mjs', floors: 'mutation-floors.integration.json', script: 'mutation:flags:integration' },
   { pkg: 'tokens', config: 'stryker.conf.mjs', floors: 'mutation-floors.json', script: 'mutation:tokens' },
   { pkg: 'ui', config: 'stryker.conf.mjs', floors: 'mutation-floors.json', script: 'mutation:ui' },
+  { pkg: 'team', config: 'stryker.conf.mjs', floors: 'mutation-floors.json', script: 'mutation:team' },
 ];
 
 describe('fileScore', () => {

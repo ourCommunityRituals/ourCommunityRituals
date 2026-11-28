@@ -1,0 +1,22 @@
+{
+  "name": "@ocr/team",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The agent team's own tooling: knowledge graph, per-role tool manifest, eval scoring and score history. No model calls, no network, no secrets.",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "graph": "node src/cli.mjs graph",
+    "tools:check": "node src/cli.mjs tools-check"
+  },
+  "devDependencies": {
+    "vitest": "^5.1.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
