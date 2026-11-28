@@ -564,6 +564,98 @@ a.sponsor-panel-main:focus-visible{outline:3px solid var(--accent);outline-offse
   .search-result,.set-list .track-card,.genre-tag,.drop-zone,.view-btn,.attr-btn{transition:none}
 }
 
+/* ── Deeper Dive (owner, 2026-11-27) ─────────────────────────────────────────
+   One component on every surface: an arrow and a label ("Deeper Dive", or the
+   fold's own words) that opens a short paragraph on tap and closes on the next
+   tap. Markup: <details class="deeper-dive"><summary>Deeper Dive</summary><p>…</p></details>.
+   Must-knows (price, cash only, sign up first, age limits) are never put behind
+   it. .needs-you lights the arrow up when what it holds is needed to finish. */
+.deeper-dive>summary{list-style:none;display:inline-flex;align-items:center;gap:.375rem;min-height:var(--tap-min);cursor:pointer;color:var(--accent-text);font-size:.9375rem;font-weight:600}
+.deeper-dive>summary::-webkit-details-marker{display:none}
+.deeper-dive>summary::before{content:'▸';font-size:1.125rem;line-height:1}
+.deeper-dive[open]>summary::before{content:'▾'}
+.deeper-dive>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.deeper-dive>p{margin:0 0 .5rem;padding:.75rem;background:var(--surface-hover);border:1px solid var(--border-strong);border-radius:8px;font-size:.9375rem;line-height:1.5;color:var(--text);font-weight:400}
+.deeper-dive.needs-you>summary{background:color-mix(in srgb, var(--accent) 12%, var(--surface));box-shadow:inset 0 0 0 2px var(--accent);border-radius:8px;padding:0 .75rem}
+
+/* ── Named surfaces (ourSharedEvents admin: create event, add sponsor) ────────
+   Owner, 2026-11-27: each create screen fits one phone screen with no scroll.
+   Lifted from admin.html so the spoke carries no stylesheet growth. Tokenised,
+   nothing here sets a colour. Each rule leads with :root
+   because the admin page's own second <style> block loads after this sheet
+   and would otherwise win at equal specificity. */
+:root .wizard-field-label{font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+:root .wizard-step>.wizard-field-label{margin-top:1.25rem}
+:root .wizard-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+:root .wizard-chip{min-height:var(--tap-min);padding:0 1rem;border:2px solid var(--border-strong);border-radius:999px;background:var(--surface);color:var(--text);font-family:inherit;font-size:1rem;cursor:pointer}
+:root .wizard-chip[aria-pressed='true']{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 12%, var(--surface));font-weight:700}
+:root .wizard-fold{margin-top:.75rem;border-top:1px solid var(--border)}
+:root .wizard-fold>summary{list-style:none;color:var(--accent-text);font-weight:600;justify-content:space-between}
+:root .wizard-fold>summary::after{content:'▸';margin-left:.5rem}
+:root .wizard-fold[open]>summary::after{content:'▾'}
+:root .wizard-fold>summary::-webkit-details-marker{display:none}
+:root .wizard-fold>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+:root .wizard-fold[open]{padding-bottom:.75rem}
+:root .wizard-fold.needs-you>summary{color:var(--accent-text);background:color-mix(in srgb, var(--accent) 12%, var(--surface));border-radius:8px;padding:0 .75rem;box-shadow:inset 0 0 0 2px var(--accent)}
+:root .wizard-fold.needs-you>summary::after{font-size:1.25rem}
+:root .launch-wizard .create-form.wizard-compact,:root .launch-wizard .wizard-compact .type-picker{grid-template-columns:repeat(2,minmax(0,1fr));gap:.625rem}
+:root .wizard-compact .wizard-field-label{margin:.25rem 0 0}
+:root .wizard-compact .wizard-chips{flex-wrap:nowrap}
+:root .wizard-compact .wizard-chip{flex:1 1 0;padding:0 .5rem}
+:root .launch-wizard .wizard-compact label{margin-bottom:.25rem}
+:root .wizard-label-row{display:flex;flex-wrap:wrap;align-items:center;column-gap:.75rem}
+:root .wizard-label-row .deeper-dive{font-weight:400}
+:root .wizard-label-row .deeper-dive[open]{flex-basis:100%}
+:root #wizard-step-2 .wizard-card-desc{display:none}
+:root #wizard-step-2 .wizard-signup-grid{margin-bottom:0}
+:root #wizard-step-2 .wizard-signup-grid,:root #wizard-step-2 .wizard-publish .wizard-signup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+:root #wizard-step-2 .wizard-publish{margin-top:0;padding-top:0;border-top:0}
+:root .launch-wizard .wizard-go-live{margin-bottom:.75rem;padding:0;background:none;border:0}
+:root .wizard-go-live>p{margin:0}
+:root .wizard-go-live>.create-msg:empty{display:none}
+:root #wizard-step-3 .wizard-summary{padding:.75rem;margin-bottom:.5rem}
+:root #wizard-map-note{font-size:.875rem;margin-bottom:.5rem}
+:root .wizard-checklist li{display:flex;flex-wrap:wrap;align-items:center;column-gap:.5rem}
+:root .wizard-checklist li>.wizard-copy-btn{display:inline-flex;min-height:48px;padding:.25rem .75rem;margin-left:auto}
+:root .launch-wizard[data-live='0'] #wizard-finish-btn{order:1;margin-left:0;background:var(--surface);color:var(--text);border:1px solid var(--border-strong);font-size:1rem;font-weight:600}
+:root .wizard-step .wizard-links-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+:root .wizard-links-grid .wizard-card-desc,:root .wizard-links-grid .wizard-card-url{display:none}
+:root .wizard-links-grid .wizard-link-card{padding:.75rem;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.5rem}
+:root .wizard-links-grid .wizard-link-card img{width:88px;height:88px}
+:root .wizard-links-grid .wizard-copy-btn{min-width:0;width:100%;padding:.5rem .25rem;font-size:.9375rem}
+:root .launch-wizard[data-step='3'] .wizard-preview,:root .launch-wizard[data-step='3'] .wizard-step-caption{display:none}
+:root .spon-levels{display:grid;gap:.5rem;margin-bottom:.25rem}
+:root .spon-level{padding:.625rem .75rem;border:1px solid var(--border-strong);border-radius:12px;background:var(--surface)}
+:root .spon-level-name{margin:0 0 .375rem;font-weight:700}
+:root .spon-levels .spon-level{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.25rem .5rem;padding:.375rem .75rem}
+:root .spon-levels .spon-level>.spon-level-name{margin:0;white-space:nowrap}
+:root .spon-levels .wizard-chip{padding:0 .75rem}
+:root .spon-levels .spon-level .wizard-chips{flex-wrap:nowrap}
+:root .spon-step-caption{margin:0 0 .75rem;color:var(--text-muted)}
+:root .spon-step-caption strong{color:var(--text)}
+:root .spon-form-wrap:not(.is-editing)[data-spon-at='1'] .spon-step[data-spon-step='2'],:root .spon-form-wrap:not(.is-editing)[data-spon-at='2'] .spon-step[data-spon-step='1'],:root .spon-form-wrap.is-editing .spon-step-caption{display:none}
+:root .spon-form-wrap .form-actions{flex-wrap:wrap;align-items:center}
+:root .spon-form-wrap .form-actions>.create-msg{flex:1 1 100%;order:3}
+:root .spon-form-wrap .form-actions>.create-msg:empty{display:none}
+:root .spon-form-wrap:not(.is-editing) .form-actions{flex-wrap:nowrap}
+:root .spon-form-wrap:not(.is-editing) .form-actions>.btn{flex:1 1 0;min-width:0;padding-left:.5rem;padding-right:.5rem}
+:root .spon-form-wrap:not(.is-editing) .form-actions>.create-btn{flex-grow:2}
+:root body.sponsor-focus #spon-summary{display:none}
+:root body.sponsor-focus #main-content>:not(#sponsors-card){display:none!important}
+:root body.sponsor-focus #sponsors-card .card-header .card-action,:root body.sponsor-focus #spon-switch,:root body.sponsor-focus #sponsors-list{display:none!important}
+@media(max-width:639px){
+  :root .wizard-progress{display:none}
+  :root .launch-wizard[data-step='1'] .wizard-preview{display:none}
+  :root .launch-wizard h2{display:inline-block;margin:0 .5rem .5rem 0;font-size:1.375rem}
+  :root .wizard-step-caption{display:inline-block;margin:0 0 .5rem;font-size:.9375rem}
+  :root .wizard-nav{margin-top:.75rem}
+  :root .wizard-links-grid .wizard-link-card img,:root .wizard-links-grid [id^='wizardQr']{display:none}
+  :root .wizard-step-help.wizard-question{font-size:1.0625rem}
+  :root *+.wizard-step-help.wizard-question{margin-top:1rem}
+  :root .wizard-publish-option,:root .wizard-signup-option{padding:.75rem}
+  :root body.wizard-active .admin-header .tier-badge,:root body.wizard-active .admin-header .phase-badge,:root body.sponsor-focus .admin-header .tier-badge,:root body.sponsor-focus .admin-header .phase-badge{display:none}
+}
+
 /* A secondary line under a name (a sponsor's location): its own line, muted, at the text floor. */
 .sub-line{display:block;color:var(--text-muted);font-size:var(--text-min);overflow-wrap:anywhere}
 
