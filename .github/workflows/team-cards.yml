@@ -1,0 +1,64 @@
+# Agent team: role cards (team/roles/*.md).
+#
+# A role card is the short, pre-read slice of the corpus one standing agent
+# needs (see team/README.md). This job runs the checker's own tests, then checks
+# every card's shape and size. Card sources that live in other repos (OSE, OW)
+# are not checked out here, so their hashes show as "unchecked"; the daily team
+# run checks them with --strict against all repos and reports a stale card.
+#
+# No secrets, no model calls, read-only token.
+
+name: Team role cards
+
+on:
+  pull_request:
+    paths:
+      - 'team/**'
+      - 'scripts/team/**'
+      - '.claude/agents/team-*.md'
+      - '.github/workflows/team-cards.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'team/**'
+      - 'scripts/team/**'
+      - '.claude/agents/team-*.md'
+      - '.github/workflows/team-cards.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: team-cards-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cards:
+    name: 'Team — role cards'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - name: Checker tests
+        run: node --test scripts/team/check-role-cards.test.mjs
+      - name: Check every role card
+        run: node scripts/team/check-role-cards.mjs --workspace "$(dirname "$GITHUB_WORKSPACE")"
+      - name: Every team agent has a role card
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in .claude/agents/team-*.md; do
+            role="$(basename "$f" .md)"; role="${role#team-}"
+            if [ ! -f "team/roles/$role.md" ]; then
+              echo "::error file=$f::no role card at team/roles/$role.md"; fail=1
+            fi
+          done
+          exit "$fail"
