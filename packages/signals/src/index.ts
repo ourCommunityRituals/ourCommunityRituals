@@ -6,6 +6,7 @@
  * Level 3: counters and histograms to Workers Analytics Engine.
  * Level 4: W3C trace context between OCR Workers, and span lines.
  * Level 5: correlation of logs and spans by trace, and rollups by any view dimension.
+ * Level 8: alert rules as code (burn, threshold, check) with never-who messages.
  * Rules and how-to: packages/signals/docs/.
  */
 
@@ -73,3 +74,18 @@ export {
 export type { Span, SpanLine, SpanOutcome, TraceContext, Tracer, TracerOptions, TracerStats } from './traces';
 export { correlate, rollup, tierAt, TIERS } from './correlate';
 export type { MetricRow, PlanChange, RollupOptions, RollupRow, SpanNode, TierCode, TraceView } from './correlate';
+export { createAlerter, validateRules, DEFAULT_BURN_WINDOWS } from './alerts';
+export type {
+  Alert,
+  Alerter,
+  AlerterOptions,
+  AlerterStats,
+  AlertRule,
+  BurnRule,
+  BurnWindow,
+  CheckRule,
+  Route,
+  RuleInput,
+  Severity,
+  ThresholdRule,
+} from './alerts';
