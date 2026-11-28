@@ -11,7 +11,7 @@ export default {
   testRunner: 'vitest',
   plugins: ['@stryker-mutator/vitest-runner'],
   vitest: { configFile: 'vitest.mutation.config.ts' },
-  mutate: ['src/sources.mjs', 'src/graph.mjs', 'src/tools.mjs', 'src/evals.mjs', 'src/log.mjs', 'src/guard.mjs', 'src/trust.mjs', 'src/cost.mjs'],
+  mutate: ['src/sources.mjs', 'src/graph.mjs', 'src/tools.mjs', 'src/evals.mjs', 'src/log.mjs', 'src/guard.mjs', 'src/trust.mjs', 'src/cost.mjs', 'src/events.mjs', 'src/dashboard.mjs'],
   coverageAnalysis: 'perTest',
   reporters: ['clear-text', 'progress', 'json'],
   clearTextReporter: { reportMutants: false },

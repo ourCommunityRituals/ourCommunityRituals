@@ -12,6 +12,8 @@
 //   cost         --log FILE [--json]
 //   append       --file FILE --json-line '{...}'   (locked append; use instead of >>)
 //   guard        --state '{"budgetMinutes":60,"elapsedMinutes":130,...}'
+//   route        --event-name NAME --payload EVENT.json   (prints the roles to wake)
+//   dashboard    --scores FILE --log FILE [--room FILE] [--out FILE]
 //
 // --hub defaults to this repo. --brain is the OCR-docs checkout (optional; adds
 // invariants). --private is the owner's private team folder (optional; adds the
@@ -36,6 +38,8 @@ import { appendLine, checkRunLine } from './log.mjs';
 import { checkRun } from './guard.mjs';
 import { rung } from './trust.mjs';
 import { rollup } from './cost.mjs';
+import { classify, route } from './events.mjs';
+import { buildDashboard, parseRoomLog } from './dashboard.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const read = (p) => readFileSync(p, 'utf8');
@@ -208,8 +212,34 @@ function cmdGuard(f) {
   return r.stop ? 1 : 0;
 }
 
+function cmdRoute(f) {
+  if (!f['event-name'] || !f.payload) return usage();
+  const payload = JSON.parse(read(f.payload));
+  const event = classify(f['event-name'], payload);
+  const pr = payload.pull_request;
+  // GitHub's payload has no file list; a later step (once switched on) adds
+  // changed_paths from `gh pr diff --name-only`. Without it, base roles only.
+  const paths = Array.isArray(pr?.changed_paths) ? pr.changed_paths : [];
+  console.log(JSON.stringify({ event, roles: event ? route(event, paths) : [] }));
+  return 0;
+}
+
+function cmdDashboard(f) {
+  if (!f.scores || !f.log) return usage();
+  const data = buildDashboard({
+    scores: parseLines(read(f.scores)).rows,
+    log: readLog(f.log).rows,
+    room: f.room ? parseRoomLog(read(f.room)) : [],
+    now: new Date().toISOString(),
+  });
+  const text = `${JSON.stringify(data, null, 1)}\n`;
+  if (f.out) writeFileSync(f.out, text);
+  else process.stdout.write(text);
+  return 0;
+}
+
 function usage() {
-  console.error('usage: cli.mjs graph|query|tools-check|tools-allow|score|evals|trust|cost|append|guard … (see the header of src/cli.mjs)');
+  console.error('usage: cli.mjs graph|query|tools-check|tools-allow|score|evals|trust|cost|append|guard|route|dashboard … (see the header of src/cli.mjs)');
   return 2;
 }
 
@@ -224,6 +254,8 @@ const COMMANDS = {
   cost: cmdCost,
   append: cmdAppend,
   guard: cmdGuard,
+  route: cmdRoute,
+  dashboard: cmdDashboard,
 };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

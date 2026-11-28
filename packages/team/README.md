@@ -11,6 +11,8 @@ The agent team's own tooling. No model calls, no network, no secrets, no new out
 | Guardrails: warn at budget, stop at 2x, stop at the third failed try, spend cap, turn limit, deny list | `src/guard.mjs` | OCR-249 |
 | Cost and time per role and week, per confirmed finding; the home companion is left out | `src/cost.mjs` | OCR-250 |
 | Locked append for the shared run log and scores (two writers at once cut a line on 28 Nov) | `src/log.mjs` | OCR-250 |
+| Dashboard data: each role's standing, rung, last run, alarms, open disagreements, this week's spend | `src/dashboard.mjs` | OCR-251 |
+| Event triggers, prepared and switched off: event-to-role routing and `.github/workflows/team-events.yml`, gated on `TEAM_EVENTS_ON` with no model step | `src/events.mjs` | OCR-252 |
 
 ## Commands
 
@@ -26,6 +28,7 @@ node packages/team/src/cli.mjs evals --scores <team folder>/scores.ndjson
 node packages/team/src/cli.mjs trust --log <team folder>/log.ndjson --scores <team folder>/scores.ndjson
 node packages/team/src/cli.mjs cost --log <team folder>/log.ndjson
 node packages/team/src/cli.mjs guard --state '{"budgetMinutes":60,"elapsedMinutes":75,"failedTries":{"ci":2}}'
+node packages/team/src/cli.mjs dashboard --scores <team folder>/scores.ndjson --log <team folder>/log.ndjson --room <team folder>/room/log.md --out d.json
 node packages/team/src/cli.mjs append --file <team folder>/log.ndjson --json-line '{"date":"…","role":"sre",…}'
 ```
 
@@ -35,8 +38,9 @@ node packages/team/src/cli.mjs append --file <team folder>/log.ndjson --json-lin
 
 - Unit: `pnpm team:test` (parsers, graph, tools, scorer, history, trust, guard, cost, locked append).
 - Integration: `tests/repo.test.mjs` runs against this repo's real cards, agents and manifest.
+- Contract: `tests/workflow.test.mjs` keeps the event workflow gated, read-only, secret-free and without a model step.
 - CI: workspace CI runs the tests, then validates the real graph and the tool manifest.
-- Mutation: `pnpm mutation:team`, per-file floors in `mutation-floors.json` (28 Nov 2026: 93.7% of mutants killed).
+- Mutation: `pnpm mutation:team`, per-file floors in `mutation-floors.json` (28 Nov 2026: 93% of mutants killed).
 
 ## Rules
 

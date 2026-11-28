@@ -6,3 +6,5 @@ export * from './log.mjs';
 export * from './guard.mjs';
 export * from './trust.mjs';
 export * from './cost.mjs';
+export * from './events.mjs';
+export * from './dashboard.mjs';
