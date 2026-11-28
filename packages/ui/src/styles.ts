@@ -377,17 +377,27 @@ label{display:block;font-size:.875rem;color:var(--text-muted);margin-bottom:8px}
    (tabindex=0, WCAG 2.1.1), so it takes the ring too. The row never sets the width
    of what holds it (contain:inline-size): inside a grid or flex form it takes the
    column it is given and scrolls, rather than pushing the form wider than a phone.
-   Owner, 2026-11-22 (OSE-2207). */
+   Owner, 2026-11-22 (OSE-2207).
+   Tuned 2026-11-28 (owner approved the event type buckets, D5): 5.5rem tiles and
+   30px icons, so about four show on a phone with a peek of the next. A page that
+   wraps the track and the arrows in .icon-slider-row gets the arrows laid over the
+   two ends of the row instead of a second row under it, each hidden at its end;
+   without the wrapper the arrows stay under the row as before. Sizes only: no
+   colour changes. */
 .icon-slider{display:flex;flex-direction:column;gap:8px;min-width:0;contain:inline-size}
 .icon-slider-heading{font-size:1rem;font-weight:600;color:var(--text)}
 .icon-slider-track{display:flex;gap:8px;min-width:0;overflow-x:auto;scroll-snap-type:x proximity;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px;-webkit-overflow-scrolling:touch}
 .icon-slider-track::-webkit-scrollbar{display:none}
-.icon-slider-item{flex:0 0 auto;width:7.5rem;min-height:var(--tap-min);display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:1rem;font-weight:500;line-height:1.2;text-align:center;text-decoration:none;overflow-wrap:break-word;cursor:pointer;scroll-snap-align:start;touch-action:manipulation}
+.icon-slider-item{flex:0 0 auto;width:5.5rem;min-height:var(--tap-min);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:1rem;font-weight:500;line-height:1.2;text-align:center;text-decoration:none;overflow-wrap:break-word;cursor:pointer;scroll-snap-align:start;touch-action:manipulation}
 .icon-slider-item:hover{background:var(--surface-hover)}
-.icon-slider-icon{flex:none;width:40px;height:40px;color:var(--accent)}
+.icon-slider-icon{flex:none;width:30px;height:30px;color:var(--accent)}
 .icon-slider-item.is-on,.icon-slider-item[aria-pressed=true],.icon-slider-item[aria-current]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .icon-slider-item.is-on .icon-slider-icon,.icon-slider-item[aria-pressed=true] .icon-slider-icon,.icon-slider-item[aria-current] .icon-slider-icon{color:inherit}
 .icon-slider-nav{display:flex;justify-content:center;gap:16px}
+.icon-slider-row{position:relative;min-width:0}
+.icon-slider-row .icon-slider-nav{position:absolute;inset:0;justify-content:space-between;align-items:center;pointer-events:none}
+.icon-slider-row .icon-slider-arrow{pointer-events:auto}
+.icon-slider-row .icon-slider-arrow:disabled{visibility:hidden}
 .icon-slider-arrow{display:inline-flex;align-items:center;justify-content:center;width:var(--tap-min);height:var(--tap-min);padding:0;background:var(--surface);border:1px solid var(--border-strong);border-radius:50%;color:var(--text);cursor:pointer}
 .icon-slider-arrow svg{width:24px;height:24px}
 .icon-slider-arrow:hover{background:var(--surface-hover)}
