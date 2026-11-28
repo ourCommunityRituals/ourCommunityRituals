@@ -8,6 +8,10 @@
 //   tools-allow  ROLE COMMAND...
 //   score        ANSWER --key KEY.json
 //   evals        --scores FILE [--json]
+//   trust        --log FILE --scores FILE [--approved role,role] [--code-owners-on]
+//   cost         --log FILE [--json]
+//   append       --file FILE --json-line '{...}'   (locked append; use instead of >>)
+//   guard        --state '{"budgetMinutes":60,"elapsedMinutes":130,...}'
 //
 // --hub defaults to this repo. --brain is the OCR-docs checkout (optional; adds
 // invariants). --private is the owner's private team folder (optional; adds the
@@ -27,7 +31,11 @@ import {
 } from './sources.mjs';
 import { buildGraph, decisionsAbout, publicGraph, rulesFor, validateGraph, whoLeads } from './graph.mjs';
 import { checkAgents, checkManifest, commandAllowed } from './tools.mjs';
-import { parseLines, report, scoreAnswer } from './evals.mjs';
+import { history, parseLines, report, scoreAnswer } from './evals.mjs';
+import { appendLine, checkRunLine } from './log.mjs';
+import { checkRun } from './guard.mjs';
+import { rung } from './trust.mjs';
+import { rollup } from './cost.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const read = (p) => readFileSync(p, 'utf8');
@@ -36,7 +44,7 @@ function flags(argv) {
   const out = { _: [] };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--public' || a === '--json') out[a.slice(2)] = true;
+    if (a === '--public' || a === '--json' || a === '--code-owners-on') out[a.slice(2)] = true;
     else if (a.startsWith('--')) out[a.slice(2)] = argv[++i];
     else out._.push(a);
   }
@@ -140,12 +148,83 @@ function cmdEvals(f) {
   return 0;
 }
 
+function readLog(file) {
+  const { rows, bad } = parseLines(read(file));
+  const good = [];
+  for (const r of rows) {
+    const errors = checkRunLine(r);
+    if (errors.length) bad.push(`${JSON.stringify(r).slice(0, 60)}: ${errors.join('; ')}`);
+    else good.push(r);
+  }
+  return { rows: good, bad };
+}
+
+function cmdTrust(f) {
+  if (!f.log || !f.scores) return usage();
+  const log = readLog(f.log);
+  const evals = history(parseLines(read(f.scores)).rows);
+  const approved = new Set((f.approved ?? '').split(',').filter(Boolean));
+  const roles = [...new Set([...Object.keys(evals), ...log.rows.map((r) => r.role)])].filter((r) => evals[r]).sort();
+  console.log('role | rung | why');
+  for (const role of roles) {
+    const r = rung({
+      runs: log.rows.filter((x) => x.role === role),
+      evals: evals[role],
+      ownerApproved: approved.has(role),
+      codeOwnersOn: Boolean(f['code-owners-on']),
+    });
+    console.log(`${role} | ${r.rung} ${r.name} | ${r.why}`);
+  }
+  for (const b of log.bad) console.log(`skipped log line: ${b}`);
+  return 0;
+}
+
+function cmdCost(f) {
+  if (!f.log) return usage();
+  const log = readLog(f.log);
+  const rows = rollup(log.rows);
+  if (f.json) console.log(JSON.stringify(rows, null, 1));
+  else {
+    console.log('week | role | runs | minutes | tokens | $ | found | confirmed | $ per confirmed');
+    for (const r of rows) {
+      console.log(`${r.week} | ${r.role} | ${r.runs} | ${r.minutes} | ${r.tokens} | ${r.cost_usd ?? '-'} | ${r.found} | ${r.confirmed} | ${r.cost_per_confirmed ?? '-'}`);
+    }
+  }
+  for (const b of log.bad) console.log(`skipped log line: ${b}`);
+  return 0;
+}
+
+function cmdAppend(f) {
+  if (!f.file || !f['json-line']) return usage();
+  const obj = JSON.parse(f['json-line']);
+  appendLine(f.file, obj);
+  return 0;
+}
+
+function cmdGuard(f) {
+  if (!f.state) return usage();
+  const r = checkRun(JSON.parse(f.state));
+  console.log(JSON.stringify(r));
+  return r.stop ? 1 : 0;
+}
+
 function usage() {
-  console.error('usage: cli.mjs graph|query|tools-check|tools-allow|score|evals … (see the header of src/cli.mjs)');
+  console.error('usage: cli.mjs graph|query|tools-check|tools-allow|score|evals|trust|cost|append|guard … (see the header of src/cli.mjs)');
   return 2;
 }
 
-const COMMANDS = { graph: cmdGraph, query: cmdQuery, 'tools-check': cmdToolsCheck, 'tools-allow': cmdToolsAllow, score: cmdScore, evals: cmdEvals };
+const COMMANDS = {
+  graph: cmdGraph,
+  query: cmdQuery,
+  'tools-check': cmdToolsCheck,
+  'tools-allow': cmdToolsAllow,
+  score: cmdScore,
+  evals: cmdEvals,
+  trust: cmdTrust,
+  cost: cmdCost,
+  append: cmdAppend,
+  guard: cmdGuard,
+};
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, ...rest] = process.argv.slice(2);

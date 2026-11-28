@@ -2,3 +2,7 @@ export * from './sources.mjs';
 export * from './graph.mjs';
 export * from './tools.mjs';
 export * from './evals.mjs';
+export * from './log.mjs';
+export * from './guard.mjs';
+export * from './trust.mjs';
+export * from './cost.mjs';
