@@ -65,6 +65,7 @@ One line comes out per call:
 - [docs/RULES.md](docs/RULES.md): the privacy and cardinality rules, and what enforces each.
 - [docs/ADDING-AN-EVENT.md](docs/ADDING-AN-EVENT.md): how to declare an event and pick field kinds.
 - [docs/CARDINALITY.md](docs/CARDINALITY.md): label budgets, the shared dimensions, what is checked and when.
+- [docs/METRICS.md](docs/METRICS.md): counters and histograms to Workers Analytics Engine, the data point layout, queries, and counting people.
 - [docs/ROADMAP.md](docs/ROADMAP.md): the eight levels and what each will add.
 
 ## Checks
