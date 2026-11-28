@@ -209,7 +209,9 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
   const SELECTORS = [
     '.icon-slider', '.icon-slider-heading', '.icon-slider-track', '.icon-slider-item', '.icon-slider-item:hover',
     '.icon-slider-icon', '.icon-slider-nav', '.icon-slider-arrow', '.icon-slider-arrow svg',
-    '.icon-slider-arrow:hover', '.icon-slider-arrow:disabled',
+    '.icon-slider-arrow:hover', '.icon-slider-arrow:disabled', '.icon-slider-row',
+    '.icon-slider-row .icon-slider-nav', '.icon-slider-row .icon-slider-arrow',
+    '.icon-slider-row .icon-slider-arrow:disabled',
   ];
   for (const sel of SELECTORS) {
     it(`defines ${sel}`, () => {
@@ -243,6 +245,22 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
     expect(rule('.icon-slider-item')).toContain('font-size:1rem');
     expect(rule('.icon-slider-heading')).toContain('font-size:1rem');
     expect(rule('.icon-slider-arrow')).toContain('width:var(--tap-min);height:var(--tap-min)');
+  });
+
+  // Owner 2026-11-28 (event type buckets, D5): smaller tiles so more show at once,
+  // and inside .icon-slider-row the arrows sit over the row's ends, not under it.
+  it('tiles are compact (5.5rem, 30px icon) and still a full tap target at 1rem', () => {
+    expect(rule('.icon-slider-item')).toContain('width:5.5rem');
+    expect(rule('.icon-slider-icon')).toContain('width:30px;height:30px');
+  });
+
+  it('inside .icon-slider-row the arrows lie over the two ends, each hidden at its end', () => {
+    expect(rule('.icon-slider-row')).toContain('position:relative');
+    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('position:absolute');
+    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('justify-content:space-between');
+    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('pointer-events:none');
+    expect(rule('.icon-slider-row .icon-slider-arrow')).toContain('pointer-events:auto');
+    expect(rule('.icon-slider-row .icon-slider-arrow:disabled')).toContain('visibility:hidden');
   });
 
   it('the chosen item takes the accent fill and its icon the on-accent ink', () => {
