@@ -20,6 +20,10 @@ that directory.
 | `pyramid-tracer` | Does a written test reach a blocking gate, and does a required gate rest on a real assertion? | Read, Grep, Glob, `git log` |
 | `ccr-assessor` | One extended-scrum role lens over already-verified findings. Judges; does not re-scan. | Read, Grep, Glob |
 
+`agents/` also holds the standing agent team (`team-*.md`), which is not part of
+the recon fleet: each points at its role card under `team/roles/`. See
+[`team/README.md`](../team/README.md).
+
 ## Why these live here and not in a plugin
 
 Plugin-loaded subagents silently drop `hooks`, `mcpServers`, and
