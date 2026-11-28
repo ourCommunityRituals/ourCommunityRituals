@@ -9,7 +9,7 @@ span line per unit of work.
 import { createLogger, createTracer, inject, opFor, traceFrom } from '@ocr/signals';
 
 const tracer = createTracer({ service: 'ose', env: env.WORKER_ENV, release: env.RELEASE });
-const OCR_HOSTS = ['oursharedevents.com', 'ourwkrp.com', 'workers.dev'];
+const OCR_HOSTS = ['oursharedevents.com', 'ourwkrp.com']; // never a shared suffix like workers.dev
 
 export default {
   async fetch(request, env) {
