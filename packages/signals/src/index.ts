@@ -3,6 +3,7 @@
  *
  * Level 1: privacy-safe structured logs.
  * Level 2: cardinality budgets for metric labels.
+ * Level 3: counters and histograms to Workers Analytics Engine.
  * Rules and how-to: packages/signals/docs/.
  */
 
@@ -46,3 +47,14 @@ export type {
   MetricReport,
   MetricSpec,
 } from './cardinality';
+export { createMetrics, floorPeople, layoutFor, validateMeteredMetrics, MAX_METRIC_LABELS } from './metrics';
+export type {
+  AnalyticsEngineLike,
+  MeteredRegistry,
+  MeteredSpec,
+  MetricDropReason,
+  Metrics,
+  MetricsOptions,
+  MetricStats,
+  MetricUnit,
+} from './metrics';
