@@ -3,7 +3,7 @@
 Standing agents, one per Scrum role, that run Scrum development and CCR reviews through the pipeline and tend the automation. The owner is the human in the loop who checks their work.
 
 - **Call them:** "the team", or by role: architect, integrator, front-end, back-end, designer, tester, SRE, data scientist, product owner. In a thread: "ask the tester", "team standup".
-- **Built so far:** tester, SRE, data scientist, product owner. Next: the other five, one a week.
+- **Built so far:** all nine roles. Tester, SRE, data scientist and product owner have eval sets; the other five get theirs before they run on a schedule.
 
 ## How the owner works with it
 
