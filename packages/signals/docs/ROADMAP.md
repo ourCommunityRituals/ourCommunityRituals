@@ -8,8 +8,8 @@ Eight levels, each its own pull request with tests and docs. Full design:
 | 1 | Logs | Shipped (hub #98) | Envelope, schemas, two redaction layers, never-who invariant |
 | 2 | Cardinality | Shipped (hub #99) | Label budgets per metric, worst-case check at definition, overflow to `other`, per-label report ([CARDINALITY.md](CARDINALITY.md)) |
 | 3 | Metrics | Shipped (hub #100) | Counters and histograms to Workers Analytics Engine, guarded labels, read-side people floor ([METRICS.md](METRICS.md)); OSE's cost line becomes a metric next |
-| 4 | Traces | This release | W3C `traceparent` between OCR Workers, OCR-hosts-only propagation, fixed span lines ([TRACES.md](TRACES.md)) |
-| 5 | Correlation | Next | Shared ids across logs, metrics and spans; first console view |
+| 4 | Traces | Shipped (hub #101) | W3C `traceparent` between OCR Workers, OCR-hosts-only propagation, fixed span lines ([TRACES.md](TRACES.md)) |
+| 5 | Correlation | This release (library); console next | Trace trees from logs and spans, rollups by any view dimension with tier joined at view time and people floored ([CORRELATION.md](CORRELATION.md)) |
 | 6 | Synthetic checks | Planned | API, multi-step and browser checks on staging, marked synthetic |
 | 7 | SLOs | Planned | Journeys, targets and error budgets as code |
 | 8 | Alerts | Planned | Rules as code, burn-rate alerts, Linear and email routes |

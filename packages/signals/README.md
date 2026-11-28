@@ -67,6 +67,7 @@ One line comes out per call:
 - [docs/CARDINALITY.md](docs/CARDINALITY.md): label budgets, the shared dimensions, what is checked and when.
 - [docs/METRICS.md](docs/METRICS.md): counters and histograms to Workers Analytics Engine, the data point layout, queries, and counting people.
 - [docs/TRACES.md](docs/TRACES.md): following a request across Workers, span lines, and where a trace id may go.
+- [docs/CORRELATION.md](docs/CORRELATION.md): joining logs and spans into one trace, and cutting numbers by service, client, tier, event type and region.
 - [docs/ROADMAP.md](docs/ROADMAP.md): the eight levels and what each will add.
 
 ## Checks
