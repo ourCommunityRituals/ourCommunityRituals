@@ -211,7 +211,8 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
     '.icon-slider-icon', '.icon-slider-nav', '.icon-slider-arrow', '.icon-slider-arrow svg',
     '.icon-slider-arrow:hover', '.icon-slider-arrow:disabled', '.icon-slider-row',
     '.icon-slider-row .icon-slider-nav', '.icon-slider-row .icon-slider-arrow',
-    '.icon-slider-row .icon-slider-arrow:disabled',
+    '.icon-slider-row .icon-slider-arrow:disabled', '.icon-slider-row .icon-slider-arrow:first-child',
+    '.icon-slider-row .icon-slider-arrow:last-child',
   ];
   for (const sel of SELECTORS) {
     it(`defines ${sel}`, () => {
@@ -256,10 +257,13 @@ describe('componentStyles — icon slider (OSE-2207)', () => {
 
   it('inside .icon-slider-row the arrows lie over the two ends, each hidden at its end', () => {
     expect(rule('.icon-slider-row')).toContain('position:relative');
-    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('position:absolute');
-    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('justify-content:space-between');
-    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('pointer-events:none');
-    expect(rule('.icon-slider-row .icon-slider-arrow')).toContain('pointer-events:auto');
+    // The nav itself takes no room, so it never covers the items (axe and taps reach them).
+    expect(rule('.icon-slider-row .icon-slider-nav')).toContain('height:0');
+    expect(rule('.icon-slider-row .icon-slider-nav')).not.toContain('position:absolute');
+    expect(rule('.icon-slider-row .icon-slider-arrow')).toContain('position:absolute');
+    expect(rule('.icon-slider-row .icon-slider-arrow')).toContain('top:50%');
+    expect(rule('.icon-slider-row .icon-slider-arrow:first-child')).toContain('inset-inline-start:0');
+    expect(rule('.icon-slider-row .icon-slider-arrow:last-child')).toContain('inset-inline-end:0');
     expect(rule('.icon-slider-row .icon-slider-arrow:disabled')).toContain('visibility:hidden');
   });
 
